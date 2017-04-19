@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package io.bokun.inventory.service;
+
+option java_multiple_files = true;
+option java_package = "io.bokun.inventory.service.grpc";
+
+import "inventory_service_common.proto";
+
+service BookingService {
+//    rpc CreateReservation (FindAvailableProductsRequest) returns (stream BokunProduct) {}
+//    rpc GetProductAvailability (GetProductAvailabilityRequest) returns (ProductAvailability) {}
+}

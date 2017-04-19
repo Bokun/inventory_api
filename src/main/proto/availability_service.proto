@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package io.bokun.inventory.service;
+
+option java_multiple_files = true;
+option java_package = "io.bokun.inventory.service.grpc";
+
+import "inventory_service_common.proto";
+
+service AvailabilityService {
+    rpc FindAvailableProducts (FindAvailableProductsRequest) returns (stream BokunProduct) {}
+    rpc GetProductAvailability (GetProductAvailabilityRequest) returns (ProductAvailabilityWithRatesResponse) {}
+}
+
+message FindAvailableProductsRequest {
+    repeated BokunProduct products = 1;
+    DatePeriod range = 2;
+}
+
+message GetProductAvailabilityRequest {
+    repeated BokunProduct products = 1;
+    DatePeriod range = 2;
+}
+
+message ProductAvailabilityWithRatesResponse {
+    int32 capacity = 1;
+    Date date = 2;
+    repeated Time departures = 3;
+    repeated RateWithPrice rates = 4;
+}
+
+message PricingCategoryWithPrice {
+    PricingCategory pricingCategory = 1;
+    PricingCategoryType pricingCategoryType = 2;
+    Price price = 3;
+}
+
+message RateWithPrice {
+    BokunToExternalMapping rate = 1;
+    repeated PricingCategoryWithPrice pricingCategories = 2;
+}

@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package io.bokun.inventory.plugin.api;
+
+option java_multiple_files = true;
+option java_package = "io.bokun.inventory.plugin.api";
+
+// Parameters used to configure supported plugin(s)
+message PluginDefinition {
+    string id = 1;                                          // id of definition
+    string name = 2;                                        // name of definition
+    string description = 3;                                 // description of definition, optional
+    repeated ProductCategory productCategories = 4;         // Which product types does this plugin work with?
+    repeated PluginCapability capabilities = 5;             // What does this plugin support?
+    repeated PluginConfigurationParameter parameters = 6;   // List of parameters this plugin should be configured with
+}
+
+// Parameters used to configure supported plugin(s)
+message PluginConfigurationParameter {
+    string id = 1;
+    string name = 2;
+    PluginParameterDataType type = 3;
+    bool required = 4;
+}
+
+// to signify that a RPC call doesn't return anything or has no input parameters
+message Empty {
+}
+
+// Data types for PluginConfigurationParameter
+enum PluginParameterDataType {
+    LONG = 0;
+    DOUBLE = 1;
+    BOOLEAN = 2;
+    STRING = 3;
+}
+
+// What kind of features does this plugin support?
+enum PluginCapability {
+    SUPPORTS_PRICING = 0;
+    SUPPORTS_RESERVATIONS = 1;
+    SUPPORTS_AVAILABILITY = 2;
+}
+
+// Supported product categories
+enum ProductCategory {
+    ACCOMMODATION = 0;
+    ACTIVITIES = 1;
+    CAR_RENTALS = 2;
+    TRANSPORT = 3;
+}
+

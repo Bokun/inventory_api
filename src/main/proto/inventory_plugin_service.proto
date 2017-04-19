@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package io.bokun.inventory.service;
+
+option java_multiple_files = true;
+option java_package = "io.bokun.inventory.service.grpc";
+
+import "common.proto";
+import "inventory_service_common.proto";
+
+service PluginService {
+    rpc RegisterPlugin (PluginUrl) returns (io.bokun.inventory.plugin.api.Empty) {}                                      // registers a new plugin by given http url
+    rpc UnregisterPlugin (PluginUrl) returns (io.bokun.inventory.plugin.api.Empty) {}                                    // deregisters a new plugin by given http url
+
+    rpc ListDefinitions (VendorId) returns (stream io.bokun.inventory.plugin.api.PluginDefinition) {}                 // List definitions which are available for given vendor
+    rpc ConfigurePlugin (PluginConfigurationRequest) returns (PluginConfiguration) {}   // Configure new or existing plugin
+    rpc ListConfiguredPlugins (VendorId) returns (stream PluginConfiguration) {}        // List all configured plugins
+    rpc DeleteConfiguredPlugin (PluginId) returns (io.bokun.inventory.plugin.api.Empty) {}                            // Delete configured plugin
+}
+
+message PluginUrl {
+    string url = 1;
+}
+
+message PluginConfigurationRequest {
+    VendorId vendorId = 1;
+    PluginId pluginId = 2;        // if absent, a new plugin will be created. Otherwise existing plugin will be used
+    repeated PluginConfigurationParameterValue parameterValues = 3;
+}
+
+message PluginConfiguration {
+    PluginId pluginId = 1;
+    string definitionId = 2;
+    repeated PluginConfigurationParameterValue parameterValues = 3;
+}
+
+// request to configure PluginConfigurationParameter
+message PluginConfigurationParameterValue {
+    string id = 1;      // PluginConfigurationParameter::id
+    string value = 2;   // if the underlying PluginParameterDataType is not string, one of .parseX methods will be used
+}

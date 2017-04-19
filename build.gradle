@@ -1,0 +1,140 @@
+import com.amazonaws.auth.AWSCredentials
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+
+group 'io.bokun.inventory'
+version '0.1'
+
+buildscript {
+    ext {
+        awsVersion = '1.11.40'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("com.amazonaws:aws-java-sdk-core:${awsVersion}")
+        classpath("com.amazonaws:aws-java-sdk-s3:${awsVersion}")
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.1'
+    }
+}
+
+apply plugin: "com.google.protobuf"
+apply plugin: "java"
+apply plugin: "application"
+apply plugin: "idea"
+apply plugin: "maven-publish"
+
+protobuf {
+    protoc {
+        // The version of protoc must match protobuf-java. If you don't depend on
+        // protobuf-java directly, you will be transitively depending on the
+        // protobuf-java version that grpc depends on.
+        artifact = "com.google.protobuf:protoc:3.2.0"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.2.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+    generatedFilesBaseDir = "$projectDir/src/generated"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+// This thingie below will ensure all dependencies are always fetched when running from IntelliJ
+// It should not be there by default and only uncommented when necessary, followed by IntelliJ Gradle refresh
+
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'hours'
+    resolutionStrategy.cacheChangingModulesFor 0, 'hours'
+}
+
+def snapshot = '-SNAPSHOT'
+if (project.hasProperty('snapshot') && project.property('snapshot') == '-RELEASE') {
+    snapshot = ''
+}
+version += snapshot
+
+AWSCredentials awsCredentials = new ProfileCredentialsProvider().credentials;
+
+repositories {
+    maven {
+        url "s3://pmr.bokun.io/snapshots"
+        credentials(AwsCredentials) {
+            accessKey awsCredentials.AWSAccessKeyId
+            secretKey awsCredentials.AWSSecretKey
+        }
+    }
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    maven {
+        url "s3://pmr.bokun.io/release"
+        credentials(AwsCredentials) {
+            accessKey awsCredentials.AWSAccessKeyId
+            secretKey awsCredentials.AWSSecretKey
+        }
+    }
+}
+
+dependencies {
+    compileOnly 'io.bokun.inventory.plugin:grpc-api:0.1-SNAPSHOT'
+}
+
+idea {
+    module {
+        sourceDirs += file("${projectDir}/src/generated/main/java");
+        sourceDirs += file("${projectDir}/src/generated/main/grpc");
+    }
+}
+
+startScripts.enabled = false
+
+task sourceJava(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+//task publishApi() {
+    if (awsCredentials != null) {
+        println "Will publish to AWS"
+        publishing {
+            println("publish : " + awsCredentials.AWSAccessKeyId)
+            publications {
+                mavenJava(MavenPublication) {
+                    groupId 'io.bokun.inventory'
+                    artifactId 'inventory_api'
+                    version '0.1-SNAPSHOT'
+
+                    from components.java
+
+                    artifact sourceJava {
+                        classifier "sources"
+                    }
+                }
+            }
+            repositories {
+                maven {
+                    if (project.version.endsWith('-SNAPSHOT')) {
+                        url "s3://pmr.bokun.io/snapshots"
+                    } else {
+                        url "s3://pmr.bokun.io/release"
+                    }
+                    credentials(AwsCredentials) {
+                        accessKey awsCredentials.AWSAccessKeyId
+                        secretKey awsCredentials.AWSSecretKey
+                    }
+                }
+            }
+        }
+    } else {
+        println "AWS Credentials not found."
+    }
+//}

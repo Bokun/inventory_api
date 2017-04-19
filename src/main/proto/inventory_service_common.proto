@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package io.bokun.inventory.service;
+
+option java_multiple_files = true;
+option java_package = "io.bokun.inventory.service.grpc";
+
+import "common.proto";
+
+// wraps plugin (as opposed to plugin definition) id and nothing else
+message PluginId {
+    string id = 1;
+}
+
+// wraps vendor id and nothing else
+message VendorId {
+    int64 id = 1;
+}
+
+message BokunProduct {
+    int64 id = 1;
+    io.bokun.inventory.plugin.api.ProductCategory category = 2;
+}
+
+message BokunToExternalMapping {
+    string bokunId = 1;             // might refer to any type, the context will reflect circumstances (e.g. might mean pricing category id in Bokun)
+    string externalId = 2;          // whatever counterpart there is on the external system
+}
+
+message Date {
+    int32 year = 1;
+    int32 month = 2;
+    int32 day = 3;
+}
+
+message DatePeriod {
+    Date from = 1;                            
+    Date to = 2;
+}
+
+message Time {
+    int32 hour = 1;
+    int32 minute = 2;
+}
+
+message Price {
+    string currency = 1;
+    string amount = 2;              // can't use double because of precision loss. Will convert to BigDecimal when data arrives in Java
+}
+
+message PricingCategory {
+    BokunToExternalMapping id = 1;
+    PricingCategoryType categoryType = 2;
+}
+
+enum PricingCategoryType {
+    ADULT = 0;
+    CHILD = 1;
+    TEENAGER = 2;
+    INFANT = 3;
+    SENIOR = 4;
+    STUDENT = 5;
+    MILITARY = 6;
+    OTHER = 7;
+}
+
+enum BookingType {
+    DATE = 0;
+    DATE_AND_TIME = 1;
+    PASS = 2;
+}
