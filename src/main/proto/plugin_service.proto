@@ -8,5 +8,21 @@ option java_package = "io.bokun.inventory.plugin.api";
 import "common.proto";
 
 service PluginService {
-    rpc GetDefinition (Empty) returns (PluginDefinition) {}                 // Provide plugin definition information
+    rpc GetDefinition (io.bokun.inventory.common.Empty) returns (PluginDefinition) {}                 // Provide plugin definition information
+}
+
+// Parameters used to configure supported plugin(s)
+message PluginDefinition {
+    string name = 1;                                                                    // name of definition
+    string description = 2;                                                             // description of definition, optional
+    repeated io.bokun.inventory.common.ProductCategory productCategories = 3;           // Which product types does this plugin work with?
+    repeated io.bokun.inventory.common.PluginCapability capabilities = 4;               // What does this plugin support?
+    repeated PluginConfigurationParameter parameters = 5;                               // List of parameters this plugin should be configured with
+}
+
+// Parameters used to configure supported plugin(s)
+message PluginConfigurationParameter {
+    string name = 1;
+    io.bokun.inventory.common.PluginParameterDataType type = 2;
+    bool required = 3;
 }

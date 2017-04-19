@@ -1,25 +1,9 @@
 syntax = "proto3";
 
-package io.bokun.inventory.plugin.api;
+package io.bokun.inventory.common;
 
 option java_multiple_files = true;
-option java_package = "io.bokun.inventory.plugin.api";
-
-// Parameters used to configure supported plugin(s)
-message PluginDefinition {
-    string name = 1;                                        // name of definition
-    string description = 2;                                 // description of definition, optional
-    repeated ProductCategory productCategories = 3;         // Which product types does this plugin work with?
-    repeated PluginCapability capabilities = 4;             // What does this plugin support?
-    repeated PluginConfigurationParameter parameters = 5;   // List of parameters this plugin should be configured with
-}
-
-// Parameters used to configure supported plugin(s)
-message PluginConfigurationParameter {
-    string name = 1;
-    PluginParameterDataType type = 2;
-    bool required = 3;
-}
+option java_package = "io.bokun.inventory.common";
 
 // to signify that a RPC call doesn't return anything or has no input parameters
 message Empty {

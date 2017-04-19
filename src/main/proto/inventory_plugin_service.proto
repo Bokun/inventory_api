@@ -13,25 +13,37 @@ service PluginService {
     rpc RegisterPlugin (PluginUrl) returns (PluginDefinition) {}
 
     // unregisters existing plugin from the system by given url which was previously registered with RegisterPlugin
-    rpc UnregisterPlugin (PluginUnregistrationRequest) returns (io.bokun.inventory.plugin.api.Empty) {}
+    rpc UnregisterPlugin (PluginUnregistrationRequest) returns (io.bokun.inventory.common.Empty) {}
 
     // List definitions which are available for given vendor
     rpc ListDefinitions (VendorId) returns (stream PluginDefinition) {}
 
     rpc ConfigurePlugin (PluginConfigurationRequest) returns (PluginConfiguration) {}   // Configure new or existing plugin
     rpc ListConfiguredPlugins (VendorId) returns (stream PluginConfiguration) {}        // List all configured plugins
-    rpc DeleteConfiguredPlugin (PluginId) returns (io.bokun.inventory.plugin.api.Empty) {}                            // Delete configured plugin
+    rpc DeleteConfiguredPlugin (PluginId) returns (io.bokun.inventory.common.Empty) {}  // Delete configured plugin
 }
 
 message PluginUrl {
     string url = 1;
 }
 
-// As this is Bokun-internal API, we add a few more fields to the plugin definition which is set externally
+// As this is Bokun-internal API, we add a few more fields to the plugin definition which is publicly traded
 message PluginDefinition {
     string id = 1;
     string url = 2;
-    io.bokun.inventory.plugin.api.PluginDefinition definition = 3;
+    string name = 3;                                                                    // name of definition
+    string description = 4;                                                             // description of definition, optional
+    repeated io.bokun.inventory.common.ProductCategory productCategories = 5;           // Which product types does this plugin work with?
+    repeated io.bokun.inventory.common.PluginCapability capabilities = 6;               // What does this plugin support?
+    repeated PluginConfigurationParameter parameters = 7;                               // List of parameters this plugin should be configured with
+}
+
+// As this is Bokun-internal API, we add a few more fields to the plugin conf parameter which is publicly traded
+message PluginConfigurationParameter {
+    string id = 1;
+    string name = 2;
+    io.bokun.inventory.common.PluginParameterDataType type = 3;
+    bool required = 4;
 }
 
 message PluginUnregistrationRequest {

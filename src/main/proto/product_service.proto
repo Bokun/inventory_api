@@ -13,7 +13,7 @@ service ProductService {
     rpc SearchInventoryProducts (SearchInventoryProductsRequest) returns (stream ProductDescription) {}
     rpc UpsertProductMapping (ProductMapping) returns (ProductMapping) {}
     rpc GetProductMapping (ProductMappingIdentifier) returns (ProductMapping) {}
-    rpc DeleteProductMapping (ProductMappingIdentifier) returns (io.bokun.inventory.plugin.api.Empty) {}
+    rpc DeleteProductMapping (ProductMappingIdentifier) returns (io.bokun.inventory.common.Empty) {}
 }
 
 message SearchInventoryProductsRequest {

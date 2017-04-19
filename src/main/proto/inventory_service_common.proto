@@ -19,7 +19,7 @@ message VendorId {
 
 message BokunProduct {
     int64 id = 1;
-    io.bokun.inventory.plugin.api.ProductCategory category = 2;
+    io.bokun.inventory.common.ProductCategory category = 2;
 }
 
 message BokunToExternalMapping {
