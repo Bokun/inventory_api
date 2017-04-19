@@ -9,10 +9,15 @@ import "common.proto";
 import "inventory_service_common.proto";
 
 service PluginService {
-    rpc RegisterPlugin (PluginUrl) returns (io.bokun.inventory.plugin.api.Empty) {}                                      // registers a new plugin by given http url
-    rpc UnregisterPlugin (PluginUrl) returns (io.bokun.inventory.plugin.api.Empty) {}                                    // deregisters a new plugin by given http url
+    // registers a new plugin to the system by given url
+    rpc RegisterPlugin (PluginUrl) returns (PluginDefinition) {}
 
-    rpc ListDefinitions (VendorId) returns (stream io.bokun.inventory.plugin.api.PluginDefinition) {}                 // List definitions which are available for given vendor
+    // unregisters existing plugin from the system by given url which was previously registered with RegisterPlugin
+    rpc UnregisterPlugin (PluginUnregistrationRequest) returns (io.bokun.inventory.plugin.api.Empty) {}
+
+    // List definitions which are available for given vendor
+    rpc ListDefinitions (VendorId) returns (stream PluginDefinition) {}
+
     rpc ConfigurePlugin (PluginConfigurationRequest) returns (PluginConfiguration) {}   // Configure new or existing plugin
     rpc ListConfiguredPlugins (VendorId) returns (stream PluginConfiguration) {}        // List all configured plugins
     rpc DeleteConfiguredPlugin (PluginId) returns (io.bokun.inventory.plugin.api.Empty) {}                            // Delete configured plugin
@@ -20,6 +25,18 @@ service PluginService {
 
 message PluginUrl {
     string url = 1;
+}
+
+// As this is Bokun-internal API, we add a few more fields to the plugin definition which is set externally
+message PluginDefinition {
+    string id = 1;
+    string url = 2;
+    io.bokun.inventory.plugin.api.PluginDefinition definition = 3;
+}
+
+message PluginUnregistrationRequest {
+    string id = 1;          // unregister by either id or url, whichever comes first
+    string url = 2;
 }
 
 message PluginConfigurationRequest {
