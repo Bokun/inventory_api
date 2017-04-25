@@ -14,7 +14,7 @@ message VendorId {
 
 message BokunProduct {
     int64 id = 1;
-    io.bokun.inventory.common.grpc.ProductCategory category = 2;
+    io.bokun.inventory.common.api.grpc.ProductCategory category = 2;
 }
 
 message BokunToExternalMapping {

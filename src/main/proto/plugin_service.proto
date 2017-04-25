@@ -13,7 +13,7 @@ service PluginService {
     rpc RegisterPlugin (PluginUrl) returns (PluginDefinition) {}
 
     // unregisters existing plugin from the system by given url which was previously registered with RegisterPlugin
-    rpc UnregisterPlugin (PluginUnregistrationRequest) returns (io.bokun.inventory.common.grpc.Empty) {}
+    rpc UnregisterPlugin (PluginUnregistrationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 
     // List definitions which are available for given vendor
     rpc ListDefinitions (io.bokun.inventory.service.common.grpc.VendorId) returns (stream PluginDefinition) {}
@@ -25,7 +25,7 @@ service PluginService {
     rpc ListConfiguredPlugins (io.bokun.inventory.service.common.grpc.VendorId) returns (stream PluginConfiguration) {}
 
     // Delete configured plugin for a vendor
-    rpc DeleteConfiguredPlugin (DeletePluginConfigurationRequest) returns (io.bokun.inventory.common.grpc.Empty) {}
+    rpc DeleteConfiguredPlugin (DeletePluginConfigurationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 }
 
 message PluginUrl {
@@ -38,8 +38,8 @@ message PluginDefinition {
     string url = 2;
     string name = 3;                                                                    // name of definition
     string description = 4;                                                             // description of definition, optional
-    repeated io.bokun.inventory.common.grpc.ProductCategory productCategories = 5;      // Which product types does this plugin work with?
-    repeated io.bokun.inventory.common.grpc.PluginCapability capabilities = 6;          // What does this plugin support?
+    repeated io.bokun.inventory.common.api.grpc.ProductCategory productCategories = 5;      // Which product types does this plugin work with?
+    repeated io.bokun.inventory.common.api.grpc.PluginCapability capabilities = 6;          // What does this plugin support?
     repeated PluginConfigurationParameter parameters = 7;                               // List of parameters this plugin should be configured with
 }
 
@@ -47,7 +47,7 @@ message PluginDefinition {
 message PluginConfigurationParameter {
     string id = 1;
     string name = 2;
-    io.bokun.inventory.common.grpc.PluginParameterDataType type = 3;
+    io.bokun.inventory.common.api.grpc.PluginParameterDataType type = 3;
     bool required = 4;
 }
 
