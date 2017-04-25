@@ -86,7 +86,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'io.bokun.inventory.plugin:grpc-api:0.1-SNAPSHOT'
+    compileOnly 'io.bokun.inventory:inventory_common_api:0.1-SNAPSHOT'
 }
 
 idea {
