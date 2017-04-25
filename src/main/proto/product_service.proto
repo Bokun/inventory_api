@@ -16,7 +16,7 @@ service ProductService {
 }
 
 message SearchInventoryProductsRequest {
-    int64 pluginId = 1;
+    string pluginId = 1;
     string name = 2;                                    // name of product
     string country = 3;                                 // ISO ALPHA-2 code
     string city = 4;
@@ -40,7 +40,7 @@ message Rate {
 
 message ProductMapping {
     string id = 1;                                  // if omitted, mapping will be created for upsert op. Otherwise updated
-    int64 pluginId = 2;
+    string pluginId = 2;
     io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 3;
     string inventoryProductId = 4;
     repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping pricingCategoryMappings = 5;
@@ -48,6 +48,6 @@ message ProductMapping {
 }
 
 message ProductMappingIdentifier {
-    int64 pluginId = 1;
+    string pluginId = 1;
     io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 2;
 }

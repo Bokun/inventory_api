@@ -57,14 +57,14 @@ message PluginUnregistrationRequest {
 }
 
 message PluginConfiguration {
-    string vendorId = 1;
-    int64 pluginId = 2;        // if absent, a new plugin will be created. Otherwise existing plugin will be used
+    int64 vendorId = 1;
+    string pluginId = 2;        // if absent, a new plugin will be created. Otherwise existing plugin will be used
     repeated PluginConfigurationParameterValue parameterValues = 3;
 }
 
 message DeletePluginConfigurationRequest {
-    string vendorId = 1;
-    int64 pluginId = 2;
+    int64 vendorId = 1;
+    string pluginId = 2;
 }
 
 // request to configure PluginConfigurationParameter, or response for already existing configuration
