@@ -1,16 +1,11 @@
 syntax = "proto3";
 
-package io.bokun.inventory.service;
+package io.bokun.inventory.service.common.grpc;
 
 option java_multiple_files = true;
-option java_package = "io.bokun.inventory.service.grpc";
+option java_package = "io.bokun.inventory.service.common.grpc";
 
 import "common.proto";
-
-// wraps plugin (as opposed to plugin definition) id and nothing else
-message PluginId {
-    string id = 1;
-}
 
 // wraps vendor id and nothing else
 message VendorId {
@@ -19,7 +14,7 @@ message VendorId {
 
 message BokunProduct {
     int64 id = 1;
-    io.bokun.inventory.common.ProductCategory category = 2;
+    io.bokun.inventory.common.grpc.ProductCategory category = 2;
 }
 
 message BokunToExternalMapping {
@@ -68,4 +63,33 @@ enum BookingType {
     DATE = 0;
     DATE_AND_TIME = 1;
     PASS = 2;
+}
+
+message Duration {
+    int32 minutes = 1;
+    int32 hours = 2;
+    int32 days = 3;
+    int32 weeks = 4;
+}
+
+message OpeningHoursTimeInterval {
+    string openFrom = 1;                // Format: HH:mm
+    int32 openForHours = 2;             // For how many hours open since openFrom
+    int32 openForMinutes = 3;           // For how many minutes open since openFrom. Must be within [0..59]
+    Duration duration = 4;              // Specifies the frequency between start times within the interval. For example if duration is 20 minutes, the tour starts every 20 minutes.
+}
+
+message OpeningHoursWeekday {
+    bool open24Hours = 1;                                   // whether this is open 24/7. If so, other fields are irrelevant.
+    repeated OpeningHoursTimeInterval timeIntervals = 2;    // only used if open24Hours is false. Time intervals that are open for this weekday
+}
+
+message OpeningHours {
+    OpeningHoursWeekday monday = 1;         // Opening hours for Mondays
+    OpeningHoursWeekday tuesday = 2;        // Tuesdays, and so on and so forth
+    OpeningHoursWeekday wednesday = 3;
+    OpeningHoursWeekday thursday = 4;
+    OpeningHoursWeekday friday = 5;
+    OpeningHoursWeekday saturday = 6;
+    OpeningHoursWeekday sunday = 7;
 }

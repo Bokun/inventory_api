@@ -1,41 +1,41 @@
 syntax = "proto3";
 
-package io.bokun.inventory.service;
+package io.bokun.inventory.service.availability.grpc;
 
 option java_multiple_files = true;
-option java_package = "io.bokun.inventory.service.grpc";
+option java_package = "io.bokun.inventory.service.availability.grpc";
 
 import "inventory_service_common.proto";
 
 service AvailabilityService {
-    rpc FindAvailableProducts (FindAvailableProductsRequest) returns (stream BokunProduct) {}
+    rpc FindAvailableProducts (FindAvailableProductsRequest) returns (stream io.bokun.inventory.service.common.grpc.BokunProduct) {}
     rpc GetProductAvailability (GetProductAvailabilityRequest) returns (ProductAvailabilityWithRatesResponse) {}
 }
 
 message FindAvailableProductsRequest {
-    repeated BokunProduct products = 1;
-    DatePeriod range = 2;
+    repeated io.bokun.inventory.service.common.grpc.BokunProduct products = 1;
+    io.bokun.inventory.service.common.grpc.DatePeriod range = 2;
 }
 
 message GetProductAvailabilityRequest {
-    repeated BokunProduct products = 1;
-    DatePeriod range = 2;
+    repeated io.bokun.inventory.service.common.grpc.BokunProduct products = 1;
+    io.bokun.inventory.service.common.grpc.DatePeriod range = 2;
 }
 
 message ProductAvailabilityWithRatesResponse {
     int32 capacity = 1;
-    Date date = 2;
-    repeated Time departures = 3;
+    io.bokun.inventory.service.common.grpc.Date date = 2;
+    repeated io.bokun.inventory.service.common.grpc.Time departures = 3;
     repeated RateWithPrice rates = 4;
 }
 
 message PricingCategoryWithPrice {
-    PricingCategory pricingCategory = 1;
-    PricingCategoryType pricingCategoryType = 2;
-    Price price = 3;
+    io.bokun.inventory.service.common.grpc.PricingCategory pricingCategory = 1;
+    io.bokun.inventory.service.common.grpc.PricingCategoryType pricingCategoryType = 2;
+    io.bokun.inventory.service.common.grpc.Price price = 3;
 }
 
 message RateWithPrice {
-    BokunToExternalMapping rate = 1;
+    io.bokun.inventory.service.common.grpc.BokunToExternalMapping rate = 1;
     repeated PricingCategoryWithPrice pricingCategories = 2;
 }

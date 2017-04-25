@@ -1,23 +1,22 @@
 syntax = "proto3";
 
-package io.bokun.inventory.service;
+package io.bokun.inventory.service.product.grpc;
 
 option java_multiple_files = true;
-option java_package = "io.bokun.inventory.service.grpc";
+option java_package = "io.bokun.inventory.service.product.grpc";
 
 import "common.proto";
 import "inventory_service_common.proto";
-import "opening_hours.proto";
 
 service ProductService {
     rpc SearchInventoryProducts (SearchInventoryProductsRequest) returns (stream ProductDescription) {}
     rpc UpsertProductMapping (ProductMapping) returns (ProductMapping) {}
     rpc GetProductMapping (ProductMappingIdentifier) returns (ProductMapping) {}
-    rpc DeleteProductMapping (ProductMappingIdentifier) returns (io.bokun.inventory.common.Empty) {}
+    rpc DeleteProductMapping (ProductMappingIdentifier) returns (io.bokun.inventory.common.grpc.Empty) {}
 }
 
 message SearchInventoryProductsRequest {
-    PluginId pluginId = 1;
+    int64 pluginId = 1;
     string name = 2;                                    // name of product
     string country = 3;                                 // ISO ALPHA-2 code
     string city = 4;
@@ -27,10 +26,10 @@ message ProductDescription {
     string id = 1;                                      // product id
     string name = 2;                                    // product name
     string description = 3;                             // product description, optional
-    repeated PricingCategory pricingCategories = 4;
+    repeated io.bokun.inventory.service.common.grpc.PricingCategory pricingCategories = 4;
     repeated Rate rates = 5;
-    OpeningHours openingHours = 6;
-    BookingType bookingType = 7;
+    io.bokun.inventory.service.common.grpc.OpeningHours openingHours = 6;
+    io.bokun.inventory.service.common.grpc.BookingType bookingType = 7;
 }
 
 message Rate {
@@ -41,14 +40,14 @@ message Rate {
 
 message ProductMapping {
     string id = 1;                                  // if omitted, mapping will be created for upsert op. Otherwise updated
-    PluginId pluginId = 2;
-    BokunProduct bokunProduct = 3;
+    int64 pluginId = 2;
+    io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 3;
     string inventoryProductId = 4;
-    repeated BokunToExternalMapping pricingCategoryMappings = 5;
-    repeated BokunToExternalMapping rateMappings = 6;
+    repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping pricingCategoryMappings = 5;
+    repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping rateMappings = 6;
 }
 
 message ProductMappingIdentifier {
-    PluginId pluginId = 1;
-    BokunProduct bokunProduct = 2;
+    int64 pluginId = 1;
+    io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 2;
 }

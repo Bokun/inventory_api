@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package io.bokun.inventory.service;
+package io.bokun.inventory.service.booking.grpc;
 
 option java_multiple_files = true;
-option java_package = "io.bokun.inventory.service.grpc";
+option java_package = "io.bokun.inventory.service.booking.grpc";
 
 import "inventory_service_common.proto";
 
