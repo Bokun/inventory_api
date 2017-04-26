@@ -61,8 +61,6 @@ sourceSets {
     }
 }
 
-
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -111,43 +109,64 @@ idea {
 
 startScripts.enabled = false
 
-task sourceJava(type: Jar) {
-    from sourceSets.main.allJava
+task commonApi(type: Jar) {
+    baseName = 'commonapi'
+    from sourceSets.main.output.classesDir
+    include 'io/bokun/inventory/common/**'
+}
+task pluginApi(type: Jar) {
+    baseName = 'commonapi'
+    from sourceSets.main.output.classesDir
+    include 'io/bokun/inventory/plugin/**'
+}
+task serviceApi(type: Jar) {
+    baseName = 'commonapi'
+    from sourceSets.main.output.classesDir
+    include 'io/bokun/inventory/service/**'
 }
 
-//task publishApi() {
-    if (awsCredentials != null) {
-        println "Will publish to AWS"
-        publishing {
-            println("publish : " + awsCredentials.AWSAccessKeyId)
-            publications {
-                mavenJava(MavenPublication) {
-                    groupId 'io.bokun.inventory'
-                    artifactId 'inventory_api'
-                    version '0.1-SNAPSHOT'
+if (awsCredentials != null) {
+    println "Will publish to AWS"
+    publishing {
+        println("publish : " + awsCredentials.AWSAccessKeyId)
+        publications {
 
-                    from components.java
-
-                    artifact sourceJava {
-                        classifier "sources"
-                    }
-                }
+            common(MavenPublication) {
+                groupId 'io.bokun.inventory'
+                artifactId 'common-api-grpc'
+                version '0.1-SNAPSHOT'
+                artifact commonApi
             }
-            repositories {
-                maven {
-                    if (project.version.endsWith('-SNAPSHOT')) {
-                        url "s3://pmr.bokun.io/snapshots"
-                    } else {
-                        url "s3://pmr.bokun.io/release"
-                    }
-                    credentials(AwsCredentials) {
-                        accessKey awsCredentials.AWSAccessKeyId
-                        secretKey awsCredentials.AWSSecretKey
-                    }
+
+            plugin(MavenPublication) {
+                groupId 'io.bokun.inventory'
+                artifactId 'plugin-api-grpc'
+                version '0.1-SNAPSHOT'
+                artifact commonApi
+            }
+
+            service(MavenPublication) {
+                groupId 'io.bokun.inventory'
+                artifactId 'service-api-grpc'
+                version '0.1-SNAPSHOT'
+                artifact serviceApi
+            }
+
+        }
+        repositories {
+            maven {
+                if (project.version.endsWith('-SNAPSHOT')) {
+                    url "s3://pmr.bokun.io/snapshots"
+                } else {
+                    url "s3://pmr.bokun.io/release"
+                }
+                credentials(AwsCredentials) {
+                    accessKey awsCredentials.AWSAccessKeyId
+                    secretKey awsCredentials.AWSSecretKey
                 }
             }
         }
-    } else {
-        println "AWS Credentials not found."
     }
-//}
+} else {
+    println "AWS Credentials not found."
+}
