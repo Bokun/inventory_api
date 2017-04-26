@@ -46,6 +46,23 @@ protobuf {
     generatedFilesBaseDir = "$projectDir/src/generated"
 }
 
+dependencies {
+    compile 'io.grpc:grpc-all:1.2.0'
+}
+
+
+sourceSets {
+    main {
+        proto {
+            srcDir 'src/main/proto_common'
+            srcDir 'src/main/proto_plugin'
+            srcDir 'src/main/proto_service'
+        }
+    }
+}
+
+
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -83,10 +100,6 @@ repositories {
             secretKey awsCredentials.AWSSecretKey
         }
     }
-}
-
-dependencies {
-    compileOnly 'io.bokun.inventory:inventory_common_api:0.1-SNAPSHOT'
 }
 
 idea {
