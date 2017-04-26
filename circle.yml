@@ -1,0 +1,18 @@
+machine:
+  java:
+    version:
+      oraclejdk8
+
+dependencies:
+  override:
+    - ./gradlew build
+
+deployment:
+  snapshot:
+    branch: develop
+    commands:
+      - ./gradlew publish -Dorg.gradle.project.snapshot="-SNAPSHOT"
+  release:
+    branch: master
+    commands:
+      - ./gradlew publish -Dorg.gradle.project.snapshot="-RELEASE"
