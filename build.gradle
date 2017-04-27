@@ -142,7 +142,7 @@ if (awsCredentials != null) {
                 groupId 'io.bokun.inventory'
                 artifactId 'plugin-api-grpc'
                 version '0.1-SNAPSHOT'
-                artifact commonApi
+                artifact pluginApi
             }
 
             service(MavenPublication) {
