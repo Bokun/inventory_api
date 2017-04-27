@@ -115,12 +115,12 @@ task commonApi(type: Jar) {
     include 'io/bokun/inventory/common/**'
 }
 task pluginApi(type: Jar) {
-    baseName = 'commonapi'
+    baseName = 'pluginapi'
     from sourceSets.main.output.classesDir
     include 'io/bokun/inventory/plugin/**'
 }
 task serviceApi(type: Jar) {
-    baseName = 'commonapi'
+    baseName = 'serviceapi'
     from sourceSets.main.output.classesDir
     include 'io/bokun/inventory/service/**'
 }
