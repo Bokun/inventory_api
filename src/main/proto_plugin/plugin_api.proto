@@ -12,7 +12,8 @@ service PluginApi {
     rpc GetDefinition (io.bokun.inventory.common.api.grpc.Empty) returns (PluginDefinition) {}
 
     // Get available products (of specific type) over a date range, supplying product IDs of remote system
-    rpc GetAvailableProducts(GetAvailableProductsRequest) returns (GetAvailableProductsResponse) {}
+    // This will return a subset of product IDs passed on via GetAvailableProductsRequest
+    rpc GetAvailableProducts(GetAvailableProductsRequest) returns (stream ExternalProductId) {}
 }
 
 // Parameters used to configure supported plugin(s)
@@ -42,8 +43,6 @@ message GetAvailableProductsRequest {
     repeated string externalProductIds = 3;
 }
 
-message GetAvailableProductsResponse {
-    // A list of product ids on the remote end (as opposed to Bokun product counterparts)
-    // This will be a subset of product IDs passed on via GetAvailableProductsRequest
-    repeated string externalProductIds = 1;
+message ExternalProductId {
+    string productId = 1;
 }
