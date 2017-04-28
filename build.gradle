@@ -4,6 +4,10 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider
 group 'io.bokun.inventory'
 version '0.1'
 
+def commonArtifact = 'common-api-grpc'
+def pluginArtifact = 'plugin-api-grpc'
+def serviceArtifact = 'service-api-grpc'
+
 buildscript {
     ext {
         awsVersion = '1.11.40'
@@ -132,26 +136,38 @@ if (awsCredentials != null) {
         publications {
 
             common(MavenPublication) {
-                groupId 'io.bokun.inventory'
-                artifactId 'common-api-grpc'
-                version '0.1-SNAPSHOT'
+                groupId group
+                artifactId commonArtifact
+                version version
                 artifact commonApi
+                pom.withXml {
+                    asNode().appendNode('description', 'Common GRPC API library for inventory plugin api and inventory service api2')
+                }
+
             }
 
             plugin(MavenPublication) {
-                groupId 'io.bokun.inventory'
-                artifactId 'plugin-api-grpc'
-                version '0.1-SNAPSHOT'
+                groupId group
+                artifactId pluginArtifact
+                version version
                 artifact pluginApi
-            }
 
+                pom.withXml {
+                    asNode().appendNode('description', 'Inventory Service Plugin GRPC API library')
+
+                    def dependenciesNode = asNode().appendNode('dependencies')
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', group)
+                    dependencyNode.appendNode('artifactId', commonArtifact)
+                    dependencyNode.appendNode('version', version)
+                }
+            }
             service(MavenPublication) {
-                groupId 'io.bokun.inventory'
-                artifactId 'service-api-grpc'
-                version '0.1-SNAPSHOT'
+                groupId group
+                artifactId serviceArtifact
+                version version
                 artifact serviceApi
             }
-
         }
         repositories {
             maven {
