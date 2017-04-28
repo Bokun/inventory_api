@@ -5,6 +5,7 @@ package io.bokun.inventory.service.availability.grpc;
 option java_multiple_files = true;
 option java_package = "io.bokun.inventory.service.availability.grpc";
 
+import "common.proto";
 import "inventory_service_common.proto";
 
 service AvailabilityService {
@@ -14,25 +15,25 @@ service AvailabilityService {
 
 message FindAvailableProductsRequest {
     repeated io.bokun.inventory.service.common.grpc.BokunProduct products = 1;
-    io.bokun.inventory.service.common.grpc.DatePeriod range = 2;
+    io.bokun.inventory.common.api.grpc.DatePeriod range = 2;
 }
 
 message GetProductAvailabilityRequest {
     repeated io.bokun.inventory.service.common.grpc.BokunProduct products = 1;
-    io.bokun.inventory.service.common.grpc.DatePeriod range = 2;
+    io.bokun.inventory.common.api.grpc.DatePeriod range = 2;
 }
 
 message ProductAvailabilityWithRatesResponse {
     int32 capacity = 1;
-    io.bokun.inventory.service.common.grpc.Date date = 2;
-    repeated io.bokun.inventory.service.common.grpc.Time departures = 3;
+    io.bokun.inventory.common.api.grpc.Date date = 2;
+    repeated io.bokun.inventory.common.api.grpc.Time departures = 3;
     repeated RateWithPrice rates = 4;
 }
 
 message PricingCategoryWithPrice {
     io.bokun.inventory.service.common.grpc.PricingCategory pricingCategory = 1;
     io.bokun.inventory.service.common.grpc.PricingCategoryType pricingCategoryType = 2;
-    io.bokun.inventory.service.common.grpc.Price price = 3;
+    io.bokun.inventory.common.api.grpc.Price price = 3;
 }
 
 message RateWithPrice {

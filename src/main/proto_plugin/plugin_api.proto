@@ -8,7 +8,11 @@ option java_package = "io.bokun.inventory.plugin.api.grpc";
 import "common.proto";
 
 service PluginApi {
-    rpc GetDefinition (io.bokun.inventory.common.api.grpc.Empty) returns (PluginDefinition) {}                 // Provide plugin definition information
+    // Provide plugin definition information
+    rpc GetDefinition (io.bokun.inventory.common.api.grpc.Empty) returns (PluginDefinition) {}
+
+    // Get available products (of specific type) over a date range, supplying product IDs of remote system
+    rpc GetAvailableProducts(GetAvailableProductsRequest) returns (GetAvailableProductsResponse) {}
 }
 
 // Parameters used to configure supported plugin(s)
@@ -25,4 +29,21 @@ message PluginConfigurationParameter {
     string name = 1;
     io.bokun.inventory.common.api.grpc.PluginParameterDataType type = 2;
     bool required = 3;
+}
+
+message GetAvailableProductsRequest {
+    // Date range (boundaries included) for which you would like to get products
+    io.bokun.inventory.common.api.grpc.DatePeriod range = 1;
+
+    // How many seats/spaces/pax are required
+    int64 requiredQuantity = 2;
+
+    // A list of product ids on the remote end (as opposed to Bokun product counterparts)
+    repeated string externalProductIds = 3;
+}
+
+message GetAvailableProductsResponse {
+    // A list of product ids on the remote end (as opposed to Bokun product counterparts)
+    // This will be a subset of product IDs passed on via GetAvailableProductsRequest
+    repeated string externalProductIds = 1;
 }

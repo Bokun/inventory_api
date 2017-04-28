@@ -9,6 +9,28 @@ option java_package = "io.bokun.inventory.common.api.grpc";
 message Empty {
 }
 
+message Date {
+    int32 year = 1;
+    int32 month = 2;
+    int32 day = 3;
+}
+
+// Date period - from one day to another. Boundary conditions (exclusive or not) are defined at the context where this period is used.
+message DatePeriod {
+    Date from = 1;
+    Date to = 2;
+}
+
+message Time {
+    int32 hour = 1;
+    int32 minute = 2;
+}
+
+message Price {
+    string currency = 1;
+    string amount = 2;              // can't use double because of precision loss. Will convert to BigDecimal when data arrives in Java
+}
+
 // Data types for PluginConfigurationParameter
 enum PluginParameterDataType {
     LONG = 0;
