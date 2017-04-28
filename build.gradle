@@ -167,6 +167,16 @@ if (awsCredentials != null) {
                 artifactId serviceArtifact
                 version version
                 artifact serviceApi
+
+                pom.withXml {
+                    asNode().appendNode('description', 'Internal Inventory Service GRPC API library')
+
+                    def dependenciesNode = asNode().appendNode('dependencies')
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', group)
+                    dependencyNode.appendNode('artifactId', commonArtifact)
+                    dependencyNode.appendNode('version', version)
+                }
             }
         }
         repositories {
