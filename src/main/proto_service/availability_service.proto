@@ -32,7 +32,7 @@ message ProductAvailabilityWithRatesResponse {
 
 message PricingCategoryWithPrice {
     io.bokun.inventory.service.common.grpc.PricingCategory pricingCategory = 1;
-    io.bokun.inventory.service.common.grpc.PricingCategoryType pricingCategoryType = 2;
+    io.bokun.inventory.common.api.grpc.PricingCategoryType pricingCategoryType = 2;
     io.bokun.inventory.common.api.grpc.Price price = 3;
 }
 

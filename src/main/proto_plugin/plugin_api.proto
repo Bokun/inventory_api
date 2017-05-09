@@ -8,12 +8,16 @@ option java_package = "io.bokun.inventory.plugin.api.grpc";
 import "common.proto";
 
 service PluginApi {
-    // Provide plugin definition information
+    // Provide plugin definition information (what features etc this plugin supports).
     rpc GetDefinition (io.bokun.inventory.common.api.grpc.Empty) returns (PluginDefinition) {}
 
-    // Get available products (of specific type) over a date range, supplying product IDs of remote system
-    // This will return a subset of product IDs passed on via GetAvailableProductsRequest
-    rpc GetAvailableProducts(GetAvailableProductsRequest) returns (stream ExternalProductId) {}
+    // Return information about products of the remote system this plugin is connecting to (as opposed to Bokun products).
+    // This call is required in order to link Bokun- and remote system-configured products together.
+    rpc SearchInventoryProducts(SearchInventoryProductsRequest) returns (stream ProductDescription) {}
+
+    // A set of product ids provided, return their availability over given date range.
+    // This will return a subset of product IDs passed on via ProductAvailabilityRequest.
+    rpc GetProductAvailability(ProductAvailabilityRequest) returns (stream ExternalProductId) {}
 }
 
 // Parameters used to configure supported plugin(s)
@@ -32,17 +36,38 @@ message PluginConfigurationParameter {
     bool required = 3;
 }
 
-message GetAvailableProductsRequest {
+message ProductAvailabilityRequest {
     // Date range (boundaries included) for which you would like to get products
     io.bokun.inventory.common.api.grpc.DatePeriod range = 1;
 
     // How many seats/spaces/pax are required
     int64 requiredQuantity = 2;
 
-    // A list of product ids on the remote end (as opposed to Bokun product counterparts)
+    // A list of product ids which correspond to product ids on the system this plugin connects to (as opposed to ids of products in Bokun)
     repeated string externalProductIds = 3;
 }
 
 message ExternalProductId {
     string productId = 1;
+}
+
+message SearchInventoryProductsRequest {
+    string productName = 1;
+    string country = 2;             // 3 char ISO 3166-1 alpha-3, see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+    string city = 3;                // city this product is served at. Optional
+}
+
+message ProductDescription {
+    string externalProductId = 1;
+    string name = 2;
+    string description = 3;
+    repeated PricingCategory pricingCategories = 4;
+    repeated io.bokun.inventory.common.api.grpc.Rate rates = 5;
+    io.bokun.inventory.common.api.grpc.OpeningHours openingHours = 6;
+    io.bokun.inventory.common.api.grpc.BookingType bookingType = 7;
+}
+
+message PricingCategory {
+    string id = 1;
+    io.bokun.inventory.common.api.grpc.PricingCategoryType type = 2;
 }

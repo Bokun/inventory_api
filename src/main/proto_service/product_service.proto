@@ -27,15 +27,9 @@ message ProductDescription {
     string name = 2;                                    // product name
     string description = 3;                             // product description, optional
     repeated io.bokun.inventory.service.common.grpc.PricingCategory pricingCategories = 4;
-    repeated Rate rates = 5;
-    io.bokun.inventory.service.common.grpc.OpeningHours openingHours = 6;
-    io.bokun.inventory.service.common.grpc.BookingType bookingType = 7;
-}
-
-message Rate {
-    string id = 1;
-    string name = 2;
-    string description = 3;
+    repeated io.bokun.inventory.common.api.grpc.Rate rates = 5;
+    io.bokun.inventory.common.api.grpc.OpeningHours openingHours = 6;
+    io.bokun.inventory.common.api.grpc.BookingType bookingType = 7;
 }
 
 message ProductMapping {
