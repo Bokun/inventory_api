@@ -83,6 +83,18 @@ message OpeningHours {
     OpeningHoursWeekday sunday = 7;
 }
 
+message SeasonalOpeningHourSet {
+    repeated SeasonalOpeningHours seasonalOpeningHours = 1;
+}
+
+message SeasonalOpeningHours {
+    int32 startMonth = 1;
+    int32 startDay = 2;
+    int32 endMonth = 3;
+    int32 endDay = 4;
+    OpeningHours openingHours = 5;
+}
+
 enum BookingType {
     DATE = 0;
     DATE_AND_TIME = 1;
