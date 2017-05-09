@@ -31,20 +31,28 @@ message PluginDefinition {
 
 // Parameters used to configure supported plugin(s)
 message PluginConfigurationParameter {
-    string name = 1;
+    string name = 1;                    // names should be unique
     io.bokun.inventory.common.api.grpc.PluginParameterDataType type = 2;
     bool required = 3;
 }
 
+// Parameters used to configure supported plugin(s)
+message PluginConfigurationParameterValue {
+    string name = 1;                    // refer to PluginConfigurationParameter::name
+    string value = 2;                   // value for this name; null strings are not permitted by proto v3 but empty strings "" are
+}
+
 message ProductAvailabilityRequest {
+    repeated PluginConfigurationParameterValue parameters = 1;       // plugin config parameters
+
     // Date range (boundaries included) for which you would like to get products
-    io.bokun.inventory.common.api.grpc.DatePeriod range = 1;
+    io.bokun.inventory.common.api.grpc.DatePeriod range = 2;
 
     // How many seats/spaces/pax are required
-    int64 requiredQuantity = 2;
+    int64 requiredQuantity = 3;
 
     // A list of product ids which correspond to product ids on the system this plugin connects to (as opposed to ids of products in Bokun)
-    repeated string externalProductIds = 3;
+    repeated string externalProductIds = 4;
 }
 
 message ExternalProductId {
@@ -52,9 +60,10 @@ message ExternalProductId {
 }
 
 message SearchInventoryProductsRequest {
-    string productName = 1;
-    string country = 2;             // 3 char ISO 3166-1 alpha-3, see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
-    string city = 3;                // city this product is served at. Optional
+    repeated PluginConfigurationParameterValue parameters = 1;       // plugin config parameters
+    string productName = 2;
+    string country = 3;             // 3 char ISO 3166-1 alpha-3, see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+    string city = 4;                // city this product is served at. Optional
 }
 
 message ProductDescription {
