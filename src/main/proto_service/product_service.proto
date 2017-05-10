@@ -17,7 +17,7 @@ service ProductService {
 
 message SearchInventoryProductsRequest {
     string pluginId = 1;
-    long vendorId = 2;
+    int64 vendorId = 2;
     string name = 3;                                    // name of product
     string country = 4;                                 // ISO ALPHA-2 code
     string city = 5;
