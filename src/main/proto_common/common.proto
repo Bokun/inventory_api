@@ -124,3 +124,21 @@ message PluginConfigurationParameter {
     PluginParameterDataType type = 2;
     bool required = 3;
 }
+
+message ProductDescription {
+    string id = 1;                                      // product id
+    string name = 2;                                    // product name
+    string description = 3;                             // product description, optional
+    repeated PricingCategory pricingCategories = 4;
+    repeated Rate rates = 5;
+    oneof openingHours {
+        OpeningHours allYearOpeningHours = 6;
+        SeasonalOpeningHourSet seasonalOpeningHours = 7;
+    }
+    BookingType bookingType = 8;
+}
+
+message PricingCategory {
+    string id = 1;
+    PricingCategoryType type = 2;
+}

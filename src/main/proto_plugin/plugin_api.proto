@@ -13,7 +13,7 @@ service PluginApi {
 
     // Return information about products of the remote system this plugin is connecting to (as opposed to Bokun products).
     // This call is required in order to link Bokun- and remote system-configured products together.
-    rpc SearchInventoryProducts(SearchInventoryProductsRequest) returns (stream ProductDescription) {}
+    rpc SearchInventoryProducts(SearchInventoryProductsRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductDescription) {}
 
     // A set of product ids provided, return their availability over given date range.
     // This will return a subset of product IDs passed on via ProductAvailabilityRequest.
@@ -64,22 +64,4 @@ message SearchInventoryProductsRequest {
     string productName = 2;
     string country = 3;             // 3 char ISO 3166-1 alpha-3, see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
     string city = 4;                // city this product is served at. Optional
-}
-
-message ProductDescription {
-    string externalProductId = 1;
-    string name = 2;
-    string description = 3;
-    repeated PricingCategory pricingCategories = 4;
-    repeated io.bokun.inventory.common.api.grpc.Rate rates = 5;
-    oneof openingHours {
-        io.bokun.inventory.common.api.grpc.OpeningHours allYearOpeningHours = 6;
-        io.bokun.inventory.common.api.grpc.SeasonalOpeningHourSet seasonalOpeningHours = 7;
-    }
-    io.bokun.inventory.common.api.grpc.BookingType bookingType = 8;
-}
-
-message PricingCategory {
-    string id = 1;
-    io.bokun.inventory.common.api.grpc.PricingCategoryType type = 2;
 }

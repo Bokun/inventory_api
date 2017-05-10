@@ -9,7 +9,7 @@ import "common.proto";
 import "inventory_service_common.proto";
 
 service ProductService {
-    rpc SearchInventoryProducts (SearchInventoryProductsRequest) returns (stream ProductDescription) {}
+    rpc SearchInventoryProducts (SearchInventoryProductsRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductDescription) {}
     rpc UpsertProductMapping (ProductMapping) returns (ProductMapping) {}
     rpc GetProductMapping (ProductMappingIdentifier) returns (ProductMapping) {}
     rpc DeleteProductMapping (ProductMappingIdentifier) returns (io.bokun.inventory.common.api.grpc.Empty) {}
@@ -21,19 +21,6 @@ message SearchInventoryProductsRequest {
     string name = 3;                                    // name of product
     string country = 4;                                 // ISO ALPHA-2 code
     string city = 5;
-}
-
-message ProductDescription {
-    string id = 1;                                      // product id
-    string name = 2;                                    // product name
-    string description = 3;                             // product description, optional
-    repeated io.bokun.inventory.service.common.grpc.PricingCategory pricingCategories = 4;
-    repeated io.bokun.inventory.common.api.grpc.Rate rates = 5;
-    oneof openingHours {
-        io.bokun.inventory.common.api.grpc.OpeningHours allYearOpeningHours = 6;
-        io.bokun.inventory.common.api.grpc.SeasonalOpeningHourSet seasonalOpeningHours = 7;
-    }
-    io.bokun.inventory.common.api.grpc.BookingType bookingType = 8;
 }
 
 message ProductMapping {
