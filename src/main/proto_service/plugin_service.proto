@@ -36,19 +36,11 @@ message PluginUrl {
 message PluginDefinition {
     string id = 1;
     string url = 2;
-    string name = 3;                                                                    // name of definition
-    string description = 4;                                                             // description of definition, optional
-    repeated io.bokun.inventory.common.api.grpc.ProductCategory productCategories = 5;      // Which product types does this plugin work with?
-    repeated io.bokun.inventory.common.api.grpc.PluginCapability capabilities = 6;          // What does this plugin support?
-    repeated PluginConfigurationParameter parameters = 7;                               // List of parameters this plugin should be configured with
-}
-
-// As this is Bokun-internal API, we add a few more fields to the plugin conf parameter which is publicly traded
-message PluginConfigurationParameter {
-    string id = 1;
-    string name = 2;
-    io.bokun.inventory.common.api.grpc.PluginParameterDataType type = 3;
-    bool required = 4;
+    string name = 3;                                                                            // name of definition
+    string description = 4;                                                                     // description of definition, optional
+    repeated io.bokun.inventory.common.api.grpc.ProductCategory productCategories = 5;          // Which product types does this plugin work with?
+    repeated io.bokun.inventory.common.api.grpc.PluginCapability capabilities = 6;              // What does this plugin support?
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameter parameters = 7;    // List of parameters this plugin should be configured with
 }
 
 message PluginUnregistrationRequest {
@@ -69,7 +61,6 @@ message DeletePluginConfigurationRequest {
 
 // request to configure PluginConfigurationParameter, or response for already existing configuration
 message PluginConfigurationParameterValue {
-    string id = 1;                      
-    string configParameterId = 2;       // PluginConfigurationParameter::id
-    string value = 3;                   // if the underlying PluginParameterDataType is not string, one of .parseX methods should be used on the client end
+    string name = 1;            // Same as PluginConfigurationParameter::name
+    string value = 2;           // If the underlying PluginParameterDataType is not string, one of .parseX methods should be used on the client end
 }

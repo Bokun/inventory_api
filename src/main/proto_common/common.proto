@@ -117,3 +117,10 @@ enum PricingCategoryType {
     MILITARY = 6;
     OTHER = 7;
 }
+
+// Parameters used to configure supported plugin(s)
+message PluginConfigurationParameter {
+    string name = 1;                        // names should be unique per plugin
+    PluginParameterDataType type = 2;
+    bool required = 3;
+}
