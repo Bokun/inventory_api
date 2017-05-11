@@ -36,14 +36,8 @@ message PluginConfigurationParameter {
     bool required = 3;
 }
 
-// Parameters used to configure supported plugin(s)
-message PluginConfigurationParameterValue {
-    string name = 1;                    // refer to PluginConfigurationParameter::name
-    string value = 2;                   // value for this name; null strings are not permitted by proto v3 but empty strings "" are
-}
-
 message ProductAvailabilityRequest {
-    repeated PluginConfigurationParameterValue parameters = 1;       // plugin config parameters
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;       // plugin config parameters
 
     // Date range (boundaries included) for which you would like to get products
     io.bokun.inventory.common.api.grpc.DatePeriod range = 2;
@@ -60,7 +54,7 @@ message ExternalProductId {
 }
 
 message SearchInventoryProductsRequest {
-    repeated PluginConfigurationParameterValue parameters = 1;       // plugin config parameters
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;       // plugin config parameters
     string productName = 2;
     string country = 3;             // 3 char ISO 3166-1 alpha-3, see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
     string city = 4;                // city this product is served at. Optional

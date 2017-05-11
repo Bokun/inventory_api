@@ -142,3 +142,9 @@ message PricingCategory {
     string id = 1;
     PricingCategoryType type = 2;
 }
+
+// Parameters used to configure supported plugin(s)
+message PluginConfigurationParameterValue {
+    string name = 1;                    // refer to PluginConfigurationParameter::name
+    string value = 2;                   // value for this name; null strings are not permitted by proto v3 but empty strings "" are
+}
