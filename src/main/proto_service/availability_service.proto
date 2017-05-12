@@ -12,7 +12,7 @@ service AvailabilityService {
     // Get available products (of specific type) over a date range, supplying a set of Bokun product IDs.
     rpc FindAvailableProducts (FindAvailableProductsRequest) returns (stream io.bokun.inventory.service.common.grpc.BokunProduct) {}
 
-    rpc GetProductAvailability (GetProductAvailabilityRequest) returns (ProductAvailabilityWithRatesResponse) {}
+    rpc GetProductAvailability (GetProductAvailabilityRequest) returns (stream ProductAvailabilityWithRatesResponse) {}
 }
 
 message FindAvailableProductsRequest {
