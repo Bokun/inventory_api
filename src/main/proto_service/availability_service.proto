@@ -33,7 +33,7 @@ message GetProductAvailabilityRequest {
 message ProductAvailabilityWithRatesResponse {
     int32 capacity = 1;
     io.bokun.inventory.common.api.grpc.Date date = 2;
-    repeated io.bokun.inventory.common.api.grpc.Time departures = 3;
+    io.bokun.inventory.common.api.grpc.Time time = 3;           // at what time this is departing?
     repeated RateWithPrice rates = 4;
 }
 
