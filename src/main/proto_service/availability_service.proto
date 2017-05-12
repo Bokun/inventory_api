@@ -24,8 +24,10 @@ message FindAvailableProductsRequest {
 }
 
 message GetProductAvailabilityRequest {
-    repeated io.bokun.inventory.service.common.grpc.BokunProduct products = 1;
-    io.bokun.inventory.common.api.grpc.DatePeriod range = 2;
+    string pluginId = 1;                                                            // for which plugin definition (necessary to get plugin cfg)
+    int64 vendorId = 2;                                                             // for which vendor (necessary to get plugin cfg)
+    io.bokun.inventory.service.common.grpc.BokunProduct product = 3;
+    io.bokun.inventory.common.api.grpc.DatePeriod range = 4;
 }
 
 message ProductAvailabilityWithRatesResponse {
