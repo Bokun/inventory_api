@@ -17,6 +17,13 @@ service PluginApi {
 
     // A set of product ids provided, return their availability over given date range.
     // This will return a subset of product IDs passed on via ProductAvailabilityRequest.
+    // Note: even though request contains capacity and date range, for a matching product it is enough to have availabilities for *some* dates over
+    //   requested period. Subsequent GetProductAvailability request will clarify precise dates and capacities.
+    rpc GetAvailableProducts(ProductsAvailabilityRequest) returns (stream ExternalProductId) {}
+
+    // Get availability of a particular product over a date range.
+    // This request shoud follow GetAvailableProducts and provide more details on precise dates/times for each product as well as capacity for each date.
+    // This call, however, is for a single product only (as opposed to GetAvailableProducts) which checks many products but only does a basic shallow check.
     rpc GetProductAvailability(ProductAvailabilityRequest) returns (stream ExternalProductId) {}
 }
 
@@ -36,14 +43,14 @@ message PluginConfigurationParameter {
     bool required = 3;
 }
 
-message ProductAvailabilityRequest {
+message ProductsAvailabilityRequest {
     repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;       // plugin config parameters
 
     // Date range (boundaries included) for which you would like to get products
     io.bokun.inventory.common.api.grpc.DatePeriod range = 2;
 
     // How many seats/spaces/pax are required
-    int64 requiredQuantity = 3;
+    int64 requiredCapacity = 3;
 
     // A list of product ids which correspond to product ids on the system this plugin connects to (as opposed to ids of products in Bokun)
     repeated string externalProductIds = 4;
@@ -58,4 +65,28 @@ message SearchInventoryProductsRequest {
     string productName = 2;
     string country = 3;             // 3 char ISO 3166-1 alpha-3, see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
     string city = 4;                // city this product is served at. Optional
+}
+
+message ProductAvailabilityRequest {
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1; // plugin config parameters
+
+    // product ID we're querying
+    string productId = 2;
+
+    // Date range (boundaries included) for which we want to know precise capacity, availability and pricing for given product
+    // Note that this request does not ask for capacity; instead response should tell us how much seats/spaces/etc are available in total.
+    io.bokun.inventory.common.api.grpc.DatePeriod range = 3;
+}
+
+message ProductAvailabilityResponse {
+    // date when this product is available
+    io.bokun.inventory.common.api.grpc.Date date = 1;
+
+    // time when this product is available (optional)
+    io.bokun.inventory.common.api.grpc.Time time = 2;
+
+    // how many seats/spaces are available in total for this day
+    int32 capacity = 3;
+
+    // todo pricing
 }
