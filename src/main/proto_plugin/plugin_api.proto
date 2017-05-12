@@ -24,7 +24,7 @@ service PluginApi {
     // Get availability of a particular product over a date range.
     // This request shoud follow GetAvailableProducts and provide more details on precise dates/times for each product as well as capacity for each date.
     // This call, however, is for a single product only (as opposed to GetAvailableProducts) which checks many products but only does a basic shallow check.
-    rpc GetProductAvailability(ProductAvailabilityRequest) returns (stream ExternalProductId) {}
+    rpc GetProductAvailability(ProductAvailabilityRequest) returns (stream ProductAvailabilityResponse) {}
 }
 
 // Parameters used to configure supported plugin(s)
