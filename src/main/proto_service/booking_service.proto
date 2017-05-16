@@ -5,9 +5,160 @@ package io.bokun.inventory.service.booking.grpc;
 option java_multiple_files = true;
 option java_package = "io.bokun.inventory.service.booking.grpc";
 
+import "common.proto";
 import "inventory_service_common.proto";
 
 service BookingService {
-//    rpc CreateReservation (FindAvailableProductsRequest) returns (stream BokunProduct) {}
-//    rpc GetProductAvailability (GetProductAvailabilityRequest) returns (ProductAvailability) {}
+    // Reserve capacity for a product for limited time. Please using blocking API for this as the result of this is atomic: all requests should either
+    // succeed or fail; there can be no half/success.
+    rpc CreateReservation (stream ReservationRequest) returns (stream ReservationResponse) {}
+}
+
+message ReservationRequest {
+    string pluginId = 1;                                                            // for which plugin definition (necessary to get plugin cfg)
+    int64 vendorId = 2;                                                             // for which vendor (necessary to get plugin cfg)
+    Contact customer = 3;
+    repeated ActivityReservation reservation = 4;
+}
+
+message Contact {
+    // First name. Mandatory.
+    string firstName = 1;
+
+    // Last name. Mandatory.
+    string lastNamed = 2;
+
+    // Title, optional.
+    string title = 3;
+
+    // Optional email address. It is also possible to store multiple addresses in this field, separated by comma (as per RFC2822).
+    string email = 4;
+
+    // Phone including intl code. Optional.
+    string phone = 5;
+
+    // Language customer prefers to be contacted in. Optional.
+    string language = 6;
+
+    // ISO 3166-1 Alpha-3 code, see https://en.wikipedia.org/wiki/ISO_3166-1. Optional.
+    string nationality = 7;
+}
+
+message ActivityStartTime {
+    // Time when the tour/activity starts
+    io.bokun.inventory.common.api.grpc.Time time = 1;
+
+    // Time when pick up starts. Only applicable if the tour/activity offers pick up service.
+    // Must be before the actual start time
+    io.bokun.inventory.common.api.grpc.Time pickupTime = 2;
+}
+
+message ActivityReservation {
+    // Product category in Bokun.
+    io.bokun.inventory.common.api.grpc.ProductCategory productCategory = 1;
+
+    // Product ID in Bokun.
+    int64 productId = 2;
+
+    // Set by the external system on successful reservation
+    string confirmationCode = 3;
+
+    // Notes captured by a person who entered this booking (may also be customer if booked online).
+    string notes = 4;
+
+    // Vendors might optionally want to store scanned barcode value with this booking. Otherwise null.
+    string barcode = 5;
+
+    // Information about when does an activity start.
+    ActivityStartTime activityStartTime = 6;
+
+    // Day of the event (activity), represented by the booked product, should take place.
+    io.bokun.inventory.common.api.grpc.Date dateOfTravel = 7;
+
+    // If true, the customer has booked this activity with flexible departure option. Details of this departure may or may not be captured in
+    // {@link #selectedFlexDayOption}.
+    bool flexible = 8;
+
+    // Custom-defined time for departure.
+    string selectedFlexDayOption = 9;
+
+    // If true, one has to look at {@link #customizedStartTime} for customized start time.
+    bool customizedBooking = 10;
+
+    // Only set if {@link #customizedBooking} is true. Defines time in HH:mm format.
+    string customizedStartTime = 11;
+
+    // Set if the price was overridden. Precision = 19, scale = 4.
+    string customizedPrice = 12;
+
+    // A defined place to pick up customer for this activity.
+    PickupDropoffPlace pickupPlace = 13;
+
+    // Any additional notes to {@link #pickupPlace}. Alternatively, notes for custom pickup place even if {@link #pickupPlace} is not set.
+    string pickupPlaceDescription = 14;
+
+    // Specific field for room number to locate customers on pick up.
+    string pickupPlaceRoomNumber = 15;
+
+    // Whether customer(s) needs to be picked up for the activity.
+    bool pickup = 16;
+
+    // Whether customer priced per-person for pickup.
+    bool pickupPricedPerPerson = 17;
+
+    // A defined place to drop off customer after the activity.
+    PickupDropoffPlace dropoffPlace = 18;
+
+    // Any additional notes to {@link #dropoffPlace}. Alternatively, notes for custom pickup place even if {@link #dropoffPlace} is not set.
+    string dropoffPlaceDescription = 19;
+
+    // Whether customer(s) needs to be dropped off after the activity.
+    bool dropoff = 20;
+
+    // Whether customer priced per-person for dropoff.
+    bool dropoffPricedPerPerson = 21;
+
+    // If true, each person is assigned a separate ticket and value is set to {@link #barcodeValue}.
+    // Otherwise one ticket is valid for entire group of customers.
+    bool ticketPerPerson = 22;
+
+    // What kind of pricing category (Adult, Child, etc.). Refers to pricing category in Bokun.
+    ActivityPricingCategoryBooking pricingCategoryBooking = 23;
+
+    // how many people booked for this pricing category
+    int32 pax = 24;
+}
+
+// Contains reference to pricing category (e.g. "Adults") within Bokun.
+// Will have to be converted to the remote pricing category counterpart when passed on to a plugin using product mapping configuration
+message ActivityPricingCategoryBooking {
+    string bokunPricingCategoryId = 1;
+    string barcode = 2;
+}
+
+// A place where a customer can be picked up and/or dropped of for an activity or any other event.
+message PickupDropoffPlace {
+    string id = 1;
+    string title = 2;
+    io.bokun.inventory.common.api.grpc.Place location = 3;
+    bool askForRoomNumber = 4;
+}
+
+message ReservationResponse {
+    // true if reservation request has been successful, false otherwise
+    bool success = 1;
+
+    oneof reservationResult {
+        SuccessfulReservation successfulReservation = 2;
+        FailedReservation failedReservation = 3;
+    }
+}
+
+message SuccessfulReservation {
+    string confirmationCode = 1;
+}
+
+message FailedReservation {
+    // Error message telling why this request has failed. Optional - remote end is not required to explicitly tell the reason of failure
+    string reservationError = 1;
 }

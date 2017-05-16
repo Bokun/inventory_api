@@ -148,3 +148,35 @@ message PluginConfigurationParameterValue {
     string name = 1;                    // refer to PluginConfigurationParameter::name
     string value = 2;                   // value for this name; null strings are not permitted by proto v3 but empty strings "" are
 }
+
+// represents a point in map.
+message GeoPoint {
+    double latitude = 1;
+    double longitude = 2;
+}
+
+// Represents a location from the United Nations Code for Trade and Transport Locations (UN/LOCODE).
+message UnLocode {
+    // ISO 3166-1 alpha-2 string identifying the country part of the UN/LOCODE for this product.
+    string country = 1;
+
+    // A three letter String identifying the city part of the UN/LOCODE for this product.
+    string city = 2;
+}
+
+message Address {
+    string addressLine1 = 1;
+    string addressLine2 = 2;
+    string addressLine3 = 3;
+    string city = 4;
+    string state = 5;
+    string postalCode = 6;
+    string countryCode = 7;
+    GeoPoint geoPoint = 8;
+    UnLocode unLocode = 9;
+}
+
+message Place {
+    string title = 1;
+    Address address = 2;
+}
