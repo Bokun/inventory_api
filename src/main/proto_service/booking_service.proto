@@ -11,14 +11,14 @@ import "inventory_service_common.proto";
 service BookingService {
     // Reserve capacity for a product for limited time. Please using blocking API for this as the result of this is atomic: all requests should either
     // succeed or fail; there can be no half/success.
-    rpc CreateReservation (stream ReservationRequest) returns (stream ReservationResponse) {}
+    rpc CreateReservation (ReservationRequest) returns (stream ReservationResponse) {}
 }
 
 message ReservationRequest {
     string pluginId = 1;                                                            // for which plugin definition (necessary to get plugin cfg)
     int64 vendorId = 2;                                                             // for which vendor (necessary to get plugin cfg)
     Contact customer = 3;
-    repeated ActivityReservation reservation = 4;
+    repeated ActivityReservation reservations = 4;
 }
 
 message Contact {
