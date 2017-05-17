@@ -145,6 +145,8 @@ message ProductDescription {
     // This refers to rates of the remote system.
     repeated Rate rates = 5;
 
+    // If a product is available on a daily basis (without having pre-selected set of departure times), it will likely have opening hours,
+    // much like a convenience store has a range of hours when it's open. Optional.
     oneof openingHours {
         // Guaranteed to be set if this product is available all year round without exception.
         OpeningHours allYearOpeningHours = 6;
@@ -158,12 +160,48 @@ message ProductDescription {
     // -- if DATE_AND_TIME, then this product is bookable for certain times within available days
     // -- if PASS, then this product is bookable so that participant could consume this product at any given day (providing ticket is not expired)
     BookingType bookingType = 8;
+
+    // Whether pickup is available for this product. Mandatory.
+    bool pickupAvailable = 9;
+
+    // Whether customer can be picked up at an arbitrary place, specified during booking process.
+    // Mandatory if ::pickupAvailable is true, otherwise irrelevant/ignored.
+    bool customPickupPlaceAllowed = 10;
+
+    // How many minutes somebody should be picked up before the event takes place.
+    int32 pickupMinutesBefore = 11;
+
+    // A collection of pre-defined pick up places, supported by vendor.
+    // Mandatory (should have at least one entry) if ::pickupAvailable is true and ::customPickupPlaceAllowed is false.
+    repeated PickupDropoffPlace pickupPlaces = 12;
+
+    // Whether drop off is available for this product. Mandatory.
+    bool dropoffAvailable = 13;
+
+    // Whether customer can be dropped off at arbitrary place, specified during booking process.
+    // Mandatory if ::dropoffAvailable is true, otherwise irrelevant/ignored.
+    bool customDropoffAvailable = 14;
+
+    // A collection of pre-defined drop off places, supported by vendor.
+    // Mandatory (should have at least one entry) if ::dropoffAvailable is true and ::customDropoffPlaceAllowed is false.
+    repeated PickupDropoffPlace dropoffPlaces = 15;
+}
+
+message PickupDropoffPlace {
+    // Verbal description of pick up place. Mandatory.
+    string title = 1;
+
+    // Precise location of pick up place. Optional.
+    GeoPoint location = 2;
 }
 
 // Parameters used to configure supported plugin(s)
 message PluginConfigurationParameterValue {
-    string name = 1;                    // refer to PluginConfigurationParameter::name
-    string value = 2;                   // value for this name; null strings are not permitted by proto v3 but empty strings "" are
+    // refer to PluginConfigurationParameter::name
+    string name = 1;
+
+    // value for this name; null strings are not permitted by proto v3 but empty strings "" are
+    string value = 2;
 }
 
 // represents a point in map.

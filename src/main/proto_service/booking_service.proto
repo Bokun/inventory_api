@@ -18,7 +18,7 @@ message ReservationRequest {
     string pluginId = 1;                                                            // for which plugin definition (necessary to get plugin cfg)
     int64 vendorId = 2;                                                             // for which vendor (necessary to get plugin cfg)
     Contact customer = 3;
-    repeated ActivityReservation reservations = 4;
+    repeated ProductReservation reservations = 4;
 }
 
 message Contact {
@@ -44,104 +44,58 @@ message Contact {
     string nationality = 7;
 }
 
-message ActivityStartTime {
-    // Time when the tour/activity starts
-    io.bokun.inventory.common.api.grpc.Time time = 1;
-
-    // Time when pick up starts. Only applicable if the tour/activity offers pick up service.
-    // Must be before the actual start time
-    io.bokun.inventory.common.api.grpc.Time pickupTime = 2;
-}
-
-message ActivityReservation {
-    // Product category in Bokun.
+message ProductReservation {
+    // Product category in Bokun. Mandatory.
     io.bokun.inventory.common.api.grpc.ProductCategory productCategory = 1;
 
-    // Product ID in Bokun.
+    // Product ID in Bokun. Mandatory.
     int64 productId = 2;
 
-    // Set by the external system on successful reservation
-    string confirmationCode = 3;
+    // Notes captured by a person who entered this booking (may also be customer itself if booked online). Optional.
+    string notes = 3;
 
-    // Notes captured by a person who entered this booking (may also be customer if booked online).
-    string notes = 4;
+    // Vendors might optionally want to store scanned barcode value with this booking.
+    string barcode = 4;
 
-    // Vendors might optionally want to store scanned barcode value with this booking. Otherwise null.
-    string barcode = 5;
+    // Day of the event should take place. Mandatory.
+    // Must match available date, as provided provided with ProductAvailabilityWithRatesResponse::date
+    io.bokun.inventory.common.api.grpc.Date date = 5;
 
-    // Information about when does an activity start.
-    ActivityStartTime activityStartTime = 6;
+    // Desired start time. Mandatory if ProductDescription::bookingType is DATE_AND_TIME, otherwise null.
+    // Must match available time, as provided with ProductAvailabilityWithRatesResponse::time
+    io.bokun.inventory.common.api.grpc.Time time = 6;
 
-    // Day of the event (activity), represented by the booked product, should take place.
-    io.bokun.inventory.common.api.grpc.Date dateOfTravel = 7;
+    // Whether pickup is required. Only relevant if ProductDescription::pickupAvailable of booked product is true.
+    bool pickupRequired = 7;
 
-    // If true, the customer has booked this activity with flexible departure option. Details of this departure may or may not be captured in
-    // {@link #selectedFlexDayOption}.
-    bool flexible = 8;
+    // Custom pickup location. Only relevant if ProductDescription::pickupAvailable and ProductDescription::customPickupPlaceAllowed are true and
+    // if customer actually wants custom location. ::pickupPlace should be null if this is set.
+    string customPickupPlace = 8;
 
-    // Custom-defined time for departure.
-    string selectedFlexDayOption = 9;
+    // Pickup location. Only relevant if ProductDescription::pickupAvailable is true. Should not be set if ::customPickupPlace is set.
+    // Should only be set if ::pickupRequired is true. Should match location from ProductDescription::pickupPlaces of booked product.
+    io.bokun.inventory.common.api.grpc.PickupDropoffPlace pickupPlace = 9;
 
-    // If true, one has to look at {@link #customizedStartTime} for customized start time.
-    bool customizedBooking = 10;
+    // Whether drop off is required. Only relevant if ProductDescription::dropoffAvailable of booked product is true.
+    bool dropoffRequired = 10;
 
-    // Only set if {@link #customizedBooking} is true. Defines time in HH:mm format.
-    string customizedStartTime = 11;
+    // Custom drop off location. Only relevant if ProductDescription::dropoffAvailable and ProductDescription::customDropoffPlaceAllowed are true and
+    // if customer actually wants custom location. ::dropoffPlace should be null if this is set.
+    string customDropoffPlace = 11;
 
-    // Set if the price was overridden. Precision = 19, scale = 4.
-    string customizedPrice = 12;
+    // Drop off location. Only relevant if ProductDescription::dropoffAvailable is true. Should not be set if ::customDropoffPlace is set.
+    // Should only be set if ::dropoffRequired is true. Should match location from ProductDescription::dropoffPlaces of booked product.
+    io.bokun.inventory.common.api.grpc.PickupDropoffPlace dropoffPlace = 12;
 
-    // A defined place to pick up customer for this activity.
-    PickupDropoffPlace pickupPlace = 13;
+    // At what rate ("12 hour rate", "24 hour rate" etc.) this is booked. Refers to a rate in Bokun. Mandatory.
+    // Should match rate from, ProductDescription::rates of booked product.
+    io.bokun.inventory.common.api.grpc.Rate rate = 13;
 
-    // Any additional notes to {@link #pickupPlace}. Alternatively, notes for custom pickup place even if {@link #pickupPlace} is not set.
-    string pickupPlaceDescription = 14;
+    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory.
+    io.bokun.inventory.common.api.grpc.PricingCategory pricingCategory = 14;
 
-    // Specific field for room number to locate customers on pick up.
-    string pickupPlaceRoomNumber = 15;
-
-    // Whether customer(s) needs to be picked up for the activity.
-    bool pickup = 16;
-
-    // Whether customer priced per-person for pickup.
-    bool pickupPricedPerPerson = 17;
-
-    // A defined place to drop off customer after the activity.
-    PickupDropoffPlace dropoffPlace = 18;
-
-    // Any additional notes to {@link #dropoffPlace}. Alternatively, notes for custom pickup place even if {@link #dropoffPlace} is not set.
-    string dropoffPlaceDescription = 19;
-
-    // Whether customer(s) needs to be dropped off after the activity.
-    bool dropoff = 20;
-
-    // Whether customer priced per-person for dropoff.
-    bool dropoffPricedPerPerson = 21;
-
-    // If true, each person is assigned a separate ticket and value is set to {@link #barcodeValue}.
-    // Otherwise one ticket is valid for entire group of customers.
-    bool ticketPerPerson = 22;
-
-    // What kind of pricing category (Adult, Child, etc.). Refers to pricing category in Bokun.
-    ActivityPricingCategoryBooking pricingCategoryBooking = 23;
-
-    // how many people booked for this pricing category
-    int32 pax = 24;
-}
-
-// Contains reference to pricing category (e.g. "Adults") within Bokun.
-// Will have to be converted to the remote pricing category counterpart when passed on to a plugin using product mapping configuration
-message ActivityPricingCategoryBooking {
-    string bokunPricingCategoryId = 1;
-    string barcode = 2;
-}
-
-// A place where a customer can be picked up and/or dropped of for an activity or any other event.
-message PickupDropoffPlace {
-    string id = 1;
-    string title = 2;
-    io.bokun.inventory.common.api.grpc.Place location = 3;
-    bool askForRoomNumber = 4;
+    // how many people booked for this rate/pricing category. Mandatory.
+    int32 pax = 15;
 }
 
 message ReservationResponse {
@@ -149,12 +103,16 @@ message ReservationResponse {
     bool success = 1;
 
     oneof reservationResult {
+        // set if success=true
         SuccessfulReservation successfulReservation = 2;
+
+        // set if success=false
         FailedReservation failedReservation = 3;
     }
 }
 
 message SuccessfulReservation {
+    // Reservation code. Mandatory.
     string confirmationCode = 1;
 }
 

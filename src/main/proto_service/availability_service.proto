@@ -46,13 +46,13 @@ message ProductAvailabilityWithRatesResponse {
     // How many slots are available for this day/time. Mandatory.
     int32 capacity = 1;
 
-    // Date for when this activity is available. Mandatory.
+    // Date for when this product is available. Mandatory.
     io.bokun.inventory.common.api.grpc.Date date = 2;
 
-    // When does this activity start? Unset if this activity does not support times.
+    // When does this event start? Unset if this product does not support times.
     io.bokun.inventory.common.api.grpc.Time time = 3;
 
-    // When does a pickup for this activity start? Unset if this activity does not support times or pickups.
+    // When does a pickup for this product start? Unset if this product does not support times or pickups.
     io.bokun.inventory.common.api.grpc.Time pickupTime = 4;
 
     // Rates with prices. Mandatory (should at least have one entry).
