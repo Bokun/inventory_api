@@ -101,21 +101,13 @@ enum BookingType {
     PASS = 2;
 }
 
+// Rate (either of Bokun or remote system, depends on the context).
 message Rate {
+    // id for rate. Mandatory.
     string id = 1;
-    string name = 2;
-    string description = 3;
-}
 
-enum PricingCategoryType {
-    ADULT = 0;
-    CHILD = 1;
-    TEENAGER = 2;
-    INFANT = 3;
-    SENIOR = 4;
-    STUDENT = 5;
-    MILITARY = 6;
-    OTHER = 7;
+    // Label for rate. Mandatory.
+    string label = 2;
 }
 
 // Parameters used to configure supported plugin(s)
@@ -125,22 +117,47 @@ message PluginConfigurationParameter {
     bool required = 3;
 }
 
-message ProductDescription {
-    string id = 1;                                      // product id
-    string name = 2;                                    // product name
-    string description = 3;                             // product description, optional
-    repeated PricingCategory pricingCategories = 4;
-    repeated Rate rates = 5;
-    oneof openingHours {
-        OpeningHours allYearOpeningHours = 6;
-        SeasonalOpeningHourSet seasonalOpeningHours = 7;
-    }
-    BookingType bookingType = 8;
+// Pricing category of (either of Bokun or remote system, depends on the context).
+message PricingCategory {
+    // id for pricing category. Mandatory.
+    string id = 1;
+
+    // Label for pricing category. Mandatory.
+    string label = 2;
 }
 
-message PricingCategory {
+// Product description of a remote system product.
+message ProductDescription {
+    // Product id of remote system. Mandatory.
     string id = 1;
-    PricingCategoryType type = 2;
+
+    // Product name of remote system. Mandatory.
+    string name = 2;
+
+    // Product description of remote system. Optional.
+    string description = 3;
+
+    // Product categories this product is sold at. Mandatory, should at least have one element in this collection.
+    // This refers to pricing categories of the remote system.
+    repeated PricingCategory pricingCategories = 4;
+
+    // Rates this product is sold at. Mandatory, should at least have one element in this collection.
+    // This refers to rates of the remote system.
+    repeated Rate rates = 5;
+
+    oneof openingHours {
+        // Guaranteed to be set if this product is available all year round without exception.
+        OpeningHours allYearOpeningHours = 6;
+
+        // Guaranteed to be set if this product is available at different times at different time periods within a year.
+        SeasonalOpeningHourSet seasonalOpeningHours = 7;
+    }
+
+    // how is this product bookable? Mandatory.
+    // -- if DATE, then this product does not have any start times
+    // -- if DATE_AND_TIME, then this product is bookable for certain times within available days
+    // -- if PASS, then this product is bookable so that participant could consume this product at any given day (providing ticket is not expired)
+    BookingType bookingType = 8;
 }
 
 // Parameters used to configure supported plugin(s)

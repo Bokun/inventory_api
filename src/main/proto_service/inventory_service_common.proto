@@ -17,12 +17,11 @@ message BokunProduct {
     io.bokun.inventory.common.api.grpc.ProductCategory category = 2;
 }
 
+// Maps two entities between Bokun and external system.
 message BokunToExternalMapping {
-    string bokunId = 1;             // might refer to any type, the context will reflect circumstances (e.g. might mean pricing category id in Bokun)
-    string externalId = 2;          // whatever counterpart there is on the external system
-}
+    // Might refer to any type within Bokun, the context will reflect circumstances (e.g. might mean pricing category id in Bokun). Mandatory.
+    string bokunId = 1;
 
-message PricingCategory {
-    BokunToExternalMapping id = 1;
-    io.bokun.inventory.common.api.grpc.PricingCategoryType categoryType = 2;
+    // Whatever counterpart there is on the external system. Mandatory.
+    string externalId = 2;
 }

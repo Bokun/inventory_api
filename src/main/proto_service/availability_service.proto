@@ -10,17 +10,29 @@ import "inventory_service_common.proto";
 
 service AvailabilityService {
     // Get available products (of specific type) over a date range, supplying a set of Bokun product IDs.
+    // Returned set of Bokun product IDs will refer to available products; this will be a subset of requested products.
     rpc FindAvailableProducts (FindAvailableProductsRequest) returns (stream io.bokun.inventory.service.common.grpc.BokunProduct) {}
 
+    // Get detailed info about requested single Bokun product.
+    // This returns not only available dates/time but also pickup times as well as pricing for requested range.
     rpc GetProductAvailability (GetProductAvailabilityRequest) returns (stream ProductAvailabilityWithRatesResponse) {}
 }
 
 message FindAvailableProductsRequest {
-    string pluginId = 1;                                                            // for which plugin definition (necessary to get plugin cfg)
-    int64 vendorId = 2;                                                             // for which vendor (necessary to get plugin cfg)
-    repeated io.bokun.inventory.service.common.grpc.BokunProduct products = 3;      // range of products we are looking in
-    io.bokun.inventory.common.api.grpc.DatePeriod range = 4;                        // what date range are we searching for?
-    int32 quantity = 5;                                                             // required quantity
+    // For which plugin definition (necessary to get plugin cfg). Mandatory.
+    string pluginId = 1;
+
+    // For which vendor (necessary to get plugin cfg)? Mandatory.
+    int64 vendorId = 2;
+
+    // Range of products we are looking in. Mandatory (must not be empty).
+    repeated io.bokun.inventory.service.common.grpc.BokunProduct products = 3;
+
+    // What date range are we searching for? Mandatory.
+    io.bokun.inventory.common.api.grpc.DatePeriod range = 4;
+
+    // Required quantity. Mandatory.
+    int32 quantity = 5;
 }
 
 message GetProductAvailabilityRequest {
@@ -31,19 +43,32 @@ message GetProductAvailabilityRequest {
 }
 
 message ProductAvailabilityWithRatesResponse {
+    // How many slots are available for this day/time. Mandatory.
     int32 capacity = 1;
+
+    // Date for when this activity is available. Mandatory.
     io.bokun.inventory.common.api.grpc.Date date = 2;
-    io.bokun.inventory.common.api.grpc.Time time = 3;           // at what time this is departing?
-    repeated RateWithPrice rates = 4;
+
+    // When does this activity start? Unset if this activity does not support times.
+    io.bokun.inventory.common.api.grpc.Time time = 3;
+
+    // When does a pickup for this activity start? Unset if this activity does not support times or pickups.
+    io.bokun.inventory.common.api.grpc.Time pickupTime = 4;
+
+    // Rates with prices. Mandatory (should at least have one entry).
+    repeated RateWithPrice rates = 5;
 }
 
 message PricingCategoryWithPrice {
-    io.bokun.inventory.service.common.grpc.PricingCategory pricingCategory = 1;
-    io.bokun.inventory.common.api.grpc.PricingCategoryType pricingCategoryType = 2;
-    io.bokun.inventory.common.api.grpc.Price price = 3;
+    io.bokun.inventory.common.api.grpc.PricingCategory pricingCategory = 1;
+    io.bokun.inventory.common.api.grpc.Price price = 2;
 }
 
 message RateWithPrice {
+    // What rate ("12 hour rate", "24 hour rate"). Mandatory. If the remote end does not support rates, plugins should at least return some
+    // superficial rate.
     io.bokun.inventory.service.common.grpc.BokunToExternalMapping rate = 1;
+
+    // Pricing categories with prices for given availability slot. Mandatory (should at least have a single entry).
     repeated PricingCategoryWithPrice pricingCategories = 2;
 }
