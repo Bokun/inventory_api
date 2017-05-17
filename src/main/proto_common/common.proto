@@ -9,6 +9,7 @@ option java_package = "io.bokun.inventory.common.api.grpc";
 message Empty {
 }
 
+// All fields mandatory
 message Date {
     int32 year = 1;
     int32 month = 2;
@@ -16,16 +17,19 @@ message Date {
 }
 
 // Date period - from one day to another. Boundary conditions (exclusive or not) are defined at the context where this period is used.
+// All fields mandatory
 message DatePeriod {
     Date from = 1;
     Date to = 2;
 }
 
+// All fields mandatory
 message Time {
     int32 hour = 1;
     int32 minute = 2;
 }
 
+// All fields mandatory
 message Price {
     string currency = 1;
     string amount = 2;              // can't use double because of precision loss. Will convert to BigDecimal when data arrives in Java
@@ -54,6 +58,7 @@ enum ProductCategory {
     TRANSPORT = 3;
 }
 
+// All fields mandatory; should at least be set to 0.
 message Duration {
     int32 minutes = 1;
     int32 hours = 2;
@@ -234,4 +239,50 @@ message Address {
 message Place {
     string title = 1;
     Address address = 2;
+}
+
+message ReservationResponse {
+    // true if reservation request has been successful, false otherwise
+    bool success = 1;
+
+    oneof reservationResult {
+        // set if success=true
+        SuccessfulReservation successfulReservation = 2;
+
+        // set if success=false
+        FailedReservation failedReservation = 3;
+    }
+}
+
+message SuccessfulReservation {
+    // Reservation code. Mandatory.
+    string confirmationCode = 1;
+}
+
+message FailedReservation {
+    // Error message telling why this request has failed. Optional - remote end is not required to explicitly tell the reason of failure
+    string reservationError = 1;
+}
+
+message Contact {
+    // First name. Mandatory.
+    string firstName = 1;
+
+    // Last name. Mandatory.
+    string lastNamed = 2;
+
+    // Title, optional.
+    string title = 3;
+
+    // Optional email address. It is also possible to store multiple addresses in this field, separated by comma (as per RFC2822).
+    string email = 4;
+
+    // Phone including intl code. Optional.
+    string phone = 5;
+
+    // Language customer prefers to be contacted in. Optional.
+    string language = 6;
+
+    // ISO 3166-1 Alpha-3 code, see https://en.wikipedia.org/wiki/ISO_3166-1. Optional.
+    string nationality = 7;
 }

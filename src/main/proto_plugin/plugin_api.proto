@@ -25,6 +25,10 @@ service PluginApi {
     // This request shoud follow GetAvailableProducts and provide more details on precise dates/times for each product as well as capacity for each date.
     // This call, however, is for a single product only (as opposed to GetAvailableProducts) which checks many products but only does a basic shallow check.
     rpc GetProductAvailability(ProductAvailabilityRequest) returns (stream ProductAvailabilityResponse) {}
+
+    // This call secures necessary resource(s), such as activity time slot which can later become a booking.
+    // The reservation should be held for some limited time, and reverted back to being available if the booking is not confirmed.
+    rpc CreateReservation (ReservationRequest) returns (stream io.bokun.inventory.common.api.grpc.ReservationResponse) {}
 }
 
 // Parameters used to configure supported plugin(s)
@@ -79,14 +83,76 @@ message ProductAvailabilityRequest {
 }
 
 message ProductAvailabilityResponse {
-    // date when this product is available
+    // Date when this product is available. Mandatory.
     io.bokun.inventory.common.api.grpc.Date date = 1;
 
-    // time when this product is available (optional)
+    // Time when this product is available. Mandatory if ProductDescription::bookingType is DATE_AND_TIME, otherwise null.
     io.bokun.inventory.common.api.grpc.Time time = 2;
 
-    // how many seats/spaces are available in total for this day
+    // How many seats/spaces are available in total for this day/time combination. Mandatory.
     int32 capacity = 3;
 
-    // todo pricing
+// todo
+//    // Rate being offered (optional) - reflects rate of external system
+//    string rateId = 4;
+//
+//    // Pricing category (id within external system) this product is sold at - reflects one of external system. Mandatory
+//    PricingCategory pricingCategory = 5;
+//
+}
+
+message ReservationRequest {
+    io.bokun.inventory.common.api.grpc.Contact customer = 1;
+    repeated ProductReservation reservations = 2;
+}
+
+message ProductReservation {
+    // Product id in external system. Mandatory.
+    string productId = 1;
+
+    // Notes captured by a person who entered this booking (may also be customer itself if booked online). Optional.
+    string notes = 2;
+
+    // Vendors might optionally want to store scanned barcode value with this booking.
+    string barcode = 3;
+
+    // Day of the event should take place. Mandatory.
+    // Must match available date, as provided provided with ProductAvailabilityWithRatesResponse::date
+    io.bokun.inventory.common.api.grpc.Date date = 4;
+
+    // Desired start time. Mandatory if ProductDescription::bookingType is DATE_AND_TIME, otherwise null.
+    // Must match available time, as provided with ProductAvailabilityWithRatesResponse::time
+    io.bokun.inventory.common.api.grpc.Time time = 5;
+
+    // Whether pickup is required. Only relevant if ProductDescription::pickupAvailable of booked product is true.
+    bool pickupRequired = 6;
+
+    // Custom pickup location. Only relevant if ProductDescription::pickupAvailable and ProductDescription::customPickupPlaceAllowed are true and
+    // if customer actually wants custom location. ::pickupPlace should be null if this is set.
+    string customPickupPlace = 7;
+
+    // Pickup location. Only relevant if ProductDescription::pickupAvailable is true. Should not be set if ::customPickupPlace is set.
+    // Should only be set if ::pickupRequired is true. Should match location from ProductDescription::pickupPlaces of booked product.
+    io.bokun.inventory.common.api.grpc.PickupDropoffPlace pickupPlace = 8;
+
+    // Whether drop off is required. Only relevant if ProductDescription::dropoffAvailable of booked product is true.
+    bool dropoffRequired = 9;
+
+    // Custom drop off location. Only relevant if ProductDescription::dropoffAvailable and ProductDescription::customDropoffPlaceAllowed are true and
+    // if customer actually wants custom location. ::dropoffPlace should be null if this is set.
+    string customDropoffPlace = 10;
+
+    // Drop off location. Only relevant if ProductDescription::dropoffAvailable is true. Should not be set if ::customDropoffPlace is set.
+    // Should only be set if ::dropoffRequired is true. Should match location from ProductDescription::dropoffPlaces of booked product.
+    io.bokun.inventory.common.api.grpc.PickupDropoffPlace dropoffPlace = 11;
+
+    // At what rate ("12 hour rate", "24 hour rate" etc.) this is booked. Refers to a rate in external system. Mandatory.
+    // Should match rate from, ProductDescription::rates of booked product.
+    io.bokun.inventory.common.api.grpc.Rate rate = 12;
+
+    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in external system. Mandatory.
+    io.bokun.inventory.common.api.grpc.PricingCategory pricingCategory = 13;
+
+    // how many people booked for this rate/pricing category. Mandatory.
+    int32 pax = 14;
 }
