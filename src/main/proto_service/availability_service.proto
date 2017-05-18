@@ -31,8 +31,8 @@ message FindAvailableProductsRequest {
     // What date range are we searching for? Mandatory.
     io.bokun.inventory.common.api.grpc.DatePeriod range = 4;
 
-    // Required quantity. Mandatory.
-    int32 quantity = 5;
+    // Required capacity. Mandatory.
+    int32 capacity = 5;
 }
 
 message GetProductAvailabilityRequest {
@@ -67,7 +67,7 @@ message PricingCategoryWithPrice {
 message RateWithPrice {
     // What rate ("12 hour rate", "24 hour rate"). Mandatory. If the remote end does not support rates, plugins should at least return some
     // superficial rate.
-    io.bokun.inventory.service.common.grpc.BokunToExternalMapping rate = 1;
+    int32 rate = 1;
 
     // Pricing categories with prices for given availability slot. Mandatory (should at least have a single entry).
     repeated PricingCategoryWithPrice pricingCategories = 2;

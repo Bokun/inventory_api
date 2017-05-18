@@ -18,6 +18,9 @@ service PluginService {
     // List definitions which are available. This consists of all registered plugins.
     rpc ListDefinitions (io.bokun.inventory.common.api.grpc.Empty) returns (stream PluginDefinition) {}
 
+    // Returns plugin definition by given id.
+    rpc GetDefinition (GetDefinitionRequest) returns (PluginDefinition) {}
+
     // Configure new or existing plugin
     rpc ConfigurePlugin (PluginConfiguration) returns (PluginConfiguration) {}
 
@@ -30,6 +33,11 @@ service PluginService {
 
 message PluginUrl {
     string url = 1;
+}
+
+message GetDefinitionRequest {
+    // id of plugin to get definition for. Mandatory.
+    string pluginDefinitionId = 1;
 }
 
 // As this is Bokun-internal API, we add a few more fields to the plugin definition which is publicly traded
