@@ -24,7 +24,7 @@ service PluginApi {
     // Get availability of a particular product over a date range.
     // This request shoud follow GetAvailableProducts and provide more details on precise dates/times for each product as well as capacity for each date.
     // This call, however, is for a single product only (as opposed to GetAvailableProducts) which checks many products but only does a basic shallow check.
-    rpc GetProductAvailability(ProductAvailabilityRequest) returns (stream ProductAvailabilityResponse) {}
+    rpc GetProductAvailability(ProductAvailabilityRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductAvailabilityWithRatesResponse) {}
 
     // This call secures necessary resource(s), such as activity time slot which can later become a booking.
     // The reservation should be held for some limited time, and reverted back to being available if the booking is not confirmed.
@@ -80,25 +80,6 @@ message ProductAvailabilityRequest {
     // Date range (boundaries included) for which we want to know precise capacity, availability and pricing for given product
     // Note that this request does not ask for capacity; instead response should tell us how much seats/spaces/etc are available in total.
     io.bokun.inventory.common.api.grpc.DatePeriod range = 3;
-}
-
-message ProductAvailabilityResponse {
-    // Date when this product is available. Mandatory.
-    io.bokun.inventory.common.api.grpc.Date date = 1;
-
-    // Time when this product is available. Mandatory if ProductDescription::bookingType is DATE_AND_TIME, otherwise null.
-    io.bokun.inventory.common.api.grpc.Time time = 2;
-
-    // How many seats/spaces are available in total for this day/time combination. Mandatory.
-    int32 capacity = 3;
-
-// todo
-//    // Rate being offered (optional) - reflects rate of external system
-//    string rateId = 4;
-//
-//    // Pricing category (id within external system) this product is sold at - reflects one of external system. Mandatory
-//    PricingCategory pricingCategory = 5;
-//
 }
 
 message ReservationRequest {

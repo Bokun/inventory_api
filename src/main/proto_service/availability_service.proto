@@ -15,7 +15,7 @@ service AvailabilityService {
 
     // Get detailed info about requested single Bokun product.
     // This returns not only available dates/time but also pickup times as well as pricing for requested range.
-    rpc GetProductAvailability (GetProductAvailabilityRequest) returns (stream ProductAvailabilityWithRatesResponse) {}
+    rpc GetProductAvailability (GetProductAvailabilityRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductAvailabilityWithRatesResponse) {}
 }
 
 message FindAvailableProductsRequest {
@@ -40,35 +40,4 @@ message GetProductAvailabilityRequest {
     int64 vendorId = 2;                                                             // for which vendor (necessary to get plugin cfg)
     io.bokun.inventory.service.common.grpc.BokunProduct product = 3;
     io.bokun.inventory.common.api.grpc.DatePeriod range = 4;
-}
-
-message ProductAvailabilityWithRatesResponse {
-    // How many slots are available for this day/time. Mandatory.
-    int32 capacity = 1;
-
-    // Date for when this product is available. Mandatory.
-    io.bokun.inventory.common.api.grpc.Date date = 2;
-
-    // When does this event start? Unset if this product does not support times.
-    io.bokun.inventory.common.api.grpc.Time time = 3;
-
-    // When does a pickup for this product start? Unset if this product does not support times or pickups.
-    io.bokun.inventory.common.api.grpc.Time pickupTime = 4;
-
-    // Rates with prices. Mandatory (should at least have one entry).
-    repeated RateWithPrice rates = 5;
-}
-
-message PricingCategoryWithPrice {
-    io.bokun.inventory.common.api.grpc.PricingCategory pricingCategory = 1;
-    io.bokun.inventory.common.api.grpc.Price price = 2;
-}
-
-message RateWithPrice {
-    // What rate ("12 hour rate", "24 hour rate"). Mandatory. If the remote end does not support rates, plugins should at least return some
-    // superficial rate.
-    int32 rate = 1;
-
-    // Pricing categories with prices for given availability slot. Mandatory (should at least have a single entry).
-    repeated PricingCategoryWithPrice pricingCategories = 2;
 }

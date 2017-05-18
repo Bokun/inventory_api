@@ -286,3 +286,34 @@ message Contact {
     // ISO 3166-1 Alpha-3 code, see https://en.wikipedia.org/wiki/ISO_3166-1. Optional.
     string nationality = 7;
 }
+
+message ProductAvailabilityWithRatesResponse {
+    // How many slots are available for this day/time. Mandatory.
+    int32 capacity = 1;
+
+    // Date for when this product is available. Mandatory.
+    Date date = 2;
+
+    // When does this event start? Unset if this product does not support times.
+    Time time = 3;
+
+    // When does a pickup for this product start? Unset if this product does not support times or pickups.
+    Time pickupTime = 4;
+
+    // Rates with prices. Mandatory (should at least have one entry).
+    repeated RateWithPrice rates = 5;
+}
+
+message RateWithPrice {
+    // What rate ("12 hour rate", "24 hour rate"). Mandatory. If the remote end does not support rates, plugins should at least return some
+    // superficial rate.
+    Rate rate = 1;
+
+    // Pricing categories with prices for given availability slot. Mandatory (should at least have a single entry).
+    repeated PricingCategoryWithPrice pricingCategories = 2;
+}
+
+message PricingCategoryWithPrice {
+    PricingCategory pricingCategory = 1;
+    Price price = 2;
+}
