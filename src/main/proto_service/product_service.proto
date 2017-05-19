@@ -26,10 +26,11 @@ message SearchInventoryProductsRequest {
 message ProductMapping {
     string id = 1;                                  // if omitted, mapping will be created for upsert op. Otherwise updated
     string pluginId = 2;
-    io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 3;
-    string inventoryProductId = 4;
-    repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping pricingCategoryMappings = 5;
-    repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping rateMappings = 6;
+    long vendorId = 3;
+    io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 4;
+    string inventoryProductId = 5;
+    repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping pricingCategoryMappings = 6;
+    repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping rateMappings = 7;
 }
 
 message ProductMappingIdentifier {
