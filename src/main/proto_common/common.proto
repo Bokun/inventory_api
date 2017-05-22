@@ -242,21 +242,16 @@ message Place {
 }
 
 message ReservationResponse {
-    // true if reservation request has been successful, false otherwise
-    bool success = 1;
-
+    // should return either success or failure data structure. Mandatory (response must indicate either succees or failure).
     oneof reservationResult {
-        // set if success=true
-        SuccessfulReservation successfulReservation = 2;
-
-        // set if success=false
-        FailedReservation failedReservation = 3;
+        SuccessfulReservation successfulReservation = 1;
+        FailedReservation failedReservation = 2;
     }
 }
 
 message SuccessfulReservation {
-    // Reservation code. Mandatory.
-    string confirmationCode = 1;
+    // Reservation code. Mandatory. Note: this might or might not differ from booking confirmation code, depending on plugin implementation.
+    string reservationConfirmationCode = 1;
 }
 
 message FailedReservation {
