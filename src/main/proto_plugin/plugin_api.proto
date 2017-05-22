@@ -108,24 +108,28 @@ message ProductReservation {
     // Whether pickup is required. Only relevant if ProductDescription::pickupAvailable of booked product is true.
     bool pickupRequired = 6;
 
-    // Custom pickup location. Only relevant if ProductDescription::pickupAvailable and ProductDescription::customPickupPlaceAllowed are true and
-    // if customer actually wants custom location. ::pickupPlace should be null if this is set.
-    string customPickupPlace = 7;
+    oneof pickupPlace {
+        // Custom pickup location. Only relevant if ProductDescription::pickupAvailable and ProductDescription::customPickupPlaceAllowed are true and
+        // if customer actually wants custom location.
+        string customPickupPlace = 7;
 
-    // Pickup location. Only relevant if ProductDescription::pickupAvailable is true. Should not be set if ::customPickupPlace is set.
-    // Should only be set if ::pickupRequired is true. Should match location from ProductDescription::pickupPlaces of booked product.
-    io.bokun.inventory.common.api.grpc.PickupDropoffPlace pickupPlace = 8;
+        // Pickup location. Only relevant if ProductDescription::pickupAvailable is true. Should only be set if ::pickupRequired is true.
+        // Should match location from ProductDescription::pickupPlaces of booked product.
+        io.bokun.inventory.common.api.grpc.PickupDropoffPlace predefinedPickupPlace = 8;
+    }
 
     // Whether drop off is required. Only relevant if ProductDescription::dropoffAvailable of booked product is true.
     bool dropoffRequired = 9;
 
-    // Custom drop off location. Only relevant if ProductDescription::dropoffAvailable and ProductDescription::customDropoffPlaceAllowed are true and
-    // if customer actually wants custom location. ::dropoffPlace should be null if this is set.
-    string customDropoffPlace = 10;
+    oneof dropoffPlace {
+        // Custom drop off location. Only relevant if ProductDescription::dropoffAvailable and ProductDescription::customDropoffPlaceAllowed are true and
+        // if customer actually wants custom location.
+        string customDropoffPlace = 10;
 
-    // Drop off location. Only relevant if ProductDescription::dropoffAvailable is true. Should not be set if ::customDropoffPlace is set.
-    // Should only be set if ::dropoffRequired is true. Should match location from ProductDescription::dropoffPlaces of booked product.
-    io.bokun.inventory.common.api.grpc.PickupDropoffPlace dropoffPlace = 11;
+        // Drop off location. Only relevant if ProductDescription::dropoffAvailable is true. Should only be set if ::dropoffRequired is true.
+        // Should match location from ProductDescription::dropoffPlaces of booked product.
+        io.bokun.inventory.common.api.grpc.PickupDropoffPlace predefinedDropoffPlace = 11;
+    }
 
     // At what rate ("12 hour rate", "24 hour rate" etc.) this is booked. Refers to a rate in external system. Mandatory.
     // Should match rate from, ProductDescription::rates of booked product.
@@ -136,4 +140,8 @@ message ProductReservation {
 
     // how many people booked for this rate/pricing category. Mandatory.
     int32 pax = 14;
+
+    // Who will be travelling / taking part in this activity -- for this rate & pricing category. Remote end might not require this, but platform is
+    // expected to send the data anyway. Number of records must match <tt>pax</tt>.
+    repeated io.bokun.inventory.common.api.grpc.Contact participants = 15;
 }
