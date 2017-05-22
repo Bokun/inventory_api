@@ -264,7 +264,7 @@ message Contact {
     string firstName = 1;
 
     // Last name. Mandatory.
-    string lastNamed = 2;
+    string lastName = 2;
 
     // Title, optional.
     string title = 3;

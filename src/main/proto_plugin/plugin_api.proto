@@ -83,8 +83,14 @@ message ProductAvailabilityRequest {
 }
 
 message ReservationRequest {
-    io.bokun.inventory.common.api.grpc.Contact customer = 1;
-    repeated ProductReservation reservations = 2;
+    // plugin config parameters
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
+
+    // Main booking contact. Mandatory.
+    io.bokun.inventory.common.api.grpc.Contact customer = 2;
+
+    // A collection of reservations for each combination of rate/pricing category.
+    repeated ProductReservation reservations = 3;
 }
 
 message ProductReservation {
