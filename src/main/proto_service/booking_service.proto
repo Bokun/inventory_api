@@ -11,7 +11,7 @@ import "inventory_service_common.proto";
 service BookingService {
     // Reserve capacity for a product for limited time. Please using blocking API for this as the result of this is atomic: all requests should either
     // succeed or fail; there can be no half/success.
-    rpc CreateReservation (ReservationRequest) returns (stream io.bokun.inventory.common.api.grpc.ReservationResponse) {}
+    rpc CreateReservation (ReservationRequest) returns (io.bokun.inventory.common.api.grpc.ReservationResponse) {}
 }
 
 message ReservationRequest {
