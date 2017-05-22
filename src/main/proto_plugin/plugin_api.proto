@@ -28,7 +28,7 @@ service PluginApi {
 
     // This call secures necessary resource(s), such as activity time slot which can later become a booking.
     // The reservation should be held for some limited time, and reverted back to being available if the booking is not confirmed.
-    rpc CreateReservation (ReservationRequest) returns (stream io.bokun.inventory.common.api.grpc.ReservationResponse) {}
+    rpc CreateReservation (ReservationRequest) returns (io.bokun.inventory.common.api.grpc.ReservationResponse) {}
 }
 
 // Parameters used to configure supported plugin(s)
