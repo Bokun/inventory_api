@@ -50,7 +50,7 @@ message GetProductMappingsRequest {
     string pluginId = 1;
 
     // vendor to get mapped products for. Mandatory.
-    long vendorId = 2;
+    int64 vendorId = 2;
 
     // For which Bokun products to get mapping for? If the list is empty/null, it will return all mappings.
     // If the list has at least one element, it will try to find mappings for specified product(s) only.
