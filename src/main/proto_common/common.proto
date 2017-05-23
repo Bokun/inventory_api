@@ -190,6 +190,9 @@ message ProductDescription {
     // A collection of pre-defined drop off places, supported by vendor.
     // Mandatory (should have at least one entry) if ::dropoffAvailable is true and ::customDropoffPlaceAllowed is false.
     repeated PickupDropoffPlace dropoffPlaces = 15;
+
+    // Is this activity, accommodation, etc.? Mandatory.
+    ProductCategory productCategory = 16;
 }
 
 message PickupDropoffPlace {

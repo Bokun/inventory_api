@@ -35,9 +35,8 @@ service PluginApi {
 message PluginDefinition {
     string name = 1;                                                                        // name of definition
     string description = 2;                                                                 // description of definition, optional
-    repeated io.bokun.inventory.common.api.grpc.ProductCategory productCategories = 3;      // Which product types does this plugin work with?
-    repeated io.bokun.inventory.common.api.grpc.PluginCapability capabilities = 4;          // What does this plugin support?
-    repeated PluginConfigurationParameter parameters = 5;                                   // List of parameters this plugin should be configured with
+    repeated io.bokun.inventory.common.api.grpc.PluginCapability capabilities = 3;          // What does this plugin support?
+    repeated PluginConfigurationParameter parameters = 4;                                   // List of parameters this plugin should be configured with
 }
 
 // Parameters used to configure supported plugin(s)
