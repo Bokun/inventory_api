@@ -13,7 +13,7 @@ service ProductService {
     rpc SearchInventoryProducts (SearchInventoryProductsRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductDescription) {}
 
     // Returns product information by given id (ids refer to ProductDescription::id)
-    rpc GetProductByIdRequest(GetProductByIdRequest) returns (io.bokun.inventory.common.api.grpc.ProductDescription) {}
+    rpc GetProductById(GetProductByIdRequest) returns (io.bokun.inventory.common.api.grpc.ProductDescription) {}
 
     // Inserts or updates product mapping.
     rpc UpsertProductMapping (ProductMapping) returns (ProductMapping) {}
