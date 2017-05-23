@@ -44,11 +44,18 @@ message GetDefinitionRequest {
 message PluginDefinition {
     string id = 1;
     string url = 2;
-    string name = 3;                                                                            // name of definition
-    string description = 4;                                                                     // description of definition, optional
-    repeated io.bokun.inventory.common.api.grpc.ProductCategory productCategories = 5;          // Which product types does this plugin work with?
-    repeated io.bokun.inventory.common.api.grpc.PluginCapability capabilities = 6;              // What does this plugin support?
-    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameter parameters = 7;    // List of parameters this plugin should be configured with
+
+    // name of definition
+    string name = 3;
+
+    // description of definition, optional
+    string description = 4;
+
+    // What does this plugin support? Mandatory.
+    repeated io.bokun.inventory.common.api.grpc.PluginCapability capabilities = 5;
+
+    // List of parameters this plugin should be configured with. Mandatory.
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameter parameters = 6;
 }
 
 message PluginUnregistrationRequest {
