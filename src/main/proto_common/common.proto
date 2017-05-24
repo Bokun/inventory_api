@@ -291,7 +291,7 @@ message ConfirmBookingResponse {
     // should return either success or failure data structure. Mandatory (response must indicate either succees or failure).
     oneof bookingResult {
         SuccessfulBooking successfulBooking = 1;
-        FailedReservation failedBooking = 2;
+        FailedBooking failedBooking = 2;
     }
 }
 
