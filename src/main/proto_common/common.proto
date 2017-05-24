@@ -193,6 +193,31 @@ message ProductDescription {
 
     // Is this activity, accommodation, etc.? Mandatory.
     ProductCategory productCategory = 16;
+
+    // What kind of tickets does this product support?
+    repeated TicketSupport ticketSupport = 17;
+}
+
+// A list of all possible ticketing options for a product.
+enum TicketSupport {
+    NONE = 0;
+    TICKET_PER_PERSON = 1;
+    TICKET_PER_BOOKING = 2;
+}
+
+// Types of tickets supported by remote systems
+enum TicketType {
+    QR_CODE = 0;
+}
+
+message QrTicket {
+    string ticketBarcode = 1;
+}
+
+message Ticket {
+    oneof ticket {
+        QrTicket qrTicket = 1;
+    }
 }
 
 message PickupDropoffPlace {
@@ -260,6 +285,26 @@ message SuccessfulReservation {
 message FailedReservation {
     // Error message telling why this request has failed. Optional - remote end is not required to explicitly tell the reason of failure
     string reservationError = 1;
+}
+
+message ConfirmBookingResponse {
+    // should return either success or failure data structure. Mandatory (response must indicate either succees or failure).
+    oneof bookingResult {
+        SuccessfulBooking successfulBooking = 1;
+        FailedReservation failedBooking = 2;
+    }
+}
+
+message SuccessfulBooking {
+    // This may or may not overlap with ReservationResponse::reservationConfirmationCode, depending on the specifics of the remote plugin.
+    // Either case, mandatory.
+    string bookingConfirmationCode = 1;
+    repeated Ticket tickets = 2;
+}
+
+message FailedBooking {
+    // Error message telling why this request has failed. Optional - remote end is not required to explicitly tell the reason of failure
+    string bookingError = 1;
 }
 
 message Contact {

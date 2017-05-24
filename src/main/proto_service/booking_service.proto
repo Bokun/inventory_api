@@ -12,6 +12,24 @@ service BookingService {
     // Reserve capacity for a product for limited time. Please using blocking API for this as the result of this is atomic: all requests should either
     // succeed or fail; there can be no half/success.
     rpc CreateReservation (ReservationRequest) returns (io.bokun.inventory.common.api.grpc.ReservationResponse) {}
+
+    // Once reserved, proceed with booking.
+    rpc ConfirmBooking (ConfirmBookingRequest) returns (io.bokun.inventory.common.api.grpc.ConfirmBookingResponse) {}
+}
+
+message ConfirmBookingRequest {
+    // For which plugin definition (necessary to get plugin cfg). Mandatory.
+    string pluginId = 1;
+
+    // For which vendor (necessary to get plugin cfg). Mandatory.
+    int64 vendorId = 2;
+
+    // Exactly as returned by io.bokun.inventory.common.api.grpc.ReservationResponse::reservationConfirmationCode. Mandatory.
+    string reservationConfirmationCode = 3;
+
+    // What kind of tickets do you want the remote end to generate? This must be supported by a booked product, see ProductDescription::ticketSupport
+    // Mandatory.
+    io.bokun.inventory.common.api.grpc.TicketSupport ticketingType = 4;
 }
 
 message ReservationRequest {
