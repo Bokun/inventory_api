@@ -26,8 +26,12 @@ service ProductService {
 }
 
 message GetProductByIdRequest {
+    string pluginId = 1;
+
+    int64 vendorId = 2;
+
     // reference to product id on the remote end. Mandatory
-    string externalId = 1;
+    string externalId = 3;
 }
 
 message SearchInventoryProductsRequest {
