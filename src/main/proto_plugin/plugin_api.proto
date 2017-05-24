@@ -44,9 +44,8 @@ message ConfirmBookingRequest {
     // Exactly as returned by io.bokun.inventory.common.api.grpc.ReservationResponse::reservationConfirmationCode. Mandatory.
     string reservationConfirmationCode = 2;
 
-    // What kind of tickets do you want the remote end to generate? This must be supported by a booked product, see ProductDescription::ticketSupport
-    // Mandatory.
-    io.bokun.inventory.common.api.grpc.TicketSupport ticketingType = 3;
+    // How should the tickets be generated? This must be supported by a booked product, see ProductDescription::ticketSupport. Mandatory.
+    io.bokun.inventory.common.api.grpc.TicketSupport ticketSupport = 3;
 }
 
 message GetProductByIdRequest {
