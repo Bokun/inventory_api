@@ -35,8 +35,11 @@ service PluginApi {
 }
 
 message GetProductByIdRequest {
+    // plugin config parameters. Mandatory.
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
+
     // reference to product id on the remote end. Mandatory
-    string externalId = 1;
+    string externalId = 2;
 }
 
 // Parameters used to configure supported plugin(s)
