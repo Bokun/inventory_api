@@ -15,6 +15,9 @@ service PluginApi {
     // This call is required in order to link Bokun- and remote system-configured products together.
     rpc SearchInventoryProducts(SearchInventoryProductsRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductDescription) {}
 
+    // Returns product information by given id (ids refer to ProductDescription::id)
+    rpc GetProductById(GetProductByIdRequest) returns (io.bokun.inventory.common.api.grpc.ProductDescription) {}
+
     // A set of product ids provided, return their availability over given date range.
     // This will return a subset of product IDs passed on via ProductAvailabilityRequest.
     // Note: even though request contains capacity and date range, for a matching product it is enough to have availabilities for *some* dates over
@@ -29,6 +32,11 @@ service PluginApi {
     // This call secures necessary resource(s), such as activity time slot which can later become a booking.
     // The reservation should be held for some limited time, and reverted back to being available if the booking is not confirmed.
     rpc CreateReservation (ReservationRequest) returns (io.bokun.inventory.common.api.grpc.ReservationResponse) {}
+}
+
+message GetProductByIdRequest {
+    // reference to product id on the remote end. Mandatory
+    string externalId = 1;
 }
 
 // Parameters used to configure supported plugin(s)
