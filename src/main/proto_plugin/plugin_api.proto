@@ -38,12 +38,15 @@ service PluginApi {
 }
 
 message ConfirmBookingRequest {
+    // plugin config parameters. Mandatory.
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
+
     // Exactly as returned by io.bokun.inventory.common.api.grpc.ReservationResponse::reservationConfirmationCode. Mandatory.
-    string reservationConfirmationCode = 1;
+    string reservationConfirmationCode = 2;
 
     // What kind of tickets do you want the remote end to generate? This must be supported by a booked product, see ProductDescription::ticketSupport
     // Mandatory.
-    io.bokun.inventory.common.api.grpc.TicketSupport ticketingType = 2;
+    io.bokun.inventory.common.api.grpc.TicketSupport ticketingType = 3;
 }
 
 message GetProductByIdRequest {
