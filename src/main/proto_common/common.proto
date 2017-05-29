@@ -307,6 +307,22 @@ message FailedBooking {
     string bookingError = 1;
 }
 
+message CancelBookingResponse {
+    // should return either success or failure data structure. Mandatory (response must indicate either succees or failure).
+    oneof cancellationResult {
+        SuccessfulCancellation successfulCancellation = 1;
+        FailedCancellation failedCancellation = 2;
+    }
+}
+
+message SuccessfulCancellation {
+}
+
+message FailedCancellation {
+    // Error message telling why this request has failed. Optional - remote end is not required to explicitly tell the reason of failure
+    string cancellationError = 1;
+}
+
 message Contact {
     // First name. Mandatory.
     string firstName = 1;

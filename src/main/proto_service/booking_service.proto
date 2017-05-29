@@ -15,6 +15,9 @@ service BookingService {
 
     // Once reserved, proceed with booking.
     rpc ConfirmBooking (ConfirmBookingRequest) returns (io.bokun.inventory.common.api.grpc.ConfirmBookingResponse) {}
+
+    // Once booked, a booking may be cancelled using booking ref number.
+    rpc CancelBooking (CancelBookingRequest) returns (io.bokun.inventory.common.api.grpc.CancelBookingResponse) {}
 }
 
 message ConfirmBookingRequest {
@@ -22,12 +25,21 @@ message ConfirmBookingRequest {
     repeated io.bokun.inventory.service.common.grpc.BokunProduct bokunProducts = 1;
 
 
-    // Exactly as returned by io.bokun.inventory.common.api.grpc.ReservationResponse::reservationConfirmationCode. Mandatory.
+    // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulReservation::reservationConfirmationCode. Mandatory.
     string reservationConfirmationCode = 2;
 
     // What kind of tickets do you want the remote end to generate? This must be supported by a booked product, see ProductDescription::ticketSupport
     // Mandatory.
     io.bokun.inventory.common.api.grpc.TicketSupport ticketingType = 3;
+}
+
+message CancelBookingRequest {
+    // products, *exactly* as used with CreateReservation request
+    repeated io.bokun.inventory.service.common.grpc.BokunProduct bokunProducts = 1;
+
+
+    // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.
+    string bookingConfirmationCode = 2;
 }
 
 message ReservationRequest {

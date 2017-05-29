@@ -35,17 +35,28 @@ service PluginApi {
 
     // Once reserved, proceed with booking.
     rpc ConfirmBooking (ConfirmBookingRequest) returns (io.bokun.inventory.common.api.grpc.ConfirmBookingResponse) {}
+
+    // Once booked, a booking may be cancelled using booking ref number.
+    rpc CancelBooking (CancelBookingRequest) returns (io.bokun.inventory.common.api.grpc.CancelBookingResponse) {}
 }
 
 message ConfirmBookingRequest {
     // plugin config parameters. Mandatory.
     repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
 
-    // Exactly as returned by io.bokun.inventory.common.api.grpc.ReservationResponse::reservationConfirmationCode. Mandatory.
+    // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulReservation::reservationConfirmationCode. Mandatory.
     string reservationConfirmationCode = 2;
 
     // How should the tickets be generated? This must be supported by a booked product, see ProductDescription::ticketSupport. Mandatory.
     io.bokun.inventory.common.api.grpc.TicketSupport ticketSupport = 3;
+}
+
+message CancelBookingRequest {
+    // plugin config parameters. Mandatory.
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
+
+    // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.
+    string bookingConfirmationCode = 2;
 }
 
 message GetProductByIdRequest {
