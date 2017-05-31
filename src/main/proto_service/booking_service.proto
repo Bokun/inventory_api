@@ -114,3 +114,4 @@ message ProductReservation {
     // Whatever amount was paid for given product(s). Mandatory.
     io.bokun.inventory.common.api.grpc.Price amountPaid = 17;
 }
+
