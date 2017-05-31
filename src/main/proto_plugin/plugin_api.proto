@@ -185,4 +185,7 @@ message ProductReservation {
     // Who will be travelling / taking part in this activity -- for this rate & pricing category. Remote end might not require this, but platform is
     // expected to send the data anyway. Number of records must match <tt>pax</tt>.
     repeated io.bokun.inventory.common.api.grpc.Contact participants = 15;
+
+    // Whatever amount was paid for given product(s). Mandatory.
+    io.bokun.inventory.common.api.grpc.Price amountPaid = 16;
 }
