@@ -43,74 +43,46 @@ message CancelBookingRequest {
 }
 
 message ReservationRequest {
-    // Contact of the customer who has reserved this booking. Mandatory.
+    // Contact of the customer who has reserved this booking (otherwise known as "lead customer"). Mandatory.
     io.bokun.inventory.common.api.grpc.Contact customerContact = 1;
 
-    // The actual reservation(s). Mandatory; should at least have one reservation in the request.
-    repeated ProductReservation reservations = 2;
-}
-
-message ProductReservation {
-    // Product category in Bokun. Mandatory.
-    io.bokun.inventory.common.api.grpc.ProductCategory productCategory = 1;
-
-    // Product ID in Bokun. Mandatory.
-    int64 productId = 2;
-
     // Notes captured by a person who entered this booking (may also be customer itself if booked online). Optional.
-    string notes = 3;
-
-    // Vendors might optionally want to store scanned barcode value with this booking.
-    string barcode = 4;
+    string notes = 2;
 
     // Day of the event should take place. Mandatory.
     // Must match available date, as provided provided with ProductAvailabilityWithRatesResponse::date
-    io.bokun.inventory.common.api.grpc.Date date = 5;
+    io.bokun.inventory.common.api.grpc.Date date = 3;
 
     // Desired start time. Mandatory if ProductDescription::bookingType is DATE_AND_TIME, otherwise null.
     // Must match available time, as provided with ProductAvailabilityWithRatesResponse::time
-    io.bokun.inventory.common.api.grpc.Time time = 6;
+    io.bokun.inventory.common.api.grpc.Time time = 4;
 
     // Whether pickup is required. Only relevant if ProductDescription::pickupAvailable of booked product is true.
-    bool pickupRequired = 7;
+    bool pickupRequired = 5;
 
     oneof pickupPlace {
         // Custom pickup location. Only relevant if ProductDescription::pickupAvailable and ProductDescription::customPickupPlaceAllowed are true and
         // if customer actually wants custom location.
-        string customPickupPlace = 8;
+        string customPickupPlace = 6;
 
         // Pickup location. Only relevant if ProductDescription::pickupAvailable is true. Should only be set if ::pickupRequired is true.
         // Should match location from ProductDescription::pickupPlaces of booked product.
-        io.bokun.inventory.common.api.grpc.PickupDropoffPlace predefinedPickupPlace = 9;
+        io.bokun.inventory.common.api.grpc.PickupDropoffPlace predefinedPickupPlace = 7;
     }
 
     // Whether drop off is required. Only relevant if ProductDescription::dropoffAvailable of booked product is true.
-    bool dropoffRequired = 10;
+    bool dropoffRequired = 8;
 
     oneof dropoffPlace {
         // Custom drop off location. Only relevant if ProductDescription::dropoffAvailable and ProductDescription::customDropoffPlaceAllowed are true and
         // if customer actually wants custom location.
-        string customDropoffPlace = 11;
+        string customDropoffPlace = 9;
 
         // Drop off location. Only relevant if ProductDescription::dropoffAvailable is true. Should only be set if ::dropoffRequired is true.
         // Should match location from ProductDescription::dropoffPlaces of booked product.
-        io.bokun.inventory.common.api.grpc.PickupDropoffPlace predefinedDropoffPlace = 12;
+        io.bokun.inventory.common.api.grpc.PickupDropoffPlace predefinedDropoffPlace = 10;
     }
 
-    // At what rate ("12 hour rate", "24 hour rate" etc.) this is booked. Refers to a rate in Bokun. Mandatory.
-    // Should match rate from, ProductDescription::rates of booked product.
-    io.bokun.inventory.common.api.grpc.Rate rate = 13;
-
-    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory.
-    io.bokun.inventory.common.api.grpc.PricingCategory pricingCategory = 14;
-
-    // how many people booked for this rate/pricing category. Mandatory.
-    int32 pax = 15;
-
-    // Who will be travelling / taking part in this activity -- for this rate & pricing category. Remote end might not require this, but platform is
-    // expected to send the data anyway. Number of records must match <tt>pax</tt>.
-    repeated io.bokun.inventory.common.api.grpc.Contact participants = 16;
-
-    // Whatever amount was paid for given product(s). Mandatory.
-    io.bokun.inventory.common.api.grpc.Price amountPaid = 17;
+    // Reservations for this request. Each reservation should be formed for concrete pricing category, rate and product
+    repeated io.bokun.inventory.common.api.grpc.Reservation reservations = 11;
 }

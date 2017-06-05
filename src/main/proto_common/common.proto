@@ -376,3 +376,29 @@ message PricingCategoryWithPrice {
     PricingCategory pricingCategory = 1;
     Price price = 2;
 }
+
+message Reservation {
+    // Product category in Bokun. Mandatory.
+    io.bokun.inventory.common.api.grpc.ProductCategory productCategory = 1;
+
+    // Product ID in Bokun. Mandatory.
+    int64 productId = 2;
+
+    // At what rate ("12 hour rate", "24 hour rate" etc.) this is booked. Refers to a rate in Bokun. Mandatory.
+    // Should match rate from, ProductDescription::rates of booked product.
+    Rate rate = 3;
+
+    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory.
+    PricingCategory pricingCategory = 4;
+
+    // how many people booked for this rate/pricing category. Mandatory.
+    int32 pax = 5;
+
+    // Who will be travelling / taking part in this activity -- for this rate & pricing category. Remote end might not require this, but platform is
+    // expected to send the data anyway. Number of records must match <tt>pax</tt>.
+    repeated Contact participants = 6;
+
+    // Whatever amount was paid for this slot. Mandatory from the platform end - but only passed to the plugin if plugin supports storing of
+    // non-leading customers.
+    Price amountPaid = 7;
+}
