@@ -19,10 +19,10 @@ service PluginService {
     rpc ListDefinitions (io.bokun.inventory.common.api.grpc.Empty) returns (stream PluginDefinition) {}
 
     // Returns plugin definition by given id.
-    rpc GetDefinition (GetDefinitionRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
+    rpc GetDefinition (GetDefinitionRequest) returns (PluginDefinition) {}
 
     // Configure new or existing plugin
-    rpc ConfigurePlugin (PluginConfiguration) returns (PluginConfiguration) {}
+    rpc ConfigurePlugin (PluginConfiguration) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 
     // List all configured plugins for given vendor
     rpc ListConfiguredPlugins (io.bokun.inventory.service.common.grpc.VendorId) returns (stream PluginConfiguration) {}
