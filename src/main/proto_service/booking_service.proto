@@ -54,7 +54,7 @@ message ReservationRequest {
     // Notes captured by a person who entered this booking (may also be customer itself if booked online). Optional.
     string notes = 4;
 
-    // Day of the event should take place. Mandatory.
+    // Day of the event should take place. Mandatory for all but PASS type activities.
     // Must match available date, as provided provided with ProductAvailabilityWithRatesResponse::date
     io.bokun.inventory.common.api.grpc.Date date = 5;
 
