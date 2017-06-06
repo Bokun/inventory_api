@@ -197,11 +197,11 @@ message ProductDescription {
     // What kind of tickets does this product support?
     repeated TicketSupport ticketSupport = 17;
 
-    // ISO ALPHA-2 code. Mandatory.
-    string country = 18;
+    // ISO ALPHA-2 codes. Mandatory (should have at least one item). Multiple items means this product is for multiple countries.
+    repeated string countries = 18;
 
-    // City name where this product is served at. Mandatory.
-    string city = 19;
+    // City name where this product is served at. Mandatory (should have at least one item). Multiple items means this product is for multiple cities.
+    repeated string cities = 19;
 }
 
 // A list of all possible ticketing options for a product.
