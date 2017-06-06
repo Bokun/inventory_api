@@ -69,10 +69,17 @@ message GetProductByIdRequest {
 
 // Parameters used to configure supported plugin(s)
 message PluginDefinition {
-    string name = 1;                                                                        // name of definition
-    string description = 2;                                                                 // description of definition, optional
-    repeated io.bokun.inventory.common.api.grpc.PluginCapability capabilities = 3;          // What does this plugin support?
-    repeated PluginConfigurationParameter parameters = 4;                                   // List of parameters this plugin should be configured with
+    // Name of the definition. Mandatory.
+    string name = 1;
+
+    // Description of definition. Optional.
+    string description = 2;
+
+    // What does this plugin support? List may not be empty as such plugin would be utterly useless.
+    repeated io.bokun.inventory.common.api.grpc.PluginCapability capabilities = 3;
+
+    // List of parameters this plugin should be configured with. Must contain at least one element.
+    repeated PluginConfigurationParameter parameters = 4;
 }
 
 // Parameters used to configure supported plugin(s)
