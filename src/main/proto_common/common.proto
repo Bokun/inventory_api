@@ -185,7 +185,7 @@ message ProductDescription {
 
     // Whether customer can be dropped off at arbitrary place, specified during booking process.
     // Mandatory if ::dropoffAvailable is true, otherwise irrelevant/ignored.
-    bool customDropoffAvailable = 14;
+    bool customDropoffPlaceAllowed = 14;
 
     // A collection of pre-defined drop off places, supported by vendor.
     // Mandatory (should have at least one entry) if ::dropoffAvailable is true and ::customDropoffPlaceAllowed is false.
@@ -197,10 +197,12 @@ message ProductDescription {
     // What kind of tickets does this product support?
     repeated TicketSupport ticketSupport = 17;
 
-    // ISO ALPHA-2 codes. Mandatory (should have at least one item). Multiple items means this product is for multiple countries.
+    // ISO ALPHA-2 codes. Optional (inventory service may not set any country if plugin returns invalid data).
+    // Multiple items means this product is for multiple countries.
     repeated string countries = 18;
 
-    // City name where this product is served at. Mandatory (should have at least one item). Multiple items means this product is for multiple cities.
+    // City name where this product is served at. Optional (if product is not applicable to any city, e.g. Lava Tours).
+    // Multiple items means this product is for multiple cities.
     repeated string cities = 19;
 }
 
