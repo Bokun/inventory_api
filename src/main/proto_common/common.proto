@@ -194,7 +194,7 @@ message ProductDescription {
     // Is this activity, accommodation, etc.? Mandatory.
     ProductCategory productCategory = 16;
 
-    // What kind of tickets does this product support?
+    // What kind of tickets does this product support? Mandatory.
     repeated TicketSupport ticketSupport = 17;
 
     // ISO ALPHA-2 codes. Optional (inventory service may not set any country if plugin returns invalid data).

@@ -37,20 +37,42 @@ message GetProductByIdRequest {
 }
 
 message SearchInventoryProductsRequest {
+    // Mandatory.
     string pluginId = 1;
+
+    // Mandatory
     int64 vendorId = 2;
-    string name = 3;                                    // name of product
-    string country = 4;                                 // ISO ALPHA-2 code
+
+    // Name of product, optional.
+    string name = 3;
+
+    // ISO ALPHA-2 code, optional
+    string country = 4;
+
+    // City to get products for. Optional.
     string city = 5;
 }
 
 message ProductMapping {
-    string id = 1;                                  // if omitted, mapping will be created for upsert op. Otherwise updated
+    // if omitted, mapping will be created for upsert op. Otherwise updated
+    string id = 1;
+
+    // Mandatory.
     string pluginId = 2;
+
+    // Mandatory.
     int64 vendorId = 3;
+
+    // Bokun product which is mapped against inventory product. Mandatory.
     io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 4;
+
+    // Inventory product which is mapped against Bokun product. Mandatory.
     string inventoryProductId = 5;
+
+    // Mappings between external and internal pricing categories. Mandatory (should have at least one element)
     repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping pricingCategoryMappings = 6;
+
+    // Mappings between external and internal rates. Mandatory (should have at least one element)
     repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping rateMappings = 7;
 }
 
