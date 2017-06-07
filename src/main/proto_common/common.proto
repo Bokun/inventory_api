@@ -31,8 +31,11 @@ message Time {
 
 // All fields mandatory
 message Price {
+    // ISO 4217 currency code (such as USD, EUR, GBP, etc.). Mandatory.
     string currency = 1;
-    string amount = 2;              // can't use double because of precision loss. Will convert to BigDecimal when data arrives in Java
+
+    // Can't use double because of precision loss. Will convert to BigDecimal when data arrives in Java. Mandatory.
+    string amount = 2;
 }
 
 // Data types for PluginConfigurationParameter
