@@ -21,7 +21,7 @@ service BookingService {
 }
 
 message ConfirmBookingRequest {
-    // product, *exactly* as used with CreateReservation request
+    // product, *exactly* as used with CreateReservation request. Mandatory.
     io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 1;
 
 
@@ -34,7 +34,7 @@ message ConfirmBookingRequest {
 }
 
 message CancelBookingRequest {
-    // product, *exactly* as used with CreateReservation request
+    // product, *exactly* as used with CreateReservation request. Mandatory.
     io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 1;
 
     // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.

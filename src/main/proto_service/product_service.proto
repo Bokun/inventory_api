@@ -20,7 +20,7 @@ service ProductService {
     // Inserts or updates product mapping.
     rpc UpsertProductMapping (ProductMapping) returns (ProductMapping) {}
 
-    // Retrieves all mappings (or selected mapings for given products) for a given vendor.
+    // Retrieves all mappings (or selected mappings for given products) for a given vendor.
     rpc GetProductMappings (GetProductMappingsRequest) returns (stream ProductMapping) {}
 
     // Deletes product mapping.

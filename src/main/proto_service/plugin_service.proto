@@ -21,7 +21,7 @@ service PluginService {
     // Returns plugin definition by given id.
     rpc GetDefinition (GetDefinitionRequest) returns (PluginDefinition) {}
 
-    // Configure new or existing plugin
+    // Configure existing plugin for a given vendor.
     rpc ConfigurePlugin (PluginConfiguration) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 
     // List all configured plugins for given vendor
