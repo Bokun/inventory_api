@@ -380,11 +380,11 @@ message RateWithPrice {
     string rateId = 1;
 
     // Pricing categories with prices for given availability slot. Mandatory (should at least have a single entry).
-    repeated string pricingCategoryIds = 2;
+    repeated PricingCategoryWithPrice pricingCategories = 2;
 }
 
 message PricingCategoryWithPrice {
-    PricingCategory pricingCategory = 1;
+    string pricingCategoryId = 1;
     Price price = 2;
 }
 
