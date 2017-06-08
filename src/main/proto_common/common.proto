@@ -391,10 +391,10 @@ message PricingCategoryWithPrice {
 message Reservation {
     // At what rate ("12 hour rate", "24 hour rate" etc.) this is booked. Refers to a rate in Bokun. Mandatory.
     // Should match rate from, ProductDescription::rates of booked product.
-    Rate rate = 1;
+    string rateId = 1;
 
     // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory.
-    PricingCategory pricingCategory = 2;
+    string pricingCategoryId = 2;
 
     // how many people booked for this rate/pricing category. Mandatory.
     int32 pax = 3;
