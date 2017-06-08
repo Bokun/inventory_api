@@ -377,10 +377,10 @@ message ProductAvailabilityWithRatesResponse {
 message RateWithPrice {
     // What rate ("12 hour rate", "24 hour rate"). Mandatory. If the remote end does not support rates, plugins should at least return some
     // superficial rate.
-    Rate rate = 1;
+    string rateId = 1;
 
     // Pricing categories with prices for given availability slot. Mandatory (should at least have a single entry).
-    repeated PricingCategoryWithPrice pricingCategories = 2;
+    repeated string pricingCategoryIds = 2;
 }
 
 message PricingCategoryWithPrice {
