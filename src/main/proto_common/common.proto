@@ -316,7 +316,26 @@ message SuccessfulBooking {
     // Either case, mandatory.
     string bookingConfirmationCode = 1;
 
-    repeated Ticket tickets = 2;
+    // Unset if plugin does not support tickets.
+    oneof tickets {
+        // Set if tickets were requested per passenger (yet delivered per pricing category).
+        TicketsPerPricingCategory ticketsPerPassenger = 2;
+
+        // Set if a single ticket-per-booking was requested.
+        Ticket bookingTicket = 3;
+    }
+}
+
+message TicketsPerPricingCategory {
+    repeated TicketPerPricingCategory tickets = 1;
+}
+
+message TicketPerPricingCategory {
+    // for which pricing category this ticket is for? May be unset if
+    string pricingCategory = 1;
+
+    // ticket for above mentioned pricing category. Mandatory.
+    Ticket ticket = 2;
 }
 
 message FailedBooking {
