@@ -24,7 +24,6 @@ message ConfirmBookingRequest {
     // product, *exactly* as used with CreateReservation request. Mandatory.
     io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 1;
 
-
     // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulReservation::reservationConfirmationCode. Mandatory.
     string reservationConfirmationCode = 2;
 

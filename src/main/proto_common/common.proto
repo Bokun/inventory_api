@@ -315,7 +315,27 @@ message SuccessfulBooking {
     // This may or may not overlap with ReservationResponse::reservationConfirmationCode, depending on the specifics of the remote plugin.
     // Either case, mandatory.
     string bookingConfirmationCode = 1;
-    repeated Ticket tickets = 2;
+
+    // Unset if plugin does not support tickets.
+    oneof tickets {
+        // Set if tickets were requested per passenger (yet delivered per pricing category).
+        TicketsPerPricingCategory ticketsPerPassenger = 3;
+
+        // Set if a single ticket-per-booking was requested.
+        Ticket bookingTicket = 4;
+    }
+}
+
+message TicketsPerPricingCategory {
+    repeated TicketPerPricingCategory tickets = 1;
+}
+
+message TicketPerPricingCategory {
+    // for which pricing category this ticket is for? May be unset if
+    string pricingCategory = 1;
+
+    // ticket for above mentioned pricing category. Mandatory.
+    Ticket ticket = 2;
 }
 
 message FailedBooking {
