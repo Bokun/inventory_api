@@ -319,10 +319,10 @@ message SuccessfulBooking {
     // Unset if plugin does not support tickets.
     oneof tickets {
         // Set if tickets were requested per passenger (yet delivered per pricing category).
-        TicketsPerPricingCategory ticketsPerPassenger = 3;
+        TicketsPerPricingCategory ticketsPerPassenger = 2;
 
         // Set if a single ticket-per-booking was requested.
-        Ticket bookingTicket = 4;
+        Ticket bookingTicket = 3;
     }
 }
 
