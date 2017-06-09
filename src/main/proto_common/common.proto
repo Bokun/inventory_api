@@ -40,7 +40,7 @@ message Price {
 
 // Data types for PluginConfigurationParameter
 enum PluginParameterDataType {
-    UNASSIGNED = 0;
+    UNASSIGNED_PLUGIN_PARAMETER_DATA_TYPE = 0;
     LONG = 1;
     DOUBLE = 2;
     BOOLEAN = 3;
@@ -49,7 +49,7 @@ enum PluginParameterDataType {
 
 // What kind of features does this plugin support?
 enum PluginCapability {
-    UNASSIGNED = 0;
+    UNASSIGNED_PLUGIN_CAPABILITY = 0;
     SUPPORTS_PRICING = 1;
     SUPPORTS_RESERVATIONS = 2;
     SUPPORTS_AVAILABILITY = 3;
@@ -57,7 +57,7 @@ enum PluginCapability {
 
 // Supported product categories
 enum ProductCategory {
-    UNASSIGNED = 0;
+    UNASSIGNED_PRODUCT_CATEGORY = 0;
     ACCOMMODATION = 1;
     ACTIVITIES = 2;
     CAR_RENTALS = 3;
@@ -107,7 +107,7 @@ message SeasonalOpeningHours {
 }
 
 enum BookingType {
-    UNASSIGNED = 0;
+    UNASSIGNED_BOOKING_TYPE = 0;
     DATE = 1;
     DATE_AND_TIME = 2;
     PASS = 3;
@@ -215,14 +215,14 @@ message ProductDescription {
 
 // A list of all possible ticketing options for a product.
 enum TicketSupport {
-    UNASSIGNED = 0;
+    UNASSIGNED_TICKET_SUPPORT = 0;
     TICKET_PER_PERSON = 1;
     TICKET_PER_BOOKING = 2;
 }
 
 // Types of tickets supported by remote systems
 enum TicketType {
-    UNASSIGNED = 0;
+    UNASSIGNED_TICKET_TYPE = 0;
     QR_CODE = 1;
 }
 
