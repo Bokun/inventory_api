@@ -82,6 +82,9 @@ message ProductMappingIdentifier {
 }
 
 message GetProductMappingsRequest {
+    // plugin id to get mapped products for. Optional: if passed, it will filter by given plugin definition id, otherwise all definitions will match.
+    string pluginId = 1;
+
     // vendor to get mapped products for. Mandatory.
     int64 vendorId = 2;
 
