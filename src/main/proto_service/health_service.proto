@@ -1,19 +1,20 @@
 syntax = "proto3";
 
-package io.bokun.inventory.service.health.grpc;
+package grpc.health.v1;
 
-option java_multiple_files = true;
-option java_package = "io.bokun.inventory.service.health.grpc";
-
-import "common.proto";
-import "inventory_service_common.proto";
-
-service HealthService {
-    // List definitions which are not only registered but also available. This works hand-in-hand with PluginService::listDefinitions
-    rpc ListAvailableDefinitions (io.bokun.inventory.common.api.grpc.Empty) returns (stream PluginDefinitionId) {}
+message HealthCheckRequest {
+  string service = 1;
 }
 
-// Wraps PluginDefinition#id
-message PluginDefinitionId {
-    string id = 1;
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+  }
+  ServingStatus status = 1;
+}
+
+service Health {
+  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
 }
