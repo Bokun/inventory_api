@@ -2,6 +2,9 @@ syntax = "proto3";
 
 package grpc.health.v1;
 
+import "common.proto";
+import "inventory_service_common.proto";
+
 message HealthCheckRequest {
   string service = 1;
 }
