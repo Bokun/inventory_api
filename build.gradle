@@ -126,7 +126,7 @@ task pluginApi(type: Jar) {
 task serviceApi(type: Jar) {
     baseName = 'serviceapi'
     from sourceSets.main.output.classesDir
-    include 'io/bokun/inventory/service/**'
+    include 'io/bokun/inventory/service/**', 'grpc/health/v1/**'
 }
 
 if (awsCredentials != null) {
