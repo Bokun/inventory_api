@@ -227,7 +227,11 @@ enum TicketType {
 }
 
 message QrTicket {
+    // String which is used to generate barcode from. Mandatory.
     string ticketBarcode = 1;
+
+    // String which may be used to verify ticket manually in case if there is no connection for QR code scanner. Optional.
+    string offlineCode = 2;
 }
 
 message Ticket {
