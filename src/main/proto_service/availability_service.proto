@@ -20,6 +20,7 @@ service AvailabilityService {
 
 message FindAvailableProductsRequest {
     // Range of products we are looking in. Mandatory (must not be empty).
+    // If any of given products is not mapped (inventory service is unaware of such product), it will be ignored.
     repeated io.bokun.inventory.service.common.grpc.BokunProduct products = 1;
 
     // What date range are we searching for? Mandatory.

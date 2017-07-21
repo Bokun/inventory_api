@@ -9,10 +9,13 @@ import "common.proto";
 import "inventory_service_common.proto";
 
 service PluginService {
-    // registers a new plugin to the system by given url
+    // Registers a new plugin to the system by given url
     rpc RegisterPlugin (PluginUrl) returns (PluginDefinition) {}
 
-    // unregisters existing plugin from the system by given url which was previously registered with RegisterPlugin
+    // Moves plugin to a new URL
+    rpc MovePlugin(MovePluginRequest) returns (PluginDefinition) {}
+
+    // Unregisters existing plugin from the system by given url which was previously registered with RegisterPlugin
     rpc UnregisterPlugin (PluginUnregistrationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 
     // List definitions which are available. This consists of all registered plugins.
@@ -34,6 +37,14 @@ service PluginService {
 message PluginUrl {
     // URL of plugin which is listening on a socket. Mandatory.
     string url = 1;
+}
+
+message MovePluginRequest {
+    // ID of plugin to move to a new URL
+    string id = 1;
+
+    // URL of plugin which is currently listening on a socket. Mandatory.
+    string newUrl = 2;
 }
 
 message GetDefinitionRequest {
