@@ -13,12 +13,12 @@ service PluginApi {
 
     // Return information about products of the remote system this plugin is connecting to (as opposed to Bokun products).
     // This call is required in order to link Bokun- and remote system-configured products together.
-    rpc SearchProducts(SearchInventoryProductsRequest) returns (stream io.bokun.inventory.common.api.grpc.BasicProductInfo) {}
+    rpc SearchProducts(SearchProductsRequest) returns (stream io.bokun.inventory.common.api.grpc.BasicProductInfo) {}
 
     // Return information about products of the remote system this plugin is connecting to (as opposed to Bokun products).
     // This call is required in order to link Bokun- and remote system-configured products together.
     // @deprecated in favour of SearchProducts
-    rpc SearchInventoryProducts(SearchInventoryProductsRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductDescription) {}
+    rpc SearchInventoryProducts(SearchProductsRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductDescription) {}
 
     // Returns detailed product information by given id (ids refer to ProductDescription::id)
     rpc GetProductById(GetProductByIdRequest) returns (io.bokun.inventory.common.api.grpc.ProductDescription) {}
@@ -111,7 +111,7 @@ message ExternalProductId {
     string productId = 1;
 }
 
-message SearchInventoryProductsRequest {
+message SearchProductsRequest {
     repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;       // plugin config parameters
     string productName = 2;
     string country = 3;             // ISO ALPHA-2 code
