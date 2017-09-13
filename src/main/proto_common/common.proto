@@ -138,6 +138,22 @@ message PricingCategory {
     string label = 2;
 }
 
+// A brief information about a product. It is a subset of ProductDescription properties
+message BasicProductInfo {
+    // Product id of remote system. Mandatory.
+    string id = 1;
+
+    // Product name of remote system. Mandatory.
+    string name = 2;
+
+    // Product description of remote system. Optional.
+    string description = 3;
+
+    // Product categories this product is sold at. Optional - they will be shown for information purposes if set.
+    // This refers to pricing categories of the remote system.
+    repeated PricingCategory pricingCategories = 4;
+}
+
 // Product description of a remote system product.
 message ProductDescription {
     // Product id of remote system. Mandatory.

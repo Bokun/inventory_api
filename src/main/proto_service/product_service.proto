@@ -11,9 +11,14 @@ import "inventory_service_common.proto";
 service ProductService {
     // Searches for available products.
     // Returned ids (of products, rates, pricing categories, etc.) are always external.
+    rpc SearchProducts(SearchInventoryProductsRequest) returns (stream io.bokun.inventory.common.api.grpc.BasicProductInfo) {}
+
+    // Searches for available products.
+    // Returned ids (of products, rates, pricing categories, etc.) are always external.
+    // @deprecated in favour of SearchProducts
     rpc SearchInventoryProducts (SearchInventoryProductsRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductDescription) {}
 
-    // Returns product information by given id (ids refer to ProductDescription::id)
+    // Returns detailed product information by given id (ids refer to ProductDescription::id)
     // Returned ids (of products, rates, pricing categories, etc.) are always external.
     rpc GetProductById (GetProductByIdRequest) returns (io.bokun.inventory.common.api.grpc.ProductDescription) {}
 
