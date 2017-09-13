@@ -230,6 +230,9 @@ message ProductDescription {
     // City name where this product is served at. Optional (if product is not applicable to any city, e.g. Lava Tours).
     // Multiple items means this product is for multiple cities.
     repeated string cities = 19;
+
+    // Start times this product is available at. Mandatory (must have at least one element) if bookingType is DATE_AND_TIME, otherwise ignored.
+    repeated Time startTimes = 20;
 }
 
 // A list of all possible ticketing options for a product.
