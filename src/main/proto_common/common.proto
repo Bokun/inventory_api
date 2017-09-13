@@ -47,12 +47,15 @@ enum PluginParameterDataType {
     STRING = 4;
 }
 
-// What kind of features does this plugin support?
+// What kind of features/speacial cases does this plugin support?
 enum PluginCapability {
     UNASSIGNED_PLUGIN_CAPABILITY = 0;
     SUPPORTS_PRICING = 1;
     SUPPORTS_RESERVATIONS = 2;
     SUPPORTS_AVAILABILITY = 3;
+
+    // If set, Contact::country is mandatory; plugin might expect this to be set for reservation requests.
+    REQUIRES_CUSTOMER_COUNTRY = 4;
 }
 
 // Supported product categories
@@ -400,6 +403,9 @@ message Contact {
 
     // ISO ALPHA-2 code
     string nationality = 7;
+
+    // ISO ALPHA-2 code
+    string country = 8;
 }
 
 message ProductAvailabilityWithRatesResponse {
