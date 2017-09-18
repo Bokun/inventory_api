@@ -155,6 +155,10 @@ message BasicProductInfo {
     // Product categories this product is sold at. Optional - they will be shown for information purposes if set.
     // This refers to pricing categories of the remote system.
     repeated PricingCategory pricingCategories = 4;
+
+    // City name where this product is served at. Optional (if product is not applicable to any city, e.g. Lava Tours).
+    // Multiple items means this product is for multiple cities.
+    repeated string cities = 5;
 }
 
 // Product description of a remote system product.
