@@ -159,6 +159,10 @@ message BasicProductInfo {
     // City name where this product is served at. Optional (if product is not applicable to any city, e.g. Lava Tours).
     // Multiple items means this product is for multiple cities.
     repeated string cities = 5;
+
+    // ISO ALPHA-2 codes. Optional (inventory service may not set any country if plugin returns invalid data).
+    // Multiple items means this product is for multiple countries.
+    repeated string countries = 6;
 }
 
 // Product description of a remote system product.
