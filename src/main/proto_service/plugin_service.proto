@@ -93,10 +93,12 @@ message PluginUnregistrationRequest {
 }
 
 message PluginConfigurationRequest {
-    PluginConfiguration pluginConfiguration = 1;
+    int64 vendorId = 1;
+    string pluginId = 2;        // if absent, a new plugin will be created. Otherwise existing plugin will be used
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameterValues = 3;
 
     // for logging purposes only
-    string requestId = 2;
+    string requestId = 4;
 }
 
 message ListConfiguredPluginsRequest {
