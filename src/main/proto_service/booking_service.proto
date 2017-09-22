@@ -30,9 +30,6 @@ message ConfirmBookingRequest {
     // What kind of tickets do you want the remote end to generate? This must be supported by a booked product, see ProductDescription::ticketSupport
     // Mandatory.
     io.bokun.inventory.common.api.grpc.TicketSupport ticketingType = 3;
-
-    // for logging purposes only
-    string requestId = 4;
 }
 
 message CancelBookingRequest {
@@ -41,9 +38,6 @@ message CancelBookingRequest {
 
     // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.
     string bookingConfirmationCode = 2;
-
-    // for logging purposes only
-    string requestId = 3;
 }
 
 message ReservationRequest {
@@ -95,7 +89,4 @@ message ReservationRequest {
 
     // Reservations for this request. Each reservation should be formed for concrete pricing category, rate and product
     repeated io.bokun.inventory.common.api.grpc.Reservation reservations = 13;
-
-    // for logging purposes only
-    string requestId = 14;
 }

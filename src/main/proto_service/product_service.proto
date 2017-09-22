@@ -23,27 +23,13 @@ service ProductService {
     rpc GetProductById (GetProductByIdRequest) returns (io.bokun.inventory.common.api.grpc.ProductDescription) {}
 
     // Inserts or updates product mapping.
-    rpc UpsertProductMapping (UpsertProductMappingRequest) returns (ProductMapping) {}
+    rpc UpsertProductMapping (ProductMapping) returns (ProductMapping) {}
 
     // Retrieves all mappings (or selected mappings for given products) for a given vendor.
     rpc GetProductMappings (GetProductMappingsRequest) returns (stream ProductMapping) {}
 
     // Deletes product mapping.
-    rpc DeleteProductMapping (DeleteProductMappingRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
-}
-
-message DeleteProductMappingRequest {
-    ProductMappingIdentifier productMappingIdentifier = 1;
-
-    // for logging purposes only
-    string requestId = 2;
-}
-
-message UpsertProductMappingRequest {
-    ProductMapping productMapping = 1;
-
-    // for logging purposes only
-    string requestId = 2;
+    rpc DeleteProductMapping (ProductMappingIdentifier) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 }
 
 message GetProductByIdRequest {
@@ -53,9 +39,6 @@ message GetProductByIdRequest {
 
     // reference to product id on the remote end. Mandatory
     string externalId = 3;
-
-    // for logging purposes only
-    string requestId = 4;
 }
 
 message SearchProductsRequest {
@@ -73,9 +56,6 @@ message SearchProductsRequest {
 
     // City to get products for. Optional.
     string city = 5;
-
-    // for logging purposes only
-    string requestId = 6;
 }
 
 message ProductMapping {
@@ -116,7 +96,4 @@ message GetProductMappingsRequest {
     // For which Bokun products to get mapping for? If the list is empty/null, it will return all mappings.
     // If the list has at least one element, it will try to find mappings for specified product(s) only.
     repeated io.bokun.inventory.service.common.grpc.BokunProduct bokunProducts = 3;
-
-    // for logging purposes only
-    string requestId = 4;
 }
