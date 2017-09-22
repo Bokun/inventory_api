@@ -28,6 +28,9 @@ message FindAvailableProductsRequest {
 
     // Required capacity. Mandatory.
     int32 capacity = 3;
+
+    // for logging purposes only
+    string requestId = 4;
 }
 
 message GetProductAvailabilityRequest {
@@ -36,4 +39,7 @@ message GetProductAvailabilityRequest {
 
     // For which range to find availability/prices for? Mandatory.
     io.bokun.inventory.common.api.grpc.DatePeriod range = 2;
+
+    // for logging purposes only
+    string requestId = 3;
 }

@@ -9,7 +9,7 @@ import "common.proto";
 
 service PluginApi {
     // Provide plugin definition information (what features etc this plugin supports).
-    rpc GetDefinition (io.bokun.inventory.common.api.grpc.Empty) returns (PluginDefinition) {}
+    rpc GetDefinition (GetDefinitionRequest) returns (PluginDefinition) {}
 
     // Return information about products of the remote system this plugin is connecting to (as opposed to Bokun products).
     // This call is required in order to link Bokun- and remote system-configured products together.
@@ -54,6 +54,9 @@ message ConfirmBookingRequest {
 
     // How should the tickets be generated? This must be supported by a booked product, see ProductDescription::ticketSupport. Mandatory.
     io.bokun.inventory.common.api.grpc.TicketSupport ticketSupport = 3;
+
+    // for logging purposes only
+    string requestId = 4;
 }
 
 message CancelBookingRequest {
@@ -62,6 +65,9 @@ message CancelBookingRequest {
 
     // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.
     string bookingConfirmationCode = 2;
+
+    // for logging purposes only
+    string requestId = 3;
 }
 
 message GetProductByIdRequest {
@@ -70,6 +76,9 @@ message GetProductByIdRequest {
 
     // reference to product id on the remote end. Mandatory
     string externalId = 2;
+
+    // for logging purposes only
+    string requestId = 3;
 }
 
 // Parameters used to configure supported plugin(s)
@@ -105,10 +114,18 @@ message ProductsAvailabilityRequest {
 
     // A list of product ids which correspond to product ids on the system this plugin connects to (as opposed to ids of products in Bokun)
     repeated string externalProductIds = 4;
+
+    // for logging purposes only
+    string requestId = 5;
 }
 
 message ExternalProductId {
     string productId = 1;
+}
+
+message GetDefinitionRequest {
+    // for logging purposes only
+    string requestId = 1;
 }
 
 message SearchProductsRequest {
@@ -116,6 +133,9 @@ message SearchProductsRequest {
     string productName = 2;
     string country = 3;             // ISO ALPHA-2 code
     string city = 4;                // city this product is served at. Optional
+
+    // for logging purposes only
+    string requestId = 5;
 }
 
 message ProductAvailabilityRequest {
@@ -127,6 +147,9 @@ message ProductAvailabilityRequest {
     // Date range (boundaries included) for which we want to know precise capacity, availability and pricing for given product
     // Note that this request does not ask for capacity; instead response should tell us how much seats/spaces/etc are available in total.
     io.bokun.inventory.common.api.grpc.DatePeriod range = 3;
+
+    // for logging purposes only
+    string requestId = 4;
 }
 
 message ReservationRequest {
@@ -178,4 +201,7 @@ message ReservationRequest {
 
     // A collection of reservations for each combination of rate/pricing category. Mandatory.
     repeated io.bokun.inventory.common.api.grpc.Reservation reservations = 13;
+
+    // for logging purposes only
+    string requestId = 14;
 }

@@ -10,7 +10,7 @@ import "inventory_service_common.proto";
 
 service PluginService {
     // Registers a new plugin to the system by given url
-    rpc RegisterPlugin (PluginUrl) returns (PluginDefinition) {}
+    rpc RegisterPlugin (RegisterPluginRequest) returns (PluginDefinition) {}
 
     // Moves plugin to a new URL
     rpc MovePlugin(MovePluginRequest) returns (PluginDefinition) {}
@@ -19,24 +19,27 @@ service PluginService {
     rpc UnregisterPlugin (PluginUnregistrationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 
     // List definitions which are available. This consists of all registered plugins.
-    rpc ListDefinitions (io.bokun.inventory.common.api.grpc.Empty) returns (stream PluginDefinition) {}
+    rpc ListDefinitions (ListDefinitionsRequest) returns (stream PluginDefinition) {}
 
     // Returns plugin definition by given id.
     rpc GetDefinition (GetDefinitionRequest) returns (PluginDefinition) {}
 
     // Configure existing plugin for a given vendor.
-    rpc ConfigurePlugin (PluginConfiguration) returns (io.bokun.inventory.common.api.grpc.Empty) {}
+    rpc ConfigurePlugin (PluginConfigurationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 
     // List all configured plugins for given vendor
-    rpc ListConfiguredPlugins (io.bokun.inventory.service.common.grpc.VendorId) returns (stream PluginConfiguration) {}
+    rpc ListConfiguredPlugins (ListConfiguredPluginsRequest) returns (stream PluginConfiguration) {}
 
     // Delete configured plugin for a vendor
     rpc DeleteConfiguredPlugin (DeletePluginConfigurationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 }
 
-message PluginUrl {
+message RegisterPluginRequest {
     // URL of plugin which is listening on a socket. Mandatory.
     string url = 1;
+
+    // for logging purposes only
+    string requestId = 2;
 }
 
 message MovePluginRequest {
@@ -45,11 +48,22 @@ message MovePluginRequest {
 
     // URL of plugin which is currently listening on a socket. Mandatory.
     string newUrl = 2;
+
+    // for logging purposes only
+    string requestId = 3;
+}
+
+message ListDefinitionsRequest {
+    // for logging purposes only
+    string requestId = 1;
 }
 
 message GetDefinitionRequest {
     // id of plugin to get definition for. Mandatory.
     string pluginDefinitionId = 1;
+
+    // for logging purposes only
+    string requestId = 2;
 }
 
 // As this is Bokun-internal API, we add a few more fields to the plugin definition which is publicly traded
@@ -73,6 +87,25 @@ message PluginDefinition {
 message PluginUnregistrationRequest {
     string id = 1;          // unregister by either id or url, whichever comes first
     string url = 2;
+
+    // for logging purposes only
+    string requestId = 3;
+}
+
+message PluginConfigurationRequest {
+    int64 vendorId = 1;
+    string pluginId = 2;        // if absent, a new plugin will be created. Otherwise existing plugin will be used
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameterValues = 3;
+
+    // for logging purposes only
+    string requestId = 4;
+}
+
+message ListConfiguredPluginsRequest {
+    io.bokun.inventory.service.common.grpc.VendorId vendorId = 1;
+
+    // for logging purposes only
+    string requestId = 2;
 }
 
 message PluginConfiguration {
@@ -84,4 +117,7 @@ message PluginConfiguration {
 message DeletePluginConfigurationRequest {
     int64 vendorId = 1;
     string pluginId = 2;
+
+    // for logging purposes only
+    string requestId = 3;
 }
