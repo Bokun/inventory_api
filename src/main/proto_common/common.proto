@@ -264,9 +264,15 @@ message QrTicket {
     string offlineCode = 2;
 }
 
+message BinaryTicket {
+    //representation of ticket in bytes
+    bytes ticketContent = 1;
+}
+
 message Ticket {
     oneof ticket {
         QrTicket qrTicket = 1;
+        BinaryTicket binaryTicket = 2;
     }
 }
 
