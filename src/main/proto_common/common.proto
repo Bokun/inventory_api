@@ -265,7 +265,7 @@ message QrTicket {
 }
 
 message BinaryTicket {
-    //representation of ticket in bytes
+    //representation of ticket in bytes. Mandatory.
     bytes ticketContent = 1;
 }
 
