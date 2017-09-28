@@ -51,7 +51,12 @@ enum PluginParameterDataType {
 enum PluginCapability {
     UNASSIGNED_PLUGIN_CAPABILITY = 0;
     SUPPORTS_PRICING = 1;
+
+    // If set, both platform and Inventory Service with make two calls (CreateReservation + ConfirmBooking) - which is the recommended way.
+    // Otherwise, one step CreateAndConfirmBooking method will be used.
+    // For a plugin, it doesn't make sense to implement both options as only one will be used, depending of presence/absence of this flag.
     SUPPORTS_RESERVATIONS = 2;
+
     SUPPORTS_AVAILABILITY = 3;
 
     // If set, Contact::country is mandatory; plugin might expect this to be set for reservation requests.
