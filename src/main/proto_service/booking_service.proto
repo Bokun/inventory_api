@@ -12,21 +12,17 @@ service BookingService {
     // Reserve capacity for a product for limited time. Please using blocking API for this as the result of this is atomic: all requests should either
     // succeed or fail; there can be no half/success.
     //
-    // The two step process (this method + ConfirmBooking) is only called if PluginDefinition::capabilities contains SUPPORTS_RESERVATIONS, otherwise
-    // CreateAndConfirmBooking method is used instead of both.
+    // The two step process (this method + ConfirmBooking) is always called from the platform. If PluginDefinition::capabilities does not support
+    // SUPPORTS_RESERVATIONS, inventory service will mock this call into one transaction. However this is transparent from the plaform side which
+    // always makes two calls.
     rpc CreateReservation (ReservationRequest) returns (io.bokun.inventory.common.api.grpc.ReservationResponse) {}
 
     // Once reserved, proceed with booking.
     //
-    // The two step process (CreateReservation + this method) is only called if PluginDefinition::capabilities contains SUPPORTS_RESERVATIONS,
-    // otherwise CreateAndConfirmBooking method is used instead of both.
+    // The two step process (CreateReservation + this method) is always called from the platform. If PluginDefinition::capabilities does not support
+    // SUPPORTS_RESERVATIONS, inventory service will mock this call into one transaction. However this is transparent from the plaform side which
+    // always makes two calls.
     rpc ConfirmBooking (ConfirmBookingRequest) returns (io.bokun.inventory.common.api.grpc.ConfirmBookingResponse) {}
-
-    // This creates reservation and makes a booking in one step.
-    //
-    // This method is only called by the platform if PluginDefinition::capabilities does not contain SUPPORTS_RESERVATIONS value.
-    // Otherwise, two step process (CreateReservation + ConfirmBooking) is used, which is the recommended option.
-    rpc CreateAndConfirmBooking (CreateConfirmBookingRequest) returns (io.bokun.inventory.common.api.grpc.ConfirmBookingResponse) {}
 
     // Once booked, a booking may be cancelled using booking ref number.
     rpc CancelBooking (CancelBookingRequest) returns (io.bokun.inventory.common.api.grpc.CancelBookingResponse) {}
