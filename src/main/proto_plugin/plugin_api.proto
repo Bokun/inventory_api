@@ -49,6 +49,9 @@ message ConfirmBookingRequest {
 
     // How should the tickets be generated? This must be supported by a booked product, see ProductDescription::ticketSupport. Mandatory.
     io.bokun.inventory.common.api.grpc.TicketSupport ticketSupport = 3;
+
+    // Contact of the customer who has reserved this booking (otherwise known as "lead customer"). Mandatory if skipped on reservation stage.
+    io.bokun.inventory.common.api.grpc.Contact customerContact = 4;
 }
 
 message CancelBookingRequest {
@@ -131,7 +134,7 @@ message ReservationRequest {
     // Product id in external system. Mandatory.
     string productId = 2;
 
-    // Contact of the customer who has reserved this booking (otherwise known as "lead customer"). Mandatory.
+    // Contact of the customer who has reserved this booking (otherwise known as "lead customer"). Optional.
     io.bokun.inventory.common.api.grpc.Contact customerContact = 3;
 
     // Notes captured by a person who entered this booking (may also be customer itself if booked online). Optional.
