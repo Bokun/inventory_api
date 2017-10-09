@@ -251,4 +251,8 @@ message CreateConfirmBookingRequest {
 
     // How should the tickets be generated? This must be supported by a booked product, see ProductDescription::ticketSupport. Mandatory.
     io.bokun.inventory.common.api.grpc.TicketSupport ticketSupport = 14;
+
+    // This is some unique id which is taken from the platform for this reservation. Plugins may ignore it, or may use this field in order
+    // to make backrefrence from their own reservation/booking towards platform reservation/booking.
+    string platformId = 15;
 }
