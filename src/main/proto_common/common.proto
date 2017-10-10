@@ -250,15 +250,17 @@ message ProductDescription {
 
 // A list of all possible ticketing options for a product.
 enum TicketSupport {
+    // Should not be used explicitly.
     UNASSIGNED_TICKET_SUPPORT = 0;
-    TICKET_PER_PERSON = 1;
-    TICKET_PER_BOOKING = 2;
-}
 
-// Types of tickets supported by remote systems
-enum TicketType {
-    UNASSIGNED_TICKET_TYPE = 0;
-    QR_CODE = 1;
+    // Request to issue a ticket per each passenger when booking.
+    TICKET_PER_PERSON = 1;
+
+    // Request to issue a single ticket for all passengers when booking.
+    TICKET_PER_BOOKING = 2;
+
+    // No tickets required. Should be used when 3rd party does not require, provide or support tickets.
+    TICKETS_NOT_REQUIRED = 3;
 }
 
 message QrTicket {
