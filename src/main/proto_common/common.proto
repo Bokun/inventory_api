@@ -144,6 +144,12 @@ message PricingCategory {
 
     // Label for pricing category. Mandatory.
     string label = 2;
+
+    // Least possible age for qualifying for this price category. Optional.
+    int32 minAge = 3;
+
+    // Max possible age for qualifying for this price category. Optional.
+    int32 maxAge = 4;
 }
 
 // A brief information about a product. It is a subset of ProductDescription properties
