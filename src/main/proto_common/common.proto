@@ -246,6 +246,9 @@ message ProductDescription {
 
     // Start times this product is available at. Mandatory (must have at least one element) if bookingType is DATE_AND_TIME, otherwise ignored.
     repeated Time startTimes = 20;
+
+    // What kind of tickets does this product generate? Should be set by the plugin unless <tt>ticketSupport==TICKETS_NOT_REQUIRED</tt>
+    TicketType ticketType = 21;
 }
 
 // A list of all possible ticketing options for a product.
@@ -263,11 +266,21 @@ enum TicketSupport {
     TICKETS_NOT_REQUIRED = 3;
 }
 
+// QR Code type: https://en.wikipedia.org/wiki/QR_code
 message QrTicket {
     // String which is used to generate barcode from. Mandatory.
     string ticketBarcode = 1;
 
     // String which may be used to verify ticket manually in case if there is no connection for QR code scanner. Optional.
+    string offlineCode = 2;
+}
+
+// Data Matrix type: https://en.wikipedia.org/wiki/Data_Matrix
+message DataMatrixTicket {
+    // String which is used to generate barcode from. Mandatory.
+    string ticketBarcode = 1;
+
+    // String which may be used to verify ticket manually in case if there is no connection for Data Matrix code scanner. Optional.
     string offlineCode = 2;
 }
 
@@ -278,9 +291,29 @@ message BinaryTicket {
 
 message Ticket {
     oneof ticket {
-        QrTicket qrTicket = 1;
-        BinaryTicket binaryTicket = 2;
+        // @see TicketType#BINARY
+        BinaryTicket binaryTicket = 1;
+
+        // @see TicketType#QR_CODE
+        QrTicket qrTicket = 2;
+
+        // @see TicketType#DATA_MATRIX
+        DataMatrixTicket dataMatrixTicket = 3;
     }
+}
+
+enum TicketType {
+    // Should not be used explicitly.
+    UNASSIGNED_TICKET_TYPE = 0;
+
+    // @see BinaryTicket
+    BINARY = 1;
+
+    // @see QrTicket
+    QR_CODE = 2;
+
+    // @see DataMatrixTicket
+    DATA_MATRIX = 3;
 }
 
 message PickupDropoffPlace {
