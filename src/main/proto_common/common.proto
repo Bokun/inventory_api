@@ -215,14 +215,14 @@ message ProductDescription {
     bool pickupAvailable = 9;
 
     // Whether customer can be picked up at an arbitrary place, specified during booking process.
-    // Mandatory if ::meetingType is MEET_ON_LOCATION_OR_PICKUP or PICKUP_ONLY, otherwise irrelevant/ignored.
+    // Mandatory if ::meetingType is MEET_ON_LOCATION_OR_PICKUP or PICK_UP, otherwise irrelevant/ignored.
     bool customPickupPlaceAllowed = 10;
 
     // How many minutes somebody should be picked up before the event takes place.
     int32 pickupMinutesBefore = 11;
 
     // A collection of pre-defined pick up places, supported by vendor.
-    // Mandatory (should have at least one entry) if ::meetingType is MEET_ON_LOCATION_OR_PICKUP or PICKUP_ONLY and ::customPickupPlaceAllowed is false.
+    // Mandatory (should have at least one entry) if ::meetingType is MEET_ON_LOCATION_OR_PICKUP or PICK_UP and ::customPickupPlaceAllowed is false.
     repeated PickupDropoffPlace pickupPlaces = 12;
 
     // Whether drop off is available for this product. Mandatory.
@@ -333,7 +333,7 @@ enum MeetingType {
     MEET_ON_LOCATION_OR_PICKUP = 1;
 
     // Pickup is mandatory
-    PICKUP_ONLY = 2;
+    PICK_UP = 2;
 }
 
 message PickupDropoffPlace {
