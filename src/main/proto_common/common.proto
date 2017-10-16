@@ -508,7 +508,22 @@ message RateWithPrice {
     string rateId = 1;
 
     // Pricing categories with prices for given availability slot. Mandatory (should at least have a single entry).
+    // @deprecated: this should either use per person or per booking pricing -- todo remove before the release
     repeated PricingCategoryWithPrice pricingCategories = 2;
+
+    // Depending on the rate settings, this should be priced either per person or per booking - one of two should be set.
+    oneof pricingOptions {
+        PricePerPerson pricePerPerson = 3;
+        PricePerBooking pricePerBooking = 4;
+    }
+}
+
+message PricePerPerson {
+    repeated PricingCategoryWithPrice pricingCategoryWithPrice = 1;
+}
+
+message PricePerBooking {
+    Price price = 1;
 }
 
 message PricingCategoryWithPrice {
@@ -522,16 +537,44 @@ message Reservation {
     string rateId = 1;
 
     // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory.
+    // @deprecated - use reservationOptions -- todo remove before the release
     string pricingCategoryId = 2;
 
     // how many people booked for this rate/pricing category. Mandatory.
+    // @deprecated - use reservationOptions -- todo remove before the release
     int32 pax = 3;
 
     // Who will be travelling / taking part in this activity -- for this rate & pricing category. Remote end might not require this, but platform is
     // expected to send the data anyway. Number of records must match <tt>pax</tt>.
+    // @deprecated - use reservationOptions -- todo remove before the release
     repeated Contact participants = 4;
 
     // Whatever amount was paid for this slot. Mandatory from the platform end - but only passed to the plugin if plugin supports storing of
     // non-leading customers.
     Price amountPaid = 5;
+
+    // whether this is booked per person, e.g. 3 ADT + 1 CHD or per booking ("minibus for 20 PAX")
+    oneof reservationOptions {
+        ReservationPerPerson perPerson = 6;
+        ReservationPerBooking perBooking = 7;
+    }
+}
+
+// Relates to "Passenger price is per person" check box in Bokun rate edit screen, checked.
+message ReservationPerPerson {
+    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory.
+    string pricingCategoryId = 1;
+
+    // how many people booked for this rate/pricing category. Mandatory.
+    int32 pax = 2;
+
+    // Who will be travelling / taking part in this activity -- for this rate & pricing category. Remote end might not require this, but platform is
+    // expected to send the data anyway. Number of records must match <tt>pax</tt>.
+    repeated Contact participants = 3;
+}
+
+// Relates to "Passenger price is per person" check box in Bokun rate edit screen, unchecked.
+message ReservationPerBooking {
+    // how many reservations? If the rate is e.g. "minibus for 20 PAX" then 1 means one minibus and 20 means twenty minibuses.
+    int32 count = 1;
 }
