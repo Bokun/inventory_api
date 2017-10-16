@@ -211,18 +211,18 @@ message ProductDescription {
     // -- if PASS, then this product is bookable so that participant could consume this product at any given day (providing ticket is not expired)
     BookingType bookingType = 8;
 
-    // Whether pickup is available for this product. Mandatory.
+    // DEPRECATED: Use MeetingType instead. Whether pickup is available for this product. Mandatory.
     bool pickupAvailable = 9;
 
     // Whether customer can be picked up at an arbitrary place, specified during booking process.
-    // Mandatory if ::pickupAvailable is true, otherwise irrelevant/ignored.
+    // Mandatory if ::meetingType is MEET_ON_LOCATION_OR_PICKUP or PICKUP_ONLY, otherwise irrelevant/ignored.
     bool customPickupPlaceAllowed = 10;
 
     // How many minutes somebody should be picked up before the event takes place.
     int32 pickupMinutesBefore = 11;
 
     // A collection of pre-defined pick up places, supported by vendor.
-    // Mandatory (should have at least one entry) if ::pickupAvailable is true and ::customPickupPlaceAllowed is false.
+    // Mandatory (should have at least one entry) if ::meetingType is MEET_ON_LOCATION_OR_PICKUP or PICKUP_ONLY and ::customPickupPlaceAllowed is false.
     repeated PickupDropoffPlace pickupPlaces = 12;
 
     // Whether drop off is available for this product. Mandatory.
@@ -255,6 +255,9 @@ message ProductDescription {
 
     // What kind of tickets does this product generate? Should be set by the plugin unless <tt>ticketSupport==TICKETS_NOT_REQUIRED</tt>
     TicketType ticketType = 21;
+
+    // What kind of meeting type the product uses. Mandatory.
+    MeetingType meetingType = 22;
 }
 
 // A list of all possible ticketing options for a product.
@@ -320,6 +323,17 @@ enum TicketType {
 
     // @see DataMatrixTicket
     DATA_MATRIX = 3;
+}
+
+enum MeetingType {
+    // No pickup is offered
+    MEET_ON_LOCATION = 0;
+
+    // Pickup is optional
+    MEET_ON_LOCATION_OR_PICKUP = 1;
+
+    // Pickup is mandatory
+    PICKUP_ONLY = 2;
 }
 
 message PickupDropoffPlace {
