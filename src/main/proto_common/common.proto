@@ -592,10 +592,6 @@ message RateWithPrice {
     // superficial rate.
     string rateId = 1;
 
-    // Pricing categories with prices for given availability slot. Mandatory (should at least have a single entry).
-    // @deprecated: this should either use per person or per booking pricing -- todo remove before the release
-    repeated PricingCategoryWithPrice pricingCategories = 2;
-
     // Depending on the rate settings, this should be priced either per person or per booking - one of two should be set.
     oneof pricingOptions {
         PricePerPerson pricePerPerson = 3;
@@ -621,45 +617,29 @@ message Reservation {
     // Should match rate from, ProductDescription::rates of booked product.
     string rateId = 1;
 
-    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory.
-    // @deprecated - use reservationOptions -- todo remove before the release
-    string pricingCategoryId = 2;
+    // Who will travel on this reservation? Mandatory for both price-per-person and price-per-booking cases.
+    //
+    // If purchasing for price-per-booking (e.g. 2 ADT + 3 CHD family ticket), Passenger should be repeated in order to list all pricing categories
+    // booking this (2 ADT + 3 CHD) even though this is one family.
+    //
+    // If purchasing for price-per-person (e.g. 1 ADT + 1 CHD), Passenger should be repeated for each pricing category too, but with different
+    // attributes set (see Passenger type for more information)
+    repeated Passenger passengers = 2;
 
-    // how many people booked for this rate/pricing category. Mandatory.
-    // @deprecated - use reservationOptions -- todo remove before the release
-    int32 pax = 3;
-
-    // Who will be travelling / taking part in this activity -- for this rate & pricing category. Remote end might not require this, but platform is
-    // expected to send the data anyway. Number of records must match <tt>pax</tt>.
-    // @deprecated - use reservationOptions -- todo remove before the release
-    repeated Contact participants = 4;
-
-    // Whatever amount was paid for this slot. Mandatory from the platform end - but only passed to the plugin if plugin supports storing of
-    // non-leading customers.
-    Price amountPaid = 5;
-
-    // whether this is booked per person, e.g. 3 ADT + 1 CHD or per booking ("minibus for 20 PAX")
-    oneof reservationOptions {
-        ReservationPerPerson perPerson = 6;
-        ReservationPerBooking perBooking = 7;
-    }
+    // How much has been paid for this, in case this was priced per booking.
+    // If this was priced per person, this field should be left unassigned.
+    Price pricePerBooking = 3;
 }
 
-// Relates to "Passenger price is per person" check box in Bokun rate edit screen, checked.
-message ReservationPerPerson {
-    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory.
-    string pricingCategoryId = 1;
+// Passenger participating in a tour/activity event.
+message Passenger {
+    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory for both price-per-person
+    // and price-per-booking cases.
+    String pricingCategoryId = 1;
 
-    // how many people booked for this rate/pricing category. Mandatory.
-    int32 pax = 2;
+    // Contact of each passenger. Mandatory. Parts of this object may be enforced via ProductDescription::enforcedTravellerFields.
+    Contact contact = 2;
 
-    // Who will be travelling / taking part in this activity -- for this rate & pricing category. Remote end might not require this, but platform is
-    // expected to send the data anyway. Number of records must match <tt>pax</tt>.
-    repeated Contact participants = 3;
-}
-
-// Relates to "Passenger price is per person" check box in Bokun rate edit screen, unchecked.
-message ReservationPerBooking {
-    // how many reservations? If the rate is e.g. "minibus for 20 PAX" then 1 means one minibus and 20 means twenty minibuses.
-    int32 count = 1;
+    // Should only be set if priced per passenger. If priced per booking then this should be left unassigned.
+    Price pricePerPassenger = 3;
 }
