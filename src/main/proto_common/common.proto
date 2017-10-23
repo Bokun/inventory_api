@@ -635,7 +635,7 @@ message Reservation {
 message Passenger {
     // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory for both price-per-person
     // and price-per-booking cases.
-    String pricingCategoryId = 1;
+    string pricingCategoryId = 1;
 
     // Contact of each passenger. Mandatory. Parts of this object may be enforced via ProductDescription::enforcedTravellerFields.
     Contact contact = 2;
