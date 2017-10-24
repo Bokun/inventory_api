@@ -262,7 +262,7 @@ message ProductDescription {
     // A list of lead customer fields this particular product requires.
     repeated ContactField enforcedLeadPassengerFields = 23;
 
-    // A list of traveller this particular product requires.
+    // A list of traveller fields this particular product requires.
     repeated ContactField enforcedTravellerFields = 24;
 }
 
