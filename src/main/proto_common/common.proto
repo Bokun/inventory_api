@@ -256,10 +256,10 @@ message ProductDescription {
     // What kind of meeting type the product uses. Mandatory.
     MeetingType meetingType = 22;
 
-    // A list of lead customer fields this particular product requires.
+    // A list of lead customer fields this particular product requires. Optional (none will be enforced if omitted).
     repeated ContactField enforcedLeadPassengerFields = 23;
 
-    // A list of traveller fields this particular product requires.
+    // A list of traveller fields this particular product requires. Optional (none will be enforced if omitted).
     repeated ContactField enforcedTravellerFields = 24;
 }
 
@@ -329,14 +329,17 @@ enum TicketType {
 }
 
 enum MeetingType {
+    // Should not be used explicitly.
+    UNASSIGNED_TICKET_TYPE = 0;
+
     // No pickup is offered
-    MEET_ON_LOCATION = 0;
+    MEET_ON_LOCATION = 1;
 
     // Pickup is optional
-    MEET_ON_LOCATION_OR_PICK_UP = 1;
+    MEET_ON_LOCATION_OR_PICK_UP = 2;
 
     // Pickup is mandatory
-    PICK_UP = 2;
+    PICK_UP = 3;
 }
 
 message PickupDropoffPlace {
