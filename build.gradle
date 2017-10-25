@@ -10,7 +10,7 @@ def serviceArtifact = 'service-api-grpc'
 
 buildscript {
     ext {
-        awsVersion = '1.11.40'
+        awsVersion = '1.11.217'
     }
     repositories {
         mavenLocal()
@@ -29,6 +29,10 @@ apply plugin: "java"
 apply plugin: "application"
 apply plugin: "idea"
 apply plugin: "maven-publish"
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2'
+}
 
 protobuf {
     protoc {
@@ -118,11 +122,13 @@ task commonApi(type: Jar) {
     from sourceSets.main.output.classesDir
     include 'io/bokun/inventory/common/**'
 }
+
 task pluginApi(type: Jar) {
     baseName = 'pluginapi'
     from sourceSets.main.output.classesDir
     include 'io/bokun/inventory/plugin/**'
 }
+
 task serviceApi(type: Jar) {
     baseName = 'serviceapi'
     from sourceSets.main.output.classesDir
@@ -130,9 +136,9 @@ task serviceApi(type: Jar) {
 }
 
 if (awsCredentials != null) {
-    println "Will publish to AWS"
+    println("publish : " + awsCredentials.AWSAccessKeyId)
     publishing {
-        println("publish : " + awsCredentials.AWSAccessKeyId)
+        println "Will publish to Private S3 repository"
         publications {
 
             common(MavenPublication) {
@@ -185,6 +191,17 @@ if (awsCredentials != null) {
                     url "s3://pmr.bokun.io/snapshots"
                 } else {
                     url "s3://pmr.bokun.io/release"
+                }
+                credentials(AwsCredentials) {
+                    accessKey awsCredentials.AWSAccessKeyId
+                    secretKey awsCredentials.AWSSecretKey
+                }
+            }
+            maven {
+                if (project.version.endsWith('-SNAPSHOT')) {
+                    url "s3://public-pmr.bokun.io/snapshots"
+                } else {
+                    url "s3://public-pmr.bokun.io/release"
                 }
                 credentials(AwsCredentials) {
                     accessKey awsCredentials.AWSAccessKeyId
