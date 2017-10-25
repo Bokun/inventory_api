@@ -330,7 +330,7 @@ enum TicketType {
 
 enum MeetingType {
     // Should not be used explicitly.
-    UNASSIGNED_TICKET_TYPE = 0;
+    UNASSIGNED_MEETING_TYPE = 0;
 
     // No pickup is offered
     MEET_ON_LOCATION = 1;
