@@ -596,10 +596,13 @@ message RateWithPrice {
     }
 }
 
+// When a rate is priced per person. Most common case.
 message PricePerPerson {
     repeated PricingCategoryWithPrice pricingCategoryWithPrice = 1;
 }
 
+// In case this rate is priced per booking (often regardless how many travellers are coming).
+// Or this can also represent a group rate, e.g. family ticket for 2 adults + 3 children.
 message PricePerBooking {
     Price price = 1;
 }
