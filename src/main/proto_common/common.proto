@@ -211,9 +211,6 @@ message ProductDescription {
     // -- if PASS, then this product is bookable so that participant could consume this product at any given day (providing ticket is not expired)
     BookingType bookingType = 8;
 
-    // DEPRECATED: Use MeetingType instead. Whether pickup is available for this product. Mandatory. -- todo remove before release
-    bool pickupAvailable = 9;
-
     // Whether customer can be picked up at an arbitrary place, specified during booking process.
     // Mandatory if ::meetingType is MEET_ON_LOCATION_OR_PICK_UP or PICK_UP, otherwise irrelevant/ignored.
     bool customPickupPlaceAllowed = 10;
