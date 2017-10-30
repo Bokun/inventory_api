@@ -50,6 +50,8 @@ enum PluginParameterDataType {
 // What kind of features/speacial cases does this plugin support?
 enum PluginCapability {
     UNASSIGNED_PLUGIN_CAPABILITY = 0;
+
+    // Currently unused.
     SUPPORTS_PRICING = 1;
 
     // If set, both platform and Inventory Service with make two calls (CreateReservation + ConfirmBooking) - which is the recommended way.
@@ -57,10 +59,8 @@ enum PluginCapability {
     // For a plugin, it doesn't make sense to implement both options as only one will be used, depending of presence/absence of this flag.
     SUPPORTS_RESERVATIONS = 2;
 
+    // Currently unused.
     SUPPORTS_AVAILABILITY = 3;
-
-    // If set, Contact::country is mandatory; plugin might expect this to be set for reservation requests.
-    REQUIRES_CUSTOMER_COUNTRY = 4;
 }
 
 // Supported product categories
