@@ -198,7 +198,6 @@ message ConfirmationData {
 
     // How should the tickets be generated? This must be supported by a booked product, see ProductDescription::ticketSupport. Mandatory.
     io.bokun.inventory.common.api.grpc.TicketSupport ticketSupport = 1;
-
 }
 
 message ReservationRequest {
