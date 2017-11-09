@@ -21,8 +21,10 @@ service PluginApi {
     // A set of product ids provided, return their availability over given date range.
     // This will return a subset of product IDs passed on via ProductAvailabilityRequest.
     // Note: even though request contains capacity and date range, for a matching product it is enough to have availabilities for *some* dates over
-    //   requested period. Subsequent GetProductAvailability request will clarify precise dates and capacities.
-    rpc GetAvailableProducts(ProductsAvailabilityRequest) returns (stream ExternalProductId) {}
+    // requested period. Subsequent GetProductAvailability request will clarify precise dates and capacities.
+    // Note (2): implementing APIs might not support checking of multi-products across vast periods. For this, it might be enough to check opening
+    // hours or general availability as GetProductAvailability will clarify that at a later stage anyway (even though resulting poorer UX).
+    rpc GetAvailableProducts(ProductsAvailabilityRequest) returns (stream ProductsAvailabilityResponse) {}
 
     // Get availability of a particular product over a date range.
     // This request shoud follow GetAvailableProducts and provide more details on precise dates/times for each product as well as capacity for each date.
@@ -118,8 +120,16 @@ message ProductsAvailabilityRequest {
     repeated string externalProductIds = 4;
 }
 
-message ExternalProductId {
+// A response which tells which products are available over given date period.
+message ProductsAvailabilityResponse {
+
+    // External product id. Mandatory.
     string productId = 1;
+
+    // Whether the actual availability check was done. Some APIs might not support checking for multiple product availability over date range (instead
+    // they typically support checking availability of one product and sometimes - for a very limited range only). As a workaround for this problem,
+    // plugin might return fake availability response and then next step will clarify that. For fake responses, this should be set to false.
+    bool actualCheckDone = 2;
 }
 
 message SearchProductsRequest {
