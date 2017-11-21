@@ -346,8 +346,11 @@ message PickupDropoffPlace {
     // Verbal description of pick up place. Mandatory.
     string title = 1;
 
-    // Precise location of pick up place. Optional.
+    // Precise location of pick up place. Optional. TODO deprecated and will be removed in the next release.
     GeoPoint location = 2;
+
+    // Precise location of pick up place. Mandatory.
+    Address address = 3;
 }
 
 // Parameters used to configure supported plugin(s)
