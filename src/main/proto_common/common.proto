@@ -72,6 +72,11 @@ enum ProductCategory {
     TRANSPORT = 4;
 }
 
+enum ExtraPricingType {
+    PER_PERSON = 0;
+    PER_BOOKING = 1;
+}
+
 // All fields mandatory; should at least be set to 0.
 message Duration {
     int32 minutes = 1;
@@ -261,6 +266,10 @@ message ProductDescription {
 
     // A list of traveller fields this particular product requires. Optional (none will be enforced if omitted).
     repeated ContactField enforcedTravellerFields = 24;
+
+    // Extras which belong to this product. Optional.
+    repeated Extra extras = 25;
+
 }
 
 // A list of all possible ticketing options for a product.
@@ -632,6 +641,10 @@ message Reservation {
     // How much has been paid for this, in case this was priced per booking.
     // If this was priced per person, this field should be left unassigned.
     Price pricePerBooking = 3;
+
+    //Extras associated with this reservation. Optional.
+    repeated ExtraBooking extraBooking = 4;
+
 }
 
 // Passenger participating in a tour/activity event.
@@ -645,4 +658,44 @@ message Passenger {
 
     // Should only be set if priced per passenger. If priced per booking then this should be left unassigned.
     Price pricePerPassenger = 3;
+}
+
+
+// Extra available for certain product
+message Extra {
+
+    // Id of extra. Mandatory.
+    string id = 1;
+
+    // Title of extra. Mandatory.
+    string title = 2;
+
+    // Description of extra. Optional.
+    string description = 3;
+
+    // If true, extra is optional for product. Optional
+    bool optional = 4;
+
+    // How many extras can be acquired per single booking
+    int32 maxPerBooking = 6;
+
+    // If true, max one item can be acquired by each passenger/activity actor/etc
+    bool limitByPax = 7;
+
+    //If true, this may increase capacity for a product
+    bool increasesCapacity = 8;
+
+}
+
+// Extra used in booking
+message ExtraBooking {
+
+    // Id of extra. Mandatory
+    string extraId = 1;
+
+    // Amount. Mandatory
+    int32 amount = 2;
+
+    // Extra per person or extra per booking?. Mandatory
+    ExtraPricingType pricingType = 3;
 }
