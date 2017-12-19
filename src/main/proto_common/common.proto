@@ -73,8 +73,9 @@ enum ProductCategory {
 }
 
 enum ExtraPricingType {
-    PER_PERSON = 0;
-    PER_BOOKING = 1;
+    UNASSIGNED_EXTRA_PRICING_TYPE = 0;
+    PER_PERSON = 1;
+    PER_BOOKING = 2;
 }
 
 // All fields mandatory; should at least be set to 0.
@@ -664,7 +665,7 @@ message Passenger {
 // Extra available for certain product
 message Extra {
 
-    // Id of extra. Mandatory.
+    // Id of extra on external (non-Bokun) platform. Mandatory
     string id = 1;
 
     // Title of extra. Mandatory.
@@ -673,16 +674,16 @@ message Extra {
     // Description of extra. Optional.
     string description = 3;
 
-    // If true, extra is optional for product. Optional
+    // If true, extra is optional for product. Mandatory
     bool optional = 4;
 
-    // How many extras can be acquired per single booking
+    // How many extras can be acquired per single booking. Optional
     int32 maxPerBooking = 6;
 
-    // If true, max one item can be acquired by each passenger/activity actor/etc
+    // If true, max one item can be acquired by each passenger/activity actor/etc. Optional
     bool limitByPax = 7;
 
-    //If true, this may increase capacity for a product
+    //If true, this may increase capacity for a product. Optional.
     bool increasesCapacity = 8;
 
 }
