@@ -9,7 +9,7 @@ dependencies:
 
 deployment:
   snapshot:
-    branch: develop
+    branch: /feature.*/
     commands:
       - ./gradlew publish -Dorg.gradle.project.snapshot="-SNAPSHOT"
   release:
