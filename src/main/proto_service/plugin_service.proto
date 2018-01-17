@@ -71,6 +71,9 @@ message PluginDefinition {
 
     // List of parameters this plugin should be configured with. Mandatory.
     repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameter parameters = 6;
+
+    // whether TLS/SSL is required for this plugin
+    bool tls = 7;
 }
 
 message PluginUnregistrationRequest {
