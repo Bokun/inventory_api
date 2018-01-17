@@ -37,6 +37,9 @@ service PluginService {
 message PluginUrl {
     // URL of plugin which is listening on a socket. Mandatory.
     string url = 1;
+
+    // Whether this plugin supports TLS/SSL. Mandatory.
+    bool tls = 2;
 }
 
 message MovePluginRequest {
