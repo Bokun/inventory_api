@@ -40,6 +40,9 @@ message PluginUrl {
 
     // Whether this plugin supports TLS/SSL. Mandatory.
     bool tls = 2;
+
+    // SSL certificate file, only used if tls=true.
+    string cert = 3;
 }
 
 message MovePluginRequest {
@@ -49,7 +52,11 @@ message MovePluginRequest {
     // URL of plugin which is currently listening on a socket. Mandatory.
     string newUrl = 2;
 
+    // if true, this plugin will be using TLS/SSL.
     bool tls = 3;
+
+    // TLS/SSL certificate. Only used if tls is true.
+    string cert = 4;
 }
 
 message GetDefinitionRequest {
@@ -76,6 +83,9 @@ message PluginDefinition {
 
     // whether TLS/SSL is required for this plugin
     bool tls = 7;
+
+    // SSL certificate. Only used if tls=true.
+    string cert = 8;
 }
 
 message PluginUnregistrationRequest {
