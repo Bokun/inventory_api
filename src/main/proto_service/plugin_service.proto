@@ -48,6 +48,8 @@ message MovePluginRequest {
 
     // URL of plugin which is currently listening on a socket. Mandatory.
     string newUrl = 2;
+
+    bool tls = 3;
 }
 
 message GetDefinitionRequest {
