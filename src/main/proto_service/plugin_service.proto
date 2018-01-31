@@ -43,6 +43,9 @@ message PluginUrl {
 
     // SSL certificate file, only used if tls=true.
     string cert = 3;
+
+    // In case if there is a secret shared between server and client (regardless of TLS usage). Optional
+    string sharedSecret = 4;
 }
 
 message MovePluginRequest {
@@ -57,6 +60,9 @@ message MovePluginRequest {
 
     // TLS/SSL certificate. Only used if tls is true.
     string cert = 4;
+
+    // In case if there is a secret shared between server and client (regardless of TLS usage). Optional
+    string sharedSecret = 5;
 }
 
 message GetDefinitionRequest {
@@ -86,6 +92,9 @@ message PluginDefinition {
 
     // SSL certificate. Only used if tls=true.
     string cert = 8;
+
+    // In case if there is a secret shared between server and client (regardless of TLS usage). Optional
+    string sharedSecret = 9;
 }
 
 message PluginUnregistrationRequest {
