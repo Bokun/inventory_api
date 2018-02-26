@@ -201,9 +201,6 @@ message ReservationData {
     // This is some unique id which is *always* passed from the platform for this reservation. Plugins may ignore it, or may use this field in order
     // to make backrefrence from their own reservation/booking towards platform reservation/booking.
     string platformId = 14;
-
-    // Booking channel if booking is initiated not in Bokun but in some external booking channel
-    string bookingChannelName = 15;
 }
 
 // A container for data which is sent when a booking is confirmed. Extracted for convenience reasons.
