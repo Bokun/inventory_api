@@ -700,3 +700,27 @@ message ExtraBooking {
     // Extra per person or extra per booking?. Mandatory
     ExtraPricingType pricingType = 3;
 }
+
+// Data types for BookingChannel segment parameter
+enum BookingChannelSegment {
+    DIRECT_ONLINE = 0;
+    DIRECT_OFFLINE = 1;
+    AGENT_AREA = 2;
+    MARKETPLACE = 3;
+    OTA = 4;
+}
+
+// Booking channel used in booking
+message BookingChannel {
+
+    // Channel ID. Mandatory
+    string id = 1;
+
+    // Title. Mandatory
+    string title = 2;
+
+    // Segment. Mandatory
+    BookingChannelSegment segment = 3;
+
+}
+

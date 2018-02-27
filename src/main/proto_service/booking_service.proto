@@ -84,8 +84,8 @@ message ReservationData {
     // to make backrefrence from their own reservation/booking towards platform reservation/booking.
     string platformId = 12;
 
-    // Booking channel if booking is initiated not in Bokun but in some external booking channel
-    string bookingChannelName = 13;
+    // Booking channel from which booking has originated
+    io.bokun.inventory.common.api.grpc.BookingChannel bookingChannel = 13;
 }
 
 message ConfirmBookingRequest {
