@@ -710,17 +710,78 @@ enum BookingChannelSegment {
     OTA = 4;
 }
 
-// Booking channel used in booking
+// Booking channel used in Booking.bookingSource
 message BookingChannel {
 
     // Channel ID. Mandatory
-    string id = 1;
+    string externalId = 1;
 
     // Title. Mandatory
     string title = 2;
+}
 
-    // Segment. Mandatory
-    BookingChannelSegment segment = 3;
+// OTA Booking channel used in Booking.bookingSource
+message OtaBookingChannel {
 
+    // Channel ID. Mandatory
+    string externalId = 1;
+
+    // Title. Mandatory
+    string title = 2;
+}
+
+// Extranet user who made booking. Used in Booking.bookingSource
+message ExtranetUser {
+
+    // User email/username. Mandatory
+    string email = 1;
+
+    // User full name. Mandatory
+    string fullName = 2;
+}
+
+// Booking agent used in Booking.bookingSource
+message BookingAgent {
+
+    // Agent identification number. Mandatory
+    string idNumber = 1;
+
+    // Title. Mandatory
+    string title = 2;
+}
+
+// Affiliate vendor used in Booking.bookingSource
+message AffiliateVendor {
+
+    // Vendor company registration number. Mandatory
+    string companyRegistrationNo = 1;
+
+    // Vendor title. Mandatory
+    string title = 2;
+}
+
+// Booking source used in booking
+message BookingSource {
+
+    // Booking sales segment. Mandatory
+    BookingChannelSegment segment = 1;
+
+    // depending on BookingChannelSegment one of the following data structures should be used for further data. Mandatory
+    oneof bookingSource {
+            // when BookingChannelSegment is DIRECT_ONLINE
+            BookingChannel bookingChannel = 2;
+
+            // when BookingChannelSegment is OTA
+            OtaBookingChannel otaBookingChannel = 3;
+
+            // when BookingChannelSegment is DIRECT_OFFLINE
+            ExtranetUser extranetUser = 4;
+
+            // when BookingChannelSegment is AGENT_AREA
+            BookingAgent bookingAgent = 5;
+
+            // when BookingChannelSegment is MARKETPLACE
+            AffiliateVendor affiliateVendor = 6;
+    }
 }
 
