@@ -700,3 +700,88 @@ message ExtraBooking {
     // Extra per person or extra per booking?. Mandatory
     ExtraPricingType pricingType = 3;
 }
+
+// Data types for BookingChannel segment parameter
+enum SalesSegment {
+    DIRECT_ONLINE = 0;
+    DIRECT_OFFLINE = 1;
+    AGENT_AREA = 2;
+    MARKETPLACE = 3;
+    OTA = 4;
+}
+
+// Booking channel used in Booking.bookingSource
+message BookingSourceBookingChannel {
+
+    // Channel ID. Mandatory
+    string externalId = 1;
+
+    // Title. Mandatory
+    string title = 2;
+}
+
+// OTA Booking channel used in Booking.bookingSource
+message BookingSourceOtaBookingChannel {
+
+    // Channel ID. Mandatory
+    string externalId = 1;
+
+    // Title. Mandatory
+    string title = 2;
+}
+
+// Extranet user who made booking. Used in Booking.bookingSource
+message BookingSourceExtranetUser {
+
+    // User email/username. Mandatory
+    string email = 1;
+
+    // User full name. Mandatory
+    string fullName = 2;
+}
+
+// Booking agent used in Booking.bookingSource
+message BookingSourceBookingAgent {
+
+    // Agent identification number. Mandatory
+    string idNumber = 1;
+
+    // Title. Mandatory
+    string title = 2;
+}
+
+// Affiliate vendor used in Booking.bookingSource
+message BookingSourceAffiliateVendor {
+
+    // Vendor company registration number. Mandatory
+    string companyRegistrationNo = 1;
+
+    // Vendor title. Mandatory
+    string title = 2;
+}
+
+// Booking source used in booking
+message BookingSource {
+
+    // Booking sales segment. Mandatory
+    SalesSegment segment = 1;
+
+    // depending on BookingChannelSegment one of the following data structures should be used for further data. Mandatory
+    oneof bookingSource {
+            // when BookingChannelSegment is DIRECT_ONLINE
+            BookingSourceBookingChannel bookingChannel = 2;
+
+            // when BookingChannelSegment is OTA
+            BookingSourceOtaBookingChannel otaBookingChannel = 3;
+
+            // when BookingChannelSegment is DIRECT_OFFLINE
+            BookingSourceExtranetUser extranetUser = 4;
+
+            // when BookingChannelSegment is AGENT_AREA
+            BookingSourceBookingAgent bookingAgent = 5;
+
+            // when BookingChannelSegment is MARKETPLACE
+            BookingSourceAffiliateVendor affiliateVendor = 6;
+    }
+}
+

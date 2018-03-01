@@ -2,7 +2,7 @@ import com.amazonaws.auth.AWSCredentials
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 
 group 'io.bokun.inventory'
-version '0.3.0'
+version '0.3.4'
 
 def commonArtifact = 'common-api-grpc'
 def pluginArtifact = 'plugin-api-grpc'
@@ -212,4 +212,4 @@ if (awsCredentials != null) {
     }
 } else {
     println "AWS Credentials not found."
-}   
+}
