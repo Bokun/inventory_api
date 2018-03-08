@@ -744,14 +744,14 @@ message BookingSourceExtranetUser {
 message BookingSourceBookingAgent {
 
     // Agent identification number. Mandatory
-    string idNumber = 1;
+    string companyRegistrationNo = 1;
 
     // Title. Mandatory
     string title = 2;
 }
 
 // Affiliate vendor used in Booking.bookingSource
-message BookingSourceAffiliateVendor {
+message BookingSourceMarketplaceVendor {
 
     // Vendor company registration number. Mandatory
     string companyRegistrationNo = 1;
@@ -768,20 +768,20 @@ message BookingSource {
 
     // depending on BookingChannelSegment one of the following data structures should be used for further data. Mandatory
     oneof bookingSource {
-            // when BookingChannelSegment is DIRECT_ONLINE
+            // when SalesSegment is DIRECT_ONLINE
             BookingSourceBookingChannel bookingChannel = 2;
 
-            // when BookingChannelSegment is OTA
+            // when SalesSegment is OTA
             BookingSourceOtaBookingChannel otaBookingChannel = 3;
 
-            // when BookingChannelSegment is DIRECT_OFFLINE
+            // when SalesSegment is DIRECT_OFFLINE
             BookingSourceExtranetUser extranetUser = 4;
 
-            // when BookingChannelSegment is AGENT_AREA
+            // when SalesSegment is AGENT_AREA
             BookingSourceBookingAgent bookingAgent = 5;
 
-            // when BookingChannelSegment is MARKETPLACE
-            BookingSourceAffiliateVendor affiliateVendor = 6;
+            // when SalesSegment is MARKETPLACE
+            BookingSourceMarketplaceVendor marketplaceVendor = 6;
     }
 }
 
