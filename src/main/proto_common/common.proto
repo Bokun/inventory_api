@@ -718,18 +718,8 @@ message BookingSourceBookingChannel {
 
     // Title. Mandatory
     string title = 2;
-}
 
-// OTA Booking channel used in Booking.bookingSource
-message BookingSourceOtaBookingChannel {
-
-    // Channel ID. Mandatory
-    string id = 1;
-
-    // Title. Mandatory
-    string title = 2;
-
-    // System type. Mandatory
+    // System type. Optional. Filled when SalesSegment is OTA
     string systemType = 3;
 }
 
@@ -763,11 +753,11 @@ message BookingSourceMarketplaceVendor {
     // vendor id. Mandatory
     string id = 1;
 
-    // Vendor company registration number. Mandatory
-    string companyRegistrationNumber = 2;
-
     // Vendor title. Mandatory
-    string title = 3;
+    string title = 2;
+
+    // Vendor company registration number. Mandatory
+    string companyRegistrationNumber = 3;
 }
 
 // Booking source used in booking
@@ -776,22 +766,16 @@ message BookingSource {
     // Booking sales segment. Mandatory
     SalesSegment segment = 1;
 
-    // depending on BookingChannelSegment one of the following data structures should be used for further data. Mandatory
-    oneof bookingSource {
-            // when SalesSegment is DIRECT_ONLINE
-            BookingSourceBookingChannel bookingChannel = 2;
+    // Booking channel. Optional
+    BookingSourceBookingChannel bookingChannel = 2;
 
-            // when SalesSegment is OTA
-            BookingSourceOtaBookingChannel otaBookingChannel = 3;
+    // Extranet user who made the booking. Optional. Filled when SalesSegment is DIRECT_OFFLINE
+    BookingSourceExtranetUser extranetUser = 3;
 
-            // when SalesSegment is DIRECT_OFFLINE
-            BookingSourceExtranetUser extranetUser = 4;
+    // Agent who did the booking. Optional. Filled when SalesSegment is AGENT_AREA
+    BookingSourceBookingAgent bookingAgent = 4;
 
-            // when SalesSegment is AGENT_AREA
-            BookingSourceBookingAgent bookingAgent = 5;
-
-            // when SalesSegment is MARKETPLACE
-            BookingSourceMarketplaceVendor marketplaceVendor = 6;
-    }
+    // Marketplace reseller who resold booking. Optional. Filled when SalesSegment is MARKETPLACE
+    BookingSourceMarketplaceVendor marketplaceVendor = 5;
 }
 
