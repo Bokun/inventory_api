@@ -714,7 +714,7 @@ enum SalesSegment {
 message BookingSourceBookingChannel {
 
     // Channel ID. Mandatory
-    string externalId = 1;
+    string id = 1;
 
     // Title. Mandatory
     string title = 2;
@@ -724,10 +724,13 @@ message BookingSourceBookingChannel {
 message BookingSourceOtaBookingChannel {
 
     // Channel ID. Mandatory
-    string externalId = 1;
+    string id = 1;
 
     // Title. Mandatory
     string title = 2;
+
+    // System type. Mandatory
+    string systemType = 3;
 }
 
 // Extranet user who made booking. Used in Booking.bookingSource
@@ -743,21 +746,28 @@ message BookingSourceExtranetUser {
 // Booking agent used in Booking.bookingSource
 message BookingSourceBookingAgent {
 
-    // Agent identification number. Mandatory
-    string companyRegistrationNo = 1;
+    // agent id. Mandatory
+    string id = 1;
 
     // Title. Mandatory
     string title = 2;
+
+    // Agent identification number. Mandatory
+    string companyRegistrationNumber = 3;
+
 }
 
 // Affiliate vendor used in Booking.bookingSource
 message BookingSourceMarketplaceVendor {
 
+    // vendor id. Mandatory
+    string id = 1;
+
     // Vendor company registration number. Mandatory
-    string companyRegistrationNo = 1;
+    string companyRegistrationNumber = 2;
 
     // Vendor title. Mandatory
-    string title = 2;
+    string title = 3;
 }
 
 // Booking source used in booking
