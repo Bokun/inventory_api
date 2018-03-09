@@ -743,7 +743,7 @@ message BookingSourceBookingAgent {
     // Title. Mandatory
     string title = 2;
 
-    // Agent identification number. Mandatory
+    // Agent company registration number. Optional
     string companyRegistrationNumber = 3;
 
 }
@@ -757,7 +757,7 @@ message BookingSourceMarketplaceVendor {
     // Vendor title. Mandatory
     string title = 2;
 
-    // Vendor company registration number. Mandatory
+    // Vendor company registration number. Optional
     string companyRegistrationNumber = 3;
 }
 
@@ -767,7 +767,7 @@ message BookingSource {
     // Booking sales segment. Mandatory
     SalesSegment segment = 1;
 
-    // Booking channel. Optional
+    // Booking channel. Obligatory
     BookingSourceBookingChannel bookingChannel = 2;
 
     // Extranet user who made the booking. Optional. Filled when SalesSegment is DIRECT_OFFLINE
