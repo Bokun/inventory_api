@@ -703,11 +703,12 @@ message ExtraBooking {
 
 // Data types for BookingChannel segment parameter
 enum SalesSegment {
-    DIRECT_ONLINE = 0;
-    DIRECT_OFFLINE = 1;
-    AGENT_AREA = 2;
-    MARKETPLACE = 3;
-    OTA = 4;
+    UNASSIGNED_SALES_SEGMENT = 0;
+    DIRECT_ONLINE = 1;
+    DIRECT_OFFLINE = 2;
+    AGENT_AREA = 3;
+    MARKETPLACE = 4;
+    OTA = 5;
 }
 
 // Booking channel used in Booking.bookingSource
