@@ -440,6 +440,9 @@ message SuccessfulBooking {
         // Set if a single ticket-per-booking was requested.
         Ticket bookingTicket = 3;
     }
+
+    // For when pass expiry dates are dynamic in the plugin and should override the one set in the platform. Optional.
+    Date passExpiryDate = 4;
 }
 
 message TicketsPerPricingCategory {
