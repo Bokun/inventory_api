@@ -322,6 +322,9 @@ message Ticket {
         // @see TicketType#DATA_MATRIX
         DataMatrixTicket dataMatrixTicket = 3;
     }
+
+    // For when ticket expiry dates are dynamic in the plugin and should override the one set in the platform. Optional.
+    Date expiryDate = 4;
 }
 
 enum TicketType {

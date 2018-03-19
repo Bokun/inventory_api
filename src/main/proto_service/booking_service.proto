@@ -80,12 +80,16 @@ message ReservationData {
     // Reservations for this request. Each reservation should be formed for concrete pricing category, rate and product
     repeated io.bokun.inventory.common.api.grpc.Reservation reservations = 11;
 
-    // This is some unique id which is taken from the platform for this reservation. Plugins may ignore it, or may use this field in order
+    // This is some unique id which is genarated by the Bókun platform for this reservation. Plugins may ignore it, or may use this field in order
     // to make backrefrence from their own reservation/booking towards platform reservation/booking.
     string platformId = 12;
 
     // Booking source from which booking has originated
     io.bokun.inventory.common.api.grpc.BookingSource bookingSource = 13;
+
+    // In case this was booked by an external source (such as Expedia, Get Your Guide, Viator, etc.) this field will contain the reference number
+    // which came from that source.
+    string externalSaleId = 13;
 }
 
 message ConfirmBookingRequest {
