@@ -208,6 +208,9 @@ message ReservationData {
     // In case this was booked by an external source (such as Expedia, Get Your Guide, Viator, etc.) this field will contain the reference number
     // which came from that source.
     string externalSaleId = 16;
+
+    // In case of agent booking - agent code. Optional
+    string agentCode = 17;
 }
 
 // A container for data which is sent when a booking is confirmed. Extracted for convenience reasons.

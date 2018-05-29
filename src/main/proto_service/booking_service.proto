@@ -90,6 +90,9 @@ message ReservationData {
     // In case this was booked by an external source (such as Expedia, Get Your Guide, Viator, etc.) this field will contain the reference number
     // which came from that source.
     string externalSaleId = 14;
+
+    // In case of agent booking - agent code. Optional
+    string agentCode = 15;
 }
 
 message ConfirmBookingRequest {
