@@ -117,4 +117,7 @@ message CancelBookingRequest {
 
     // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.
     string bookingConfirmationCode = 2;
+
+    // agent code if passed. Optional.
+    string agentCode = 3;
 }
