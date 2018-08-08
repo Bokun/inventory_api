@@ -11,14 +11,14 @@ import "inventory_service_common.proto";
 service AvailabilityService {
     // Get available products (of specific type) over a date range, supplying a set of Bokun product IDs.
     // Returned set of Bokun product IDs will refer to available products; this will be a subset of requested products.
-    rpc FindAvailableProducts (FindAvailableProductsRequest) returns (stream io.bokun.inventory.service.common.grpc.BokunProduct) {}
+    rpc GetAvailableProducts (GetAvailableProductsRequest) returns (stream GetAvailableProductsResponse) {}
 
     // Get detailed info about requested single Bokun product.
     // This returns not only available dates/time but also pickup times as well as pricing for requested range.
     rpc GetProductAvailability (GetProductAvailabilityRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductAvailabilityWithRatesResponse) {}
 }
 
-message FindAvailableProductsRequest {
+message GetAvailableProductsRequest {
     // Range of products we are looking in. Mandatory (must not be empty).
     // If any of given products is not mapped (inventory service is unaware of such product), it will be ignored.
     repeated io.bokun.inventory.service.common.grpc.BokunProduct products = 1;
@@ -28,6 +28,14 @@ message FindAvailableProductsRequest {
 
     // Required capacity. Mandatory.
     int32 capacity = 3;
+}
+
+message GetAvailableProductsResponse {
+    // Available product. Mandatory.
+    io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 1;
+
+    // Whether this was properly checked (true) or faux (as remote API doesn't support wide range check). Mandatory.
+    bool actualCheckDone = 2;
 }
 
 message GetProductAvailabilityRequest {

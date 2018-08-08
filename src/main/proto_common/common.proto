@@ -50,6 +50,8 @@ enum PluginParameterDataType {
 // What kind of features/speacial cases does this plugin support?
 enum PluginCapability {
     UNASSIGNED_PLUGIN_CAPABILITY = 0;
+
+    // Currently unused.
     SUPPORTS_PRICING = 1;
 
     // If set, both platform and Inventory Service with make two calls (CreateReservation + ConfirmBooking) - which is the recommended way.
@@ -57,10 +59,8 @@ enum PluginCapability {
     // For a plugin, it doesn't make sense to implement both options as only one will be used, depending of presence/absence of this flag.
     SUPPORTS_RESERVATIONS = 2;
 
+    // Currently unused.
     SUPPORTS_AVAILABILITY = 3;
-
-    // If set, Contact::country is mandatory; plugin might expect this to be set for reservation requests.
-    REQUIRES_CUSTOMER_COUNTRY = 4;
 }
 
 // Supported product categories
@@ -70,6 +70,12 @@ enum ProductCategory {
     ACTIVITIES = 2;
     CAR_RENTALS = 3;
     TRANSPORT = 4;
+}
+
+enum ExtraPricingType {
+    UNASSIGNED_EXTRA_PRICING_TYPE = 0;
+    PER_PERSON = 1;
+    PER_BOOKING = 2;
 }
 
 // All fields mandatory; should at least be set to 0.
@@ -211,9 +217,6 @@ message ProductDescription {
     // -- if PASS, then this product is bookable so that participant could consume this product at any given day (providing ticket is not expired)
     BookingType bookingType = 8;
 
-    // DEPRECATED: Use MeetingType instead. Whether pickup is available for this product. Mandatory.
-    bool pickupAvailable = 9;
-
     // Whether customer can be picked up at an arbitrary place, specified during booking process.
     // Mandatory if ::meetingType is MEET_ON_LOCATION_OR_PICK_UP or PICK_UP, otherwise irrelevant/ignored.
     bool customPickupPlaceAllowed = 10;
@@ -258,6 +261,16 @@ message ProductDescription {
 
     // What kind of meeting type the product uses. Mandatory.
     MeetingType meetingType = 22;
+
+    // A list of lead customer fields this particular product requires. Optional (none will be enforced if omitted).
+    repeated ContactField enforcedLeadPassengerFields = 23;
+
+    // A list of traveller fields this particular product requires. Optional (none will be enforced if omitted).
+    repeated ContactField enforcedTravellerFields = 24;
+
+    // Extras which belong to this product. Optional.
+    repeated Extra extras = 25;
+
 }
 
 // A list of all possible ticketing options for a product.
@@ -309,6 +322,9 @@ message Ticket {
         // @see TicketType#DATA_MATRIX
         DataMatrixTicket dataMatrixTicket = 3;
     }
+
+    // For when ticket expiry dates are dynamic in the plugin and should override the one set in the platform. Optional.
+    Date expiryDate = 4;
 }
 
 enum TicketType {
@@ -326,22 +342,25 @@ enum TicketType {
 }
 
 enum MeetingType {
+    // Should not be used explicitly.
+    UNASSIGNED_MEETING_TYPE = 0;
+
     // No pickup is offered
-    MEET_ON_LOCATION = 0;
+    MEET_ON_LOCATION = 1;
 
     // Pickup is optional
-    MEET_ON_LOCATION_OR_PICK_UP = 1;
+    MEET_ON_LOCATION_OR_PICK_UP = 2;
 
     // Pickup is mandatory
-    PICK_UP = 2;
+    PICK_UP = 3;
 }
 
 message PickupDropoffPlace {
     // Verbal description of pick up place. Mandatory.
     string title = 1;
 
-    // Precise location of pick up place. Optional.
-    GeoPoint location = 2;
+    // Precise location of pick up place. Mandatory.
+    Address address = 3;
 }
 
 // Parameters used to configure supported plugin(s)
@@ -459,30 +478,109 @@ message FailedCancellation {
     string cancellationError = 1;
 }
 
+// All fields optional unless enforced in ProductDescription.
 message Contact {
-    // First name. Mandatory.
     string firstName = 1;
 
-    // Last name. Mandatory.
     string lastName = 2;
 
-    // Title, optional.
-    string title = 3;
+    // Such as Mr. or Mrs.
+    Title title = 3;
 
-    // Optional email address. It is also possible to store multiple addresses in this field, separated by comma (as per RFC2822).
+    // This field may also contain multiple addresses separated by comma (as per RFC2822).
     string email = 4;
 
-    // Phone including intl code. Optional.
+    // Phone including intl code, e.g. +447890123456.
     string phone = 5;
 
-    // Language customer prefers to be contacted in. Optional.
+    // Language customer prefers to be contacted in. ISO ALPHA-2 code.
     string language = 6;
 
-    // ISO ALPHA-2 code
+    // Passport holder of which country? ISO ALPHA-2 code
     string nationality = 7;
 
     // ISO ALPHA-2 code
     string country = 8;
+
+    Gender gender = 9;
+
+    // House/flat number + street + city of residence
+    string address = 10;
+
+    string postCode = 11;
+
+    // Useful if booking for/via a company.
+    string organization = 12;
+
+    // Some unique id of the document instance.
+    string passportNumber = 13;
+
+    // When does a passport expire?
+    Date passportExpiry = 14;
+}
+
+enum ContactField {
+    UNASSIGNED_FIELD = 0;
+
+    // see Contact::gender
+    GENDER = 1;
+
+    // Such as Mr. or Mrs.
+    // see Contact::title
+    TITLE = 2;
+
+    // see Contact::firstName
+    FIRST_NAME = 3;
+
+    // see Contact::lastName
+    LAST_NAME = 4;
+
+    // see Contact::email
+    EMAIL = 5;
+
+    // see Contact::phone
+    PHONE = 6;
+
+    // see Contact::language
+    LANGUAGE = 7;
+
+    // see Contact::nationality
+    NATIONALITY = 8;
+
+    // see Contact::country
+    COUNTRY = 9;
+
+    // see Contact::organization
+    ORGANIZATION = 10;
+
+    // see Contact:address
+    ADDRESS = 11;
+
+    // see Contact:postCode
+    POST_CODE = 12;
+
+    // see Contact:passportNumber
+    PASSPORT_NUMBER = 13;
+
+    // see Contact:passportExpiry
+    PASSPORT_EXPIRY = 14;
+}
+
+enum Title {
+    // Should not be used explicitly.
+    UNASSIGNED_TITLE = 0;
+
+    MRS = 1;
+    MISS = 2;
+    MR = 3;
+}
+
+enum Gender {
+    // Should not be used explicitly.
+    UNASSIGNED_GENDER = 0;
+
+    FEMALE = 1;
+    MALE = 2;
 }
 
 message ProductAvailabilityWithRatesResponse {
@@ -507,10 +605,6 @@ message RateWithPrice {
     // superficial rate.
     string rateId = 1;
 
-    // Pricing categories with prices for given availability slot. Mandatory (should at least have a single entry).
-    // @deprecated: this should either use per person or per booking pricing -- todo remove before the release
-    repeated PricingCategoryWithPrice pricingCategories = 2;
-
     // Depending on the rate settings, this should be priced either per person or per booking - one of two should be set.
     oneof pricingOptions {
         PricePerPerson pricePerPerson = 3;
@@ -518,10 +612,13 @@ message RateWithPrice {
     }
 }
 
+// When a rate is priced per person. Most common case.
 message PricePerPerson {
     repeated PricingCategoryWithPrice pricingCategoryWithPrice = 1;
 }
 
+// In case this rate is priced per booking (often regardless how many travellers are coming).
+// Or this can also represent a group rate, e.g. family ticket for 2 adults + 3 children.
 message PricePerBooking {
     Price price = 1;
 }
@@ -536,45 +633,153 @@ message Reservation {
     // Should match rate from, ProductDescription::rates of booked product.
     string rateId = 1;
 
-    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory.
-    // @deprecated - use reservationOptions -- todo remove before the release
-    string pricingCategoryId = 2;
+    // Who will travel on this reservation? Mandatory for both price-per-person and price-per-booking cases.
+    //
+    // If purchasing for price-per-booking (e.g. 2 ADT + 3 CHD family ticket), Passenger should be repeated in order to list all pricing categories
+    // booking this (2 ADT + 3 CHD) even though this is one family.
+    //
+    // If purchasing for price-per-person (e.g. 1 ADT + 1 CHD), Passenger should be repeated for each pricing category too, but with different
+    // attributes set (see Passenger type for more information)
+    repeated Passenger passengers = 2;
 
-    // how many people booked for this rate/pricing category. Mandatory.
-    // @deprecated - use reservationOptions -- todo remove before the release
-    int32 pax = 3;
+    // How much has been paid for this, in case this was priced per booking.
+    // If this was priced per person, this field should be left unassigned.
+    Price pricePerBooking = 3;
 
-    // Who will be travelling / taking part in this activity -- for this rate & pricing category. Remote end might not require this, but platform is
-    // expected to send the data anyway. Number of records must match <tt>pax</tt>.
-    // @deprecated - use reservationOptions -- todo remove before the release
-    repeated Contact participants = 4;
+    //Extras associated with this reservation. Optional.
+    repeated ExtraBooking extraBooking = 4;
 
-    // Whatever amount was paid for this slot. Mandatory from the platform end - but only passed to the plugin if plugin supports storing of
-    // non-leading customers.
-    Price amountPaid = 5;
-
-    // whether this is booked per person, e.g. 3 ADT + 1 CHD or per booking ("minibus for 20 PAX")
-    oneof reservationOptions {
-        ReservationPerPerson perPerson = 6;
-        ReservationPerBooking perBooking = 7;
-    }
 }
 
-// Relates to "Passenger price is per person" check box in Bokun rate edit screen, checked.
-message ReservationPerPerson {
-    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory.
+// Passenger participating in a tour/activity event.
+message Passenger {
+    // What kind of pricing category (Adult, Child, etc.) this is booked. Refers to a pricing category in Bokun. Mandatory for both price-per-person
+    // and price-per-booking cases.
     string pricingCategoryId = 1;
 
-    // how many people booked for this rate/pricing category. Mandatory.
-    int32 pax = 2;
+    // Contact of each passenger. Mandatory. Parts of this object may be enforced via ProductDescription::enforcedTravellerFields.
+    Contact contact = 2;
 
-    // Who will be travelling / taking part in this activity -- for this rate & pricing category. Remote end might not require this, but platform is
-    // expected to send the data anyway. Number of records must match <tt>pax</tt>.
-    repeated Contact participants = 3;
+    // Should only be set if priced per passenger. If priced per booking then this should be left unassigned.
+    Price pricePerPassenger = 3;
 }
 
-// Relates to "Passenger price is per person" check box in Bokun rate edit screen, unchecked.
-message ReservationPerBooking {
-    // how many reservations? If the rate is e.g. "minibus for 20 PAX" then 1 means one minibus and 20 means twenty minibuses.
-    int32 count = 1;
+
+// Extra available for certain product
+message Extra {
+
+    // Id of extra on external (non-Bokun) platform. Mandatory
+    string id = 1;
+
+    // Title of extra. Mandatory.
+    string title = 2;
+
+    // Description of extra. Optional.
+    string description = 3;
+
+    // If true, extra is optional for product. Mandatory
+    bool optional = 4;
+
+    // How many extras can be acquired per single booking. Optional
+    int32 maxPerBooking = 6;
+
+    // If true, max one item can be acquired by each passenger/activity actor/etc. Optional
+    bool limitByPax = 7;
+
+    //If true, this may increase capacity for a product. Optional.
+    bool increasesCapacity = 8;
+
 }
+
+// Extra used in booking
+message ExtraBooking {
+
+    // Id of extra. Mandatory
+    string extraId = 1;
+
+    // Amount. Mandatory
+    int32 amount = 2;
+
+    // Extra per person or extra per booking?. Mandatory
+    ExtraPricingType pricingType = 3;
+}
+
+// Data types for BookingChannel segment parameter
+enum SalesSegment {
+    UNASSIGNED_SALES_SEGMENT = 0;
+    DIRECT_ONLINE = 1;
+    DIRECT_OFFLINE = 2;
+    AGENT_AREA = 3;
+    MARKETPLACE = 4;
+    OTA = 5;
+}
+
+// Booking channel used in Booking.bookingSource
+message BookingSourceBookingChannel {
+
+    // Channel ID. Mandatory
+    string id = 1;
+
+    // Title. Mandatory
+    string title = 2;
+
+    // System type. Optional. Filled when SalesSegment is OTA
+    string systemType = 3;
+}
+
+// Extranet user who made booking. Used in Booking.bookingSource
+message BookingSourceExtranetUser {
+
+    // User email/username. Mandatory
+    string email = 1;
+
+    // User full name. Mandatory
+    string fullName = 2;
+}
+
+// Booking agent used in Booking.bookingSource
+message BookingSourceBookingAgent {
+
+    // agent id. Mandatory
+    string id = 1;
+
+    // Title. Mandatory
+    string title = 2;
+
+    // Agent company registration number. Optional
+    string companyRegistrationNumber = 3;
+
+}
+
+// Affiliate vendor used in Booking.bookingSource
+message BookingSourceMarketplaceVendor {
+
+    // vendor id. Mandatory
+    string id = 1;
+
+    // Vendor title. Mandatory
+    string title = 2;
+
+    // Vendor company registration number. Optional
+    string companyRegistrationNumber = 3;
+}
+
+// Booking source used in booking
+message BookingSource {
+
+    // Booking sales segment. Mandatory
+    SalesSegment segment = 1;
+
+    // Booking channel. Obligatory
+    BookingSourceBookingChannel bookingChannel = 2;
+
+    // Extranet user who made the booking. Optional. Filled when SalesSegment is DIRECT_OFFLINE
+    BookingSourceExtranetUser extranetUser = 3;
+
+    // Agent who did the booking. Optional. Filled when SalesSegment is AGENT_AREA
+    BookingSourceBookingAgent bookingAgent = 4;
+
+    // Marketplace reseller who resold booking. Optional. Filled when SalesSegment is MARKETPLACE
+    BookingSourceMarketplaceVendor marketplaceVendor = 5;
+}
+

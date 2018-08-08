@@ -74,6 +74,9 @@ message ProductMapping {
 
     // Mappings between external and internal rates. Mandatory (should have at least one element)
     repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping rateMappings = 7;
+
+    // Mappings between external and internal extras. Optional
+    repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping extraMappings = 8;
 }
 
 message ProductMappingIdentifier {

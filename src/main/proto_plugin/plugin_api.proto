@@ -21,8 +21,10 @@ service PluginApi {
     // A set of product ids provided, return their availability over given date range.
     // This will return a subset of product IDs passed on via ProductAvailabilityRequest.
     // Note: even though request contains capacity and date range, for a matching product it is enough to have availabilities for *some* dates over
-    //   requested period. Subsequent GetProductAvailability request will clarify precise dates and capacities.
-    rpc GetAvailableProducts(ProductsAvailabilityRequest) returns (stream ExternalProductId) {}
+    // requested period. Subsequent GetProductAvailability request will clarify precise dates and capacities.
+    // Note (2): implementing APIs might not support checking of multi-products across vast periods. For this, it might be enough to check opening
+    // hours or general availability as GetProductAvailability will clarify that at a later stage anyway (even though resulting poorer UX).
+    rpc GetAvailableProducts(ProductsAvailabilityRequest) returns (stream ProductsAvailabilityResponse) {}
 
     // Get availability of a particular product over a date range.
     // This request shoud follow GetAvailableProducts and provide more details on precise dates/times for each product as well as capacity for each date.
@@ -59,11 +61,12 @@ message ConfirmBookingRequest {
     // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulReservation::reservationConfirmationCode. Mandatory.
     string reservationConfirmationCode = 2;
 
-    // How should the tickets be generated? This must be supported by a booked product, see ProductDescription::ticketSupport. Mandatory.
-    io.bokun.inventory.common.api.grpc.TicketSupport ticketSupport = 3;
+    // Reservation information; contains the same data (except lead customerContact as well as reservation.passenger.contact which may or may not
+    // differ between reserve & confirm requests) for convenience. Mandatory.
+    ReservationData reservationData =  3;
 
-    // Contact of the customer who has reserved this booking (otherwise known as "lead customer"). Mandatory if skipped on reservation stage.
-    io.bokun.inventory.common.api.grpc.Contact customerContact = 4;
+    // Elements pertaining to confirmation. Mandatory.
+    ConfirmationData confirmationData = 4;
 }
 
 message CancelBookingRequest {
@@ -72,6 +75,9 @@ message CancelBookingRequest {
 
     // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.
     string bookingConfirmationCode = 2;
+
+    // agent code if passed. Optional.
+    string agentCode = 3;
 }
 
 message GetProductByIdRequest {
@@ -117,8 +123,16 @@ message ProductsAvailabilityRequest {
     repeated string externalProductIds = 4;
 }
 
-message ExternalProductId {
+// A response which tells which products are available over given date period.
+message ProductsAvailabilityResponse {
+
+    // External product id. Mandatory.
     string productId = 1;
+
+    // Whether the actual availability check was done. Some APIs might not support checking for multiple product availability over date range (instead
+    // they typically support checking availability of one product and sometimes - for a very limited range only). As a workaround for this problem,
+    // plugin might return fake availability response and then next step will clarify that. For fake responses, this should be set to false.
+    bool actualCheckDone = 2;
 }
 
 message SearchProductsRequest {
@@ -139,10 +153,8 @@ message ProductAvailabilityRequest {
     io.bokun.inventory.common.api.grpc.DatePeriod range = 3;
 }
 
-message ReservationRequest {
-    // plugin config parameters
-    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
-
+// Data container for reservation info. Extracted to be reused across different requests
+message ReservationData {
     // Product id in external system. Mandatory.
     string productId = 2;
 
@@ -192,62 +204,41 @@ message ReservationRequest {
     // This is some unique id which is *always* passed from the platform for this reservation. Plugins may ignore it, or may use this field in order
     // to make backrefrence from their own reservation/booking towards platform reservation/booking.
     string platformId = 14;
+
+    // Booking source from which booking has originated
+    io.bokun.inventory.common.api.grpc.BookingSource bookingSource = 15;
+
+    // In case this was booked by an external source (such as Expedia, Get Your Guide, Viator, etc.) this field will contain the reference number
+    // which came from that source.
+    string externalSaleId = 16;
+
+    // In case of agent booking - agent code. Optional
+    string agentCode = 17;
+}
+
+// A container for data which is sent when a booking is confirmed. Extracted for convenience reasons.
+message ConfirmationData {
+
+    // How should the tickets be generated? This must be supported by a booked product, see ProductDescription::ticketSupport. Mandatory.
+    io.bokun.inventory.common.api.grpc.TicketSupport ticketSupport = 1;
+}
+
+message ReservationRequest {
+    // plugin config parameters
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
+
+    // Reservation information. Mandatory.
+    ReservationData reservationData = 2;
 }
 
 message CreateConfirmBookingRequest {
     // plugin config parameters
     repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
 
-    // Product id in external system. Mandatory.
-    string productId = 2;
+    // Reservation information; contains the same data (except lead customerContact as well as reservation.passenger.contact) which may or may not
+    // differ between reserve & confirm requests. Mandatory.
+    ReservationData reservationData =  2;
 
-    // Contact of the customer who has reserved this booking (otherwise known as "lead customer"). Mandatory.
-    io.bokun.inventory.common.api.grpc.Contact customerContact = 3;
-
-    // Notes captured by a person who entered this booking (may also be customer itself if booked online). Optional.
-    string notes = 4;
-
-    // Day of the event should take place. Mandatory.
-    // Must match available date, as provided provided with ProductAvailabilityWithRatesResponse::date
-    io.bokun.inventory.common.api.grpc.Date date = 5;
-
-    // Desired start time. Mandatory if ProductDescription::bookingType is DATE_AND_TIME, otherwise null.
-    // Must match available time, as provided with ProductAvailabilityWithRatesResponse::time
-    io.bokun.inventory.common.api.grpc.Time time = 6;
-
-    // Whether pickup is required. Only relevant if ProductDescription::pickupAvailable of booked product is true.
-    bool pickupRequired = 7;
-
-    oneof pickupPlace {
-        // Custom pickup location. Only relevant if ProductDescription::pickupAvailable and ProductDescription::customPickupPlaceAllowed are true and
-        // if customer actually wants custom location.
-        string customPickupPlace = 8;
-
-        // Pickup location. Only relevant if ProductDescription::pickupAvailable is true. Should only be set if ::pickupRequired is true.
-        // Should match location from ProductDescription::pickupPlaces of booked product.
-        io.bokun.inventory.common.api.grpc.PickupDropoffPlace predefinedPickupPlace = 9;
-    }
-
-    // Whether drop off is required. Only relevant if ProductDescription::dropoffAvailable of booked product is true.
-    bool dropoffRequired = 10;
-
-    oneof dropoffPlace {
-        // Custom drop off location. Only relevant if ProductDescription::dropoffAvailable and ProductDescription::customDropoffPlaceAllowed are true and
-        // if customer actually wants custom location.
-        string customDropoffPlace = 11;
-
-        // Drop off location. Only relevant if ProductDescription::dropoffAvailable is true. Should only be set if ::dropoffRequired is true.
-        // Should match location from ProductDescription::dropoffPlaces of booked product.
-        io.bokun.inventory.common.api.grpc.PickupDropoffPlace predefinedDropoffPlace = 12;
-    }
-
-    // A collection of reservations for each combination of rate/pricing category. Mandatory.
-    repeated io.bokun.inventory.common.api.grpc.Reservation reservations = 13;
-
-    // How should the tickets be generated? This must be supported by a booked product, see ProductDescription::ticketSupport. Mandatory.
-    io.bokun.inventory.common.api.grpc.TicketSupport ticketSupport = 14;
-
-    // This is some unique id which is taken from the platform for this reservation. Plugins may ignore it, or may use this field in order
-    // to make backrefrence from their own reservation/booking towards platform reservation/booking.
-    string platformId = 15;
+    // Data which would otherwise come through separate confirmation step. Mandatory.
+    ConfirmationData confirmationData = 3;
 }
