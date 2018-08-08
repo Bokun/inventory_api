@@ -84,6 +84,11 @@ def snapshot = '-SNAPSHOT'
 if (project.hasProperty('workflowId') && project.property('workflowId') == 'dublin-prod') {
     snapshot = ''
 }
+
+if (project.hasProperty('workflowId')) {
+    println("workflowId: " + project.property('workflowId'))
+}
+
 version += snapshot
 
 AWSCredentials awsCredentials = DefaultAWSCredentialsProviderChain.getInstance().credentials;
