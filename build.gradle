@@ -81,12 +81,12 @@ configurations.all {
 }
 
 def snapshot = '-SNAPSHOT'
-if (project.hasProperty('workflowId') && project.property('workflowId') == 'dublin-prod') {
+if (project.hasProperty('branch') && project.property('branch') == 'master') {
     snapshot = ''
 }
 
-if (project.hasProperty('workflowId')) {
-    println("workflowId: " + project.property('workflowId'))
+if (project.hasProperty('branch')) {
+    println("branch: " + project.property('branch'))
 }
 
 version += snapshot

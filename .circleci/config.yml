@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Publish artifacts to repository
           command: |
-            ./gradlew publish -Dorg.gradle.project.workflowId="$CIRCLE_WORKFLOW_ID"
+            ./gradlew publish -Dorg.gradle.project.branch="$CIRCLE_BRANCH"
       - save_cache:
           key: build-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ .Branch }}-{{ checksum "build.gradle" }}
           paths:
