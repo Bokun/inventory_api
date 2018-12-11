@@ -1,5 +1,5 @@
 import com.amazonaws.auth.AWSCredentials
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 
 group 'io.bokun.inventory'
 version '0.3.6'
@@ -81,12 +81,17 @@ configurations.all {
 }
 
 def snapshot = '-SNAPSHOT'
-if (project.hasProperty('snapshot') && project.property('snapshot') == '-RELEASE') {
+if (project.hasProperty('branch') && project.property('branch') == 'master') {
     snapshot = ''
 }
+
+if (project.hasProperty('branch')) {
+    println("branch: " + project.property('branch'))
+}
+
 version += snapshot
 
-AWSCredentials awsCredentials = new ProfileCredentialsProvider().credentials;
+AWSCredentials awsCredentials = DefaultAWSCredentialsProviderChain.getInstance().credentials;
 
 repositories {
     maven {
