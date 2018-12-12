@@ -59,7 +59,9 @@ enum PluginCapability {
     // For a plugin, it doesn't make sense to implement both options as only one will be used, depending of presence/absence of this flag.
     SUPPORTS_RESERVATIONS = 2;
 
-    // Currently unused.
+    // If enabled, it means that a plugin is able (and required) to respond to availability requests coming from Bokun.
+    // Otherwise it is assumed that availability is managed in Bokun silo and no availability query is sent towards plugin. However if a booking is
+    // made, the call is still made towards plugin.
     SUPPORTS_AVAILABILITY = 3;
 }
 
