@@ -2,7 +2,7 @@ import com.amazonaws.auth.AWSCredentials
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 
 group 'io.bokun.inventory'
-version '0.3.6'
+version '0.3.7'
 
 def commonArtifact = 'common-api-grpc'
 def pluginArtifact = 'plugin-api-grpc'

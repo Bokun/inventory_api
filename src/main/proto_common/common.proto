@@ -762,6 +762,9 @@ message BookingSourceMarketplaceVendor {
 
     // Vendor company registration number. Optional
     string companyRegistrationNumber = 3;
+
+    // Reseller ID assigned in Marketplace Contract. Optional
+    string contractResellerId = 4;
 }
 
 // Booking source used in booking
