@@ -784,7 +784,7 @@ message BookingSource {
     // Agent who did the booking. Optional. Filled when SalesSegment is AGENT_AREA
     BookingSourceBookingAgent bookingAgent = 4;
 
-    // Marketplace reseller who resold booking. Optional. Filled when SalesSegment is MARKETPLACE
+    // Marketplace reseller who resold booking. Optional. Filled when SalesSegment is MARKETPLACE or OTA
     BookingSourceMarketplaceVendor marketplaceVendor = 5;
 }
 
