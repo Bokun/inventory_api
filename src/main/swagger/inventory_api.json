@@ -1,0 +1,1847 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Inventory Service REST API. You can find out more about Inventory service [here](https://docs.google.com/document/d/1Uq3wPhTdxONWwTQBRCUyRiY5ljJpJBdyt7rNsk1yLSc/edit?usp=sharing).",
+    "version": "1.0.0",
+    "title": "Inventory Service REST API",
+    "contact": {
+      "email": "support@bokun.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "plugin",
+      "description": "Plugin meta-data"
+    },
+    {
+      "name": "product",
+      "description": "Access to product data"
+    },
+    {
+      "name": "availability",
+      "description": "Operations pertaining to product availability"
+    },
+    {
+      "name": "booking",
+      "description": "Operations pertaining to booking"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/plugin/definition": {
+      "get": {
+        "tags": [
+          "plugin"
+        ],
+        "summary": "Provide plugin definition information (what features etc this plugin supports).",
+        "description": "",
+        "operationId": "getDefinition",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PluginDefinition"
+            }
+          }
+        }
+      }
+    },
+
+    "/product/search": {
+      "post": {
+        "tags": [
+          "product"
+        ],
+        "summary": "Return information about products of the remote system this plugin is connecting to (as opposed to Bokun products). This call is required in order to link Bokun- and remote system-configured products together.",
+        "description": "",
+        "operationId": "searchProduct",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Search request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchProductRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PluginDefinition"
+            }
+          }
+        }
+      }
+    },
+
+    "/product/getById": {
+      "post": {
+        "tags": [
+          "product"
+        ],
+        "summary": "Retrieve detailed information about given product by ID",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Get product by ID request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetProductByIdRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ProductDescription"
+            }
+          }
+        }
+      }
+    },
+
+    "/products/getAvailable": {
+      "post": {
+        "tags": [
+          "product",
+          "availability"
+        ],
+        "summary": "A set of product ids provided, return their availability over given date range.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Contains product IDs along with date range as well as required capacity",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductsAvailabilityRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProductAvailabilityWithRatesResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/product/getAvailability": {
+      "post": {
+        "tags": [
+          "product",
+          "availability"
+        ],
+        "summary": "Get availability of a particular product over a date range.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Contains product ID along with date range",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductAvailabilityRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProductAvailabilityWithRatesResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/booking/reserve": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "summary": "This call secures necessary resource(s), such as activity time slot which can later become a booking.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Contains reservation data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReservationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ReservationResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/booking/confirm": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "summary": "Once reserved, proceed with booking.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Contains confirmation data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfirmBookingRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ConfirmBookingResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/booking/createAndConfirm": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "summary": "This creates reservation and makes a booking in one step.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Contains reservation/confirmation data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmBookingRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ConfirmBookingResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/booking/cancel": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "summary": " Once booked, a booking may be cancelled using booking ref number.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Contains cancellation data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CancelBookingRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CancelBookingResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "definitions": {
+    "PluginParameterDataType": {
+      "type": "string",
+      "enum": [
+        "LONG",
+        "DOUBLE",
+        "BOOLEAN",
+        "STRING"
+      ]
+    },
+
+    "PluginCapability": {
+      "type": "string",
+      "enum": [
+        "SUPPORTS_PRICING",
+        "SUPPORTS_RESERVATIONS",
+        "SUPPORTS_AVAILABILITY"
+      ]
+    },
+
+    "BookingType": {
+      "type": "string",
+      "enum": [
+        "DATE",
+        "DATE_AND_TIME",
+        "PASS"
+      ]
+    },
+
+    "ProductCategory": {
+      "type": "string",
+      "enum": [
+        "ACCOMMODATION",
+        "ACTIVITIES",
+        "CAR_RENTALS",
+        "TRANSPORT"
+      ]
+    },
+
+    "TicketSupport": {
+      "type": "string",
+      "enum": [
+        "TICKET_PER_PERSON",
+        "TICKET_PER_BOOKING",
+        "TICKETS_NOT_REQUIRED"
+      ]
+    },
+
+    "TicketType": {
+      "type": "string",
+      "enum": [
+        "BINARY",
+        "QR_CODE",
+        "DATA_MATRIX"
+      ]
+    },
+
+    "MeetingType": {
+      "type": "string",
+      "enum": [
+        "MEET_ON_LOCATION",
+        "MEET_ON_LOCATION_OR_PICK_UP",
+        "PICK_UP"
+      ]
+    },
+
+    "ContactField": {
+      "type": "string",
+      "enum": [
+        "GENDER",
+        "TITLE",
+        "FIRST_NAME",
+        "LAST_NAME",
+        "EMAIL",
+        "PHONE",
+        "LANGUAGE",
+        "NATIONALITY",
+        "COUNTRY",
+        "ORGANIZATION",
+        "ADDRESS",
+        "POST_CODE",
+        "PASSPORT_NUMBER",
+        "PASSPORT_EXPIRY"
+      ]
+    },
+
+    "PluginConfigurationParameter": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/PluginParameterDataType"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+
+    "PluginConfigurationParameterValue": {
+      "type": "object",
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+
+    "PluginDefinition": {
+      "type": "object",
+      "required": [
+        "name",
+        "capabilities",
+        "parameters"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginCapability"
+          }
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameter"
+          }
+        }
+      }
+    },
+
+    "SearchProductRequest": {
+      "type": "object",
+      "required": [
+        "parameters"
+      ],
+      "properties": {
+        "productName": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        }
+      }
+    },
+
+    "GetProductByIdRequest": {
+      "type": "object",
+      "required": [
+        "externalId",
+        "parameters"
+      ],
+      "properties": {
+        "externalId": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        }
+      }
+    },
+
+    "BasicProductInfo": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "pricingCategories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PricingCategory"
+          }
+        },
+        "cities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "countries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+
+    "PricingCategory": {
+      "type": "object",
+      "required": [
+        "id",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "minAge": {
+          "type": "integer"
+        },
+        "maxAge": {
+          "type": "integer"
+        }
+      }
+    },
+
+    "Rate": {
+      "type": "object",
+      "required": [
+        "id",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        }
+      }
+    },
+
+    "Duration": {
+      "type": "object",
+      "required": [
+        "minutes",
+        "hours",
+        "days",
+        "weeks"
+      ],
+      "properties": {
+        "minutes": {
+          "type": "integer",
+          "format": "int32",
+          "default": 0
+        },
+        "hours": {
+          "type": "integer",
+          "format": "int32",
+          "default": 0
+        },
+        "days": {
+          "type": "integer",
+          "format": "int32",
+          "default": 0
+        },
+        "weeks": {
+          "type": "integer",
+          "format": "int32",
+          "default": 0
+        }
+      }
+    },
+
+    "OpeningHoursTimeInterval": {
+      "type": "object",
+      "required": [
+        "openFrom",
+        "openForHours",
+        "openForMinutes"
+      ],
+      "properties": {
+        "openFrom": {
+          "type": "string"
+        },
+        "openForHours": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "openForMinutes": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "duration": {
+          "$ref": "#/definitions/Duration"
+        }
+      }
+    },
+
+    "OpeningHoursWeekday": {
+      "type": "object",
+      "required": [
+        "open24Hours"
+      ],
+      "properties": {
+        "open24Hours": {
+          "type": "boolean"
+        },
+        "timeIntervals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OpeningHoursTimeInterval"
+          }
+        }
+      }
+    },
+
+    "OpeningHours": {
+      "type": "object",
+      "required": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ],
+      "properties": {
+        "monday": {
+          "$ref": "#/definitions/OpeningHoursWeekday"
+        },
+        "tuesday": {
+          "$ref": "#/definitions/OpeningHoursWeekday"
+        },
+        "wednesday": {
+          "$ref": "#/definitions/OpeningHoursWeekday"
+        },
+        "thursday": {
+          "$ref": "#/definitions/OpeningHoursWeekday"
+        },
+        "friday": {
+          "$ref": "#/definitions/OpeningHoursWeekday"
+        },
+        "saturday": {
+          "$ref": "#/definitions/OpeningHoursWeekday"
+        },
+        "sunday": {
+          "$ref": "#/definitions/OpeningHoursWeekday"
+        }
+      }
+    },
+
+    "SeasonalOpeningHours": {
+      "type": "object",
+      "required": [
+        "startMonth",
+        "startDay",
+        "endMonth",
+        "endDay",
+        "openingHours"
+      ],
+      "properties": {
+        "startMonth": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "startDay": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "endMonth": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "endDay": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "openingHours": {
+          "$ref": "#/definitions/OpeningHours"
+        }
+      }
+    },
+
+    "SeasonalOpeningHourSet": {
+      "type": "object",
+      "required": [
+        "seasonalOpeningHours"
+      ],
+      "properties": {
+        "seasonalOpeningHours": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SeasonalOpeningHours"
+          }
+        }
+      }
+    },
+
+    "GeoPoint": {
+      "type": "object",
+      "required": [
+        "latitude",
+        "longitude"
+      ],
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+
+    "UnLocode": {
+      "type": "object",
+      "required": [
+        "country",
+        "city"
+      ],
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        }
+      }
+    },
+
+    "Address": {
+      "type": "object",
+      "properties": {
+        "addressLine1": {
+          "type": "string"
+        },
+        "addressLine2": {
+          "type": "string"
+        },
+        "addressLine3": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "countryCode": {
+          "type": "string"
+        },
+        "geoPoint": {
+          "$ref": "#/definitions/GeoPoint"
+        },
+        "unLocode": {
+          "$ref": "#/definitions/UnLocode"
+        }
+      }
+    },
+
+    "PickupDropoffPlace": {
+      "type": "object",
+      "required": [
+        "title",
+        "address"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "address": {
+          "$ref": "#/definitions/Address"
+        }
+      }
+    },
+
+    "Time": {
+      "type": "object",
+      "required": [
+        "hour",
+        "minute"
+      ],
+      "properties": {
+        "hour": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minute": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+
+    "Extra": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "optional"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "optional": {
+          "type": "boolean"
+        },
+        "maxPerBooking": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "limitByPax": {
+          "type": "boolean"
+        },
+        "increasesCapacity": {
+          "type": "boolean"
+        }
+      }
+    },
+
+    "ProductDescription": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "pricingCategories",
+        "rates",
+        "bookingType",
+        "dropoffAvailable",
+        "productCategory",
+        "ticketSupport",
+        "meetingType"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "pricingCategories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PricingCategory"
+          }
+        },
+        "rates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Rate"
+          }
+        },
+        "allYearOpeningHours": {
+          "$ref": "#/definitions/OpeningHours"
+        },
+        "seasonalOpeningHours": {
+          "$ref": "#/definitions/SeasonalOpeningHourSet"
+        },
+        "bookingType": {
+          "$ref": "#/definitions/BookingType"
+        },
+        "customPickupPlaceAllowed": {
+          "type": "boolean"
+        },
+        "pickupMinutesBefore": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pickupPlaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PickupDropoffPlace"
+          }
+        },
+        "dropoffAvailable": {
+          "type": "boolean"
+        },
+        "customDropoffPlaceAllowed": {
+          "type": "boolean"
+        },
+        "dropoffPlaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PickupDropoffPlace"
+          }
+        },
+        "productCategory": {
+          "$ref": "#/definitions/ProductCategory"
+        },
+        "ticketSupport": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TicketSupport"
+          }
+        },
+        "countries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "startTimes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Time"
+          }
+        },
+        "ticketType": {
+          "$ref": "#/definitions/TicketType"
+        },
+        "meetingType": {
+          "$ref": "#/definitions/MeetingType"
+        },
+        "enforcedLeadPassengerFields": {
+          "$ref": "#/definitions/ContactField"
+        },
+        "enforcedTravellerFields": {
+          "$ref": "#/definitions/ContactField"
+        },
+        "extras": {
+          "$ref": "#/definitions/Extra"
+        }
+      }
+    },
+
+    "Date": {
+      "type": "object",
+      "required": [
+        "year",
+        "month",
+        "day"
+      ],
+      "properties": {
+        "year": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "month": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "day": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+
+    "DatePeriod": {
+      "type": "object",
+      "required": [
+        "from",
+        "to"
+      ],
+      "properties": {
+        "from": {
+          "$ref": "#/definitions/Date"
+        },
+        "to": {
+          "$ref": "#/definitions/Date"
+        }
+      }
+    },
+
+    "Price": {
+      "type": "object",
+      "required": [
+        "currency",
+        "amount"
+      ],
+      "properties": {
+        "currency": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string"
+        }
+      }
+    },
+
+    "ProductsAvailabilityRequest": {
+      "type": "object",
+      "required": [
+        "parameters",
+        "range",
+        "requiredCapacity",
+        "externalProductIds"
+      ],
+      "properties": {
+        "range": {
+          "$ref": "#/definitions/DatePeriod"
+        },
+        "requiredCapacity": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "externalProductIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        }
+      }
+    },
+
+    "ProductsAvailabilityResponse": {
+      "type": "object",
+      "required": [
+        "productId",
+        "actualCheckDone"
+      ],
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "actualCheckDone": {
+          "type": "boolean"
+        }
+      }
+    },
+
+    "PricingCategoryWithPrice": {
+      "type": "object",
+      "required": [
+        "pricingCategoryId",
+        "price"
+      ],
+      "properties": {
+        "pricingCategoryId": {
+          "type": "string"
+        },
+        "price": {
+          "$ref": "#/definitions/Price"
+        }
+      }
+    },
+
+    "PricePerPerson": {
+      "type": "object",
+      "required": [
+        "pricingCategoryWithPrice"
+      ],
+      "properties": {
+        "pricingCategoryWithPrice": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PricingCategoryWithPrice"
+          }
+        }
+      }
+    },
+
+    "PricePerBooking": {
+      "type": "object",
+      "required": [
+        "price"
+      ],
+      "properties": {
+        "price": {
+          "$ref": "#/definitions/Price"
+        }
+      }
+    },
+
+    "RateWithPrice": {
+      "type": "object",
+      "required": [
+        "rateId"
+      ],
+      "properties": {
+        "rateId": {
+          "type": "string"
+        },
+        "pricePerPerson": {
+          "$ref": "#/definitions/PricePerPerson"
+        },
+        "pricePerBooking": {
+          "$ref": "#/definitions/PricePerBooking"
+        }
+      }
+    },
+
+    "ProductAvailabilityRequest": {
+      "type": "object",
+      "required": [
+        "parameters",
+        "range",
+        "productId"
+      ],
+      "properties": {
+        "range": {
+          "$ref": "#/definitions/DatePeriod"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        }
+      }
+    },
+
+    "ProductAvailabilityWithRatesResponse": {
+      "type": "object",
+      "required": [
+        "capacity",
+        "date",
+        "time",
+        "rates"
+      ],
+      "properties": {
+        "capacity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "date": {
+          "$ref": "#/definitions/Date"
+        },
+        "time": {
+          "$ref": "#/definitions/Time"
+        },
+        "pickupTime": {
+          "$ref": "#/definitions/Time"
+        },
+        "rates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RateWithPrice"
+          }
+        }
+      }
+    },
+
+    "Title": {
+      "type": "string",
+      "enum": [
+        "MRS",
+        "MISS",
+        "MR"
+      ]
+    },
+
+    "Gender": {
+      "type": "string",
+      "enum": [
+        "MALE",
+        "FEMALE"
+      ]
+    },
+
+    "Contact": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "title": {
+          "$ref": "#/definitions/Title"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "nationality": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "gender": {
+          "$ref": "#/definitions/Gender"
+        },
+        "address": {
+          "type": "string"
+        },
+        "postCode": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "passportNumber": {
+          "type": "string"
+        },
+        "passportExpiry": {
+          "$ref": "#/definitions/Date"
+        }
+      }
+    },
+
+    "Passenger": {
+      "type": "object",
+      "required": [
+        "contact"
+      ],
+      "properties": {
+        "pricingCategoryId": {
+          "type": "string"
+        },
+        "contact": {
+          "$ref": "#/definitions/Contact"
+        },
+        "pricePerPassenger": {
+          "$ref": "#/definitions/Price"
+        }
+      }
+    },
+
+    "ExtraPricingType": {
+      "type": "string",
+      "enum": [
+        "PER_PERSON",
+        "PER_BOOKING"
+      ]
+    },
+
+    "ExtraBooking": {
+      "type": "object",
+      "required": [
+        "extraId",
+        "amount",
+        "pricingType"
+      ],
+      "properties": {
+        "extraId": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pricingType": {
+          "$ref": "#/definitions/ExtraPricingType"
+        }
+      }
+    },
+
+    "SalesSegment": {
+      "type": "string",
+      "enum": [
+        "DIRECT_ONLINE",
+        "DIRECT_OFFLINE",
+        "AGENT_AREA",
+        "MARKETPLACE",
+        "OTA"
+      ]
+    },
+
+    "BookingSourceBookingChannel": {
+      "type": "object",
+      "required": [
+        "id",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "systemType": {
+          "type": "string"
+        }
+      }
+    },
+
+    "BookingSourceExtranetUser": {
+      "type": "object",
+      "required": [
+        "email",
+        "fullName"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        }
+      }
+    },
+
+    "BookingSourceBookingAgent": {
+      "type": "object",
+      "required": [
+        "id",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "companyRegistrationNumber": {
+          "type": "string"
+        }
+      }
+    },
+
+    "BookingSourceMarketplaceVendor": {
+      "type": "object",
+      "required": [
+        "id",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "companyRegistrationNumber": {
+          "type": "string"
+        },
+        "contractResellerId": {
+          "type": "string"
+        }
+      }
+    },
+
+    "BookingSource": {
+      "type": "object",
+      "required": [
+        "segment",
+        "bookingChannel"
+      ],
+      "properties": {
+        "segment": {
+          "$ref": "#/definitions/SalesSegment"
+        },
+        "bookingChannel": {
+          "$ref": "#/definitions/BookingSourceBookingChannel"
+        },
+        "extranetUser": {
+          "$ref": "#/definitions/BookingSourceExtranetUser"
+        },
+        "bookingAgent": {
+          "$ref": "#/definitions/BookingSourceBookingAgent"
+        },
+        "marketplaceVendor": {
+          "$ref": "#/definitions/BookingSourceMarketplaceVendor"
+        }
+      }
+    },
+
+    "Reservation": {
+      "type": "object",
+      "required": [
+        "rateId",
+        "passengers"
+      ],
+      "properties": {
+        "rateId": {
+          "type": "string"
+        },
+        "passengers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Passenger"
+          }
+        },
+        "pricePerBooking": {
+          "$ref": "#/definitions/Price"
+        },
+        "extraBooking": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ExtraBooking"
+          }
+        }
+      }
+    },
+
+    "ReservationData": {
+      "type": "object",
+      "required": [
+        "productId",
+        "date",
+        "reservations",
+        "platformId",
+        "bookingSource"
+      ],
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "customerContact": {
+          "$ref": "#/definitions/Contact"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "date": {
+          "$ref": "#/definitions/Date"
+        },
+        "time": {
+          "$ref": "#/definitions/Time"
+        },
+        "pickupRequired": {
+          "type": "boolean"
+        },
+        "customPickupPlace": {
+          "type": "string"
+        },
+        "predefinedPickupPlace": {
+          "$ref": "#/definitions/PickupDropoffPlace"
+        },
+        "dropoffRequired": {
+          "type": "boolean"
+        },
+        "customDropoffPlace": {
+          "type": "string"
+        },
+        "predefinedDropoffPlace": {
+          "$ref": "#/definitions/PickupDropoffPlace"
+        },
+        "reservations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Reservation"
+          }
+        },
+        "platformId": {
+          "type": "string"
+        },
+        "bookingSource": {
+          "$ref": "#/definitions/BookingSource"
+        },
+        "externalSaleId": {
+          "type": "string"
+        },
+        "agentCode": {
+          "type": "string"
+        }
+      }
+    },
+
+    "ReservationRequest": {
+      "type": "object",
+      "required": [
+        "reservationData",
+        "parameters"
+      ],
+      "properties": {
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        },
+        "reservationData": {
+          "$ref": "#/definitions/ReservationData"
+        }
+      }
+    },
+
+    "SuccessfulReservation": {
+      "type": "object",
+      "required": [
+        "reservationConfirmationCode"
+      ],
+      "properties": {
+        "reservationConfirmationCode": {
+          "type": "string"
+        }
+      }
+    },
+
+    "FailedReservation": {
+      "type": "object",
+      "required": [
+        "reservationError"
+      ],
+      "properties": {
+        "reservationError": {
+          "type": "string"
+        }
+      }
+    },
+
+    "ReservationResponse": {
+      "type": "object",
+      "properties": {
+        "successfulReservation": {
+          "$ref": "#/definitions/SuccessfulReservation"
+        },
+        "failedReservation": {
+          "$ref": "#/definitions/FailedReservation"
+        }
+      }
+    },
+
+    "ConfirmationData": {
+      "type": "object",
+      "required": [
+        "ticketSupport"
+      ],
+      "properties": {
+        "ticketSupport": {
+          "$ref": "#/definitions/TicketSupport"
+        }
+      }
+    },
+
+    "ConfirmBookingRequest": {
+      "type": "object",
+      "required": [
+        "parameters",
+        "reservationConfirmationCode",
+        "reservationData",
+        "confirmationData"
+      ],
+      "properties": {
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        },
+        "reservationConfirmationCode": {
+          "type": "string"
+        },
+        "reservationData": {
+          "$ref": "#/definitions/ReservationData"
+        },
+        "confirmationData": {
+          "$ref": "#/definitions/ConfirmationData"
+        }
+      }
+    },
+
+    "BinaryTicket": {
+      "type": "object",
+      "required": [
+        "ticketContent"
+      ],
+      "properties": {
+        "ticketContent": {
+          "type": "string",
+          "description": "representation of ticket in bytes, Base64 encoded"
+        }
+      }
+    },
+
+    "QrTicket": {
+      "type": "object",
+      "required": [
+        "ticketBarcode"
+      ],
+      "properties": {
+        "ticketBarcode": {
+          "type": "string"
+        },
+        "offlineCode": {
+          "type": "string"
+        }
+      }
+    },
+
+    "DataMatrixTicket": {
+      "type": "object",
+      "required": [
+        "ticketBarcode"
+      ],
+      "properties": {
+        "ticketBarcode": {
+          "type": "string"
+        },
+        "offlineCode": {
+          "type": "string"
+        }
+      }
+    },
+
+    "Ticket": {
+      "type": "object",
+      "properties": {
+        "binaryTicket": {
+          "$ref": "#/definitions/BinaryTicket"
+        },
+        "qrTicket": {
+          "$ref": "#/definitions/QrTicket"
+        },
+        "dataMatrixTicket": {
+          "$ref": "#/definitions/DataMatrixTicket"
+        }
+      }
+    },
+
+    "TicketPerPricingCategory": {
+      "type": "object",
+      "required": [
+        "ticket"
+      ],
+      "properties": {
+        "pricingCategory": {
+          "type": "string"
+        },
+        "ticket": {
+          "$ref": "#/definitions/Ticket"
+        }
+      }
+    },
+
+    "TicketsPerPricingCategory": {
+      "type": "object",
+      "required": [
+        "ticketPerPricingCategory"
+      ],
+      "properties": {
+        "ticketPerPricingCategory": {
+          "$ref": "#/definitions/TicketPerPricingCategory"
+        }
+      }
+    },
+
+    "SuccessfulBooking": {
+      "type": "object",
+      "required": [
+        "bookingConfirmationCode"
+      ],
+      "properties": {
+        "bookingConfirmationCode": {
+          "type": "string"
+        },
+        "ticketsPerPassenger": {
+          "$ref": "#/definitions/TicketsPerPricingCategory"
+        },
+        "bookingTicket": {
+          "$ref": "#/definitions/Ticket"
+        }
+      }
+    },
+
+    "FailedBooking": {
+      "type": "object",
+      "required": [
+        "bookingError"
+      ],
+      "properties": {
+        "bookingError": {
+          "type": "string"
+        }
+      }
+    },
+
+    "ConfirmBookingResponse": {
+      "type": "object",
+      "properties": {
+        "successfulBooking": {
+          "$ref": "#/definitions/SuccessfulBooking"
+        },
+        "failedBooking": {
+          "$ref": "#/definitions/FailedBooking"
+        }
+      }
+    },
+
+    "CreateConfirmBookingRequest": {
+      "type": "object",
+      "required": [
+        "parameters",
+        "reservationData",
+        "confirmationData"
+      ],
+      "properties": {
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        },
+        "reservationData": {
+          "$ref": "#/definitions/ReservationData"
+        },
+        "confirmationData": {
+          "$ref": "#/definitions/ConfirmationData"
+        }
+      }
+    },
+
+    "CancelBookingRequest": {
+      "type": "object",
+      "required": [
+        "parameters",
+        "bookingConfirmationCode"
+      ],
+      "properties": {
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        },
+        "bookingConfirmationCode": {
+          "type": "string"
+        },
+        "agentCode": {
+          "type": "string"
+        }
+      }
+    },
+
+    "SuccessfulCancellation": {
+      "type": "object",
+      "properties": {
+      }
+    },
+
+    "FailedCancellation": {
+      "type": "object",
+      "required": [
+        "cancellationError"
+      ],
+      "properties": {
+        "cancellationError": {
+          "type": "string"
+        }
+      }
+    },
+
+    "CancelBookingResponse": {
+      "type": "object",
+      "properties": {
+        "successfulCancellation": {
+          "$ref": "#/definitions/SuccessfulCancellation"
+        },
+        "failedCancellation": {
+          "$ref": "#/definitions/FailedCancellation"
+        }
+      }
+    }
+  }
+}
