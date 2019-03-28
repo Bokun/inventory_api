@@ -22,7 +22,7 @@ plugins {
 }
 
 group 'io.bokun.inventory'
-version '0.3.7.1'
+version '0.3.7.2'
 
 apply plugin: "com.google.protobuf"
 apply plugin: "java"
@@ -31,9 +31,9 @@ apply plugin: "idea"
 apply plugin: "maven-publish"
 apply plugin: 'org.detoeuf.swagger-codegen'
 
-def commonArtifact = 'common-api-grpc'
-def pluginArtifact = 'plugin-api-grpc'
-def serviceArtifact = 'service-api-grpc'
+def commonArtifact = 'common-api'
+def pluginArtifact = 'plugin-api'
+def serviceArtifact = 'service-api'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.2'
@@ -164,13 +164,13 @@ task commonApi(type: Jar) {
 
 task pluginApi(type: Jar) {
     baseName = 'pluginapi'
-    from sourceSets.main.output.classesDir
+    from sourceSets.main.output.classesDir, sourceSets.swagger.output.classesDir
     include 'io/bokun/inventory/plugin/**'
 }
 
 task serviceApi(type: Jar) {
     baseName = 'serviceapi'
-    from sourceSets.main.output.classesDir
+    from sourceSets.main.output.classesDir, sourceSets.swagger.output.classesDir
     include 'io/bokun/inventory/service/**', 'grpc/health/v1/**'
 }
 
