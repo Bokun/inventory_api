@@ -51,31 +51,25 @@ message PluginUrl {
     // SSL certificate file, only used if tls=true.
     string cert = 3;
 
-    // In case if there is a secret shared between server and client (regardless of TLS usage). Optional
+    // In case if there is a secret shared between server and client (regardless of TLS usage). Applicable for transport=GRPC only. Optional
     string sharedSecret = 4;
 
     // Type of transport protocol this plugin requires. Optional, defaults to GRPC if unset.
     PluginTransport transport = 5;
+
+    // Username for basic authentication to use for every request. Applicable for transport=REST only. Optional.
+    string basicAuthUsername = 6;
+
+    // Password for basic authentication to use for every request. Applicable for transport=REST only. Optional.
+    string basicAuthPassword = 7;
 }
 
 message MovePluginRequest {
     // ID of plugin to move to a new URL
     string id = 1;
 
-    // URL of plugin which is currently listening on a socket. Mandatory.
-    string newUrl = 2;
-
-    // if true, this plugin will be using TLS/SSL.
-    bool tls = 3;
-
-    // TLS/SSL certificate. Only used if tls is true.
-    string cert = 4;
-
-    // In case if there is a secret shared between server and client (regardless of TLS usage). Optional
-    string sharedSecret = 5;
-
-    // Type of transport protocol this plugin requires. Optional, defaults to GRPC if unset.
-    PluginTransport transport = 6;
+    // Address (and configuration parameters) of the plugin. Mandatory.
+    PluginUrl pluginAddress = 2;
 }
 
 message GetDefinitionRequest {
@@ -111,6 +105,12 @@ message PluginDefinition {
 
     // Type of transport protocol this plugin requires.
     PluginTransport transport = 10;
+
+    // Username for basic authentication to use for every request. Applicable for transport=REST only.
+    string basicAuthUsername = 11;
+
+    // Password for basic authentication to use for every request. Applicable for transport=REST only.
+    string basicAuthPassword = 12;
 }
 
 message PluginUnregistrationRequest {
