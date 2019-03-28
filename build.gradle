@@ -22,7 +22,7 @@ plugins {
 }
 
 group 'io.bokun.inventory'
-version '0.3.8-CANDIDATE'
+version '0.3.7.1'
 
 apply plugin: "com.google.protobuf"
 apply plugin: "java"
