@@ -164,7 +164,8 @@ task commonApi(type: Jar) {
 
 task pluginApi(type: Jar) {
     baseName = 'pluginapi'
-    from sourceSets.main.output.classesDir, sourceSets.swagger.output.classesDir
+    from sourceSets.main.output.classesDir
+    from sourceSets.swagger.output.classesDir
     include 'io/bokun/inventory/plugin/**'
 }
 
