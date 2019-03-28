@@ -114,16 +114,16 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'hours'
 }
 
-def snapshot = '-SNAPSHOT'
-if (project.hasProperty('branch') && project.property('branch') == 'master') {
-    snapshot = ''
-}
+//def snapshot = '-SNAPSHOT'
+//if (project.hasProperty('branch') && project.property('branch') == 'master') {
+//    snapshot = ''
+//}
 
 if (project.hasProperty('branch')) {
     println("branch: " + project.property('branch'))
 }
 
-version += snapshot
+//version += snapshot
 
 AWSCredentials awsCredentials = DefaultAWSCredentialsProviderChain.getInstance().credentials;
 
@@ -226,22 +226,22 @@ if (awsCredentials != null) {
         }
         repositories {
             maven {
-                if (project.version.endsWith('-SNAPSHOT')) {
-                    url "s3://pmr.bokun.io/snapshots"
-                } else {
+//                if (project.version.endsWith('-SNAPSHOT')) {
+//                    url "s3://pmr.bokun.io/snapshots"
+//                } else {
                     url "s3://pmr.bokun.io/release"
-                }
+//                }
                 credentials(AwsCredentials) {
                     accessKey awsCredentials.AWSAccessKeyId
                     secretKey awsCredentials.AWSSecretKey
                 }
             }
             maven {
-                if (project.version.endsWith('-SNAPSHOT')) {
-                    url "s3://public-pmr.bokun.io/snapshots"
-                } else {
+//                if (project.version.endsWith('-SNAPSHOT')) {
+//                    url "s3://public-pmr.bokun.io/snapshots"
+//                } else {
                     url "s3://public-pmr.bokun.io/release"
-                }
+//                }
                 credentials(AwsCredentials) {
                     accessKey awsCredentials.AWSAccessKeyId
                     secretKey awsCredentials.AWSSecretKey
