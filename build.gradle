@@ -1,5 +1,8 @@
 import com.amazonaws.auth.AWSCredentials
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
+import io.swagger.codegen.config.CodegenConfigurator
+import io.swagger.codegen.DefaultGenerator
+
 
 buildscript {
     ext {
@@ -14,11 +17,8 @@ buildscript {
         classpath("com.amazonaws:aws-java-sdk-core:${awsVersion}")
         classpath("com.amazonaws:aws-java-sdk-s3:${awsVersion}")
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.1'
+        classpath 'io.swagger:swagger-codegen:2.2.3'
     }
-}
-
-plugins {
-    id 'org.detoeuf.swagger-codegen' version '1.7.4'
 }
 
 group 'io.bokun.inventory'
@@ -29,7 +29,6 @@ apply plugin: "java"
 apply plugin: "application"
 apply plugin: "idea"
 apply plugin: "maven-publish"
-apply plugin: 'org.detoeuf.swagger-codegen'
 
 def commonArtifact = 'common-api'
 def pluginArtifact = 'plugin-api'
@@ -59,50 +58,69 @@ protobuf {
     generatedFilesBaseDir = "$projectDir/src/generated"
 }
 
-swagger {
-    inputSpec = 'src/main/swagger/inventory_api.json'
-    outputDir = file('src/generated/main/java')
-    lang = 'java'
+def swaggerInput = "src/main/swagger/inventory_api.json"
+def swaggerOutputDir = file('src/generated/main/java')
+task generateApi {
+    inputs.file(swaggerInput)
+        outputs.dir(swaggerOutputDir)
+        doLast {
+            def config = new CodegenConfigurator()
+            config.setInputSpec(swaggerInput)
+            config.setOutputDir(swaggerOutputDir.path)
+            config.setLang('java')
+            config.setAdditionalProperties([
+                    'invokerPackage'   : 'io.bokun.inventory.plugin.api.rest',
+                    'modelPackage'     : 'io.bokun.inventory.plugin.api.rest',
+                    'apiPackage'       : 'io.bokun.inventory.plugin.api.rest',
+                    'dateLibrary'      : 'java8',
+                    'hideGenerationTimestamp' : 'true',
+                    'sourceFolder': '.'
+            ])
+            config.setSystemProperties([
+                    'modelTests': 'false',
+                    'modelDocs': 'false',
+                    'apiTests': 'false',
+                    'apiDocs': 'false',
+                    'models' : ''
+            ])
+            new DefaultGenerator().opts(config.toClientOptInput()).generate()
+        }
+}
 
-    additionalProperties = [
-            'invokerPackage'   : 'io.bokun.inventory.plugin.api.rest',
-            'modelPackage'     : 'io.bokun.inventory.plugin.api.rest',
-            'apiPackage'       : 'io.bokun.inventory.plugin.api.rest',
-            'dateLibrary'      : 'java8',
-            'hideGenerationTimestamp' : 'true',
-            'sourceFolder': '.'
-    ]
-    systemProperties = [
-            'modelTests': 'false',
-            'modelDocs': 'false',
-            'apiTests': 'false',
-            'apiDocs': 'false',
-            'models' : ''
-    ]
+clean.doFirst {
+    delete(swaggerOutputDir)
+}
+
+configurations {
+    swagger
 }
 
 sourceSets {
+    swagger {
+        compileClasspath = configurations.swaggerCompile
+        java {
+            srcDir file("/src/generated/main/java")
+        }
+    }
     main {
         proto {
             srcDir 'src/main/proto_common'
             srcDir 'src/main/proto_plugin'
             srcDir 'src/main/proto_service'
         }
-    }
-    swagger {
-        java {
-            srcDir file("/src/generated/main/java")
-        }
+        compileClasspath += swagger.output
+        runtimeClasspath += swagger.output
     }
 }
 
 dependencies {
     compile 'io.grpc:grpc-all:1.2.0'
-    compile sourceSets.swagger.output
     compile 'io.swagger:swagger-annotations:1.5.19'
 }
 
-classes.dependsOn('swagger')
+compileSwaggerJava.dependsOn generateApi
+classes.dependsOn swaggerClasses
+compileJava.dependsOn compileSwaggerJava
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -115,16 +133,9 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'hours'
 }
 
-//def snapshot = '-SNAPSHOT'
-//if (project.hasProperty('branch') && project.property('branch') == 'master') {
-//    snapshot = ''
-//}
-
 if (project.hasProperty('branch')) {
     println("branch: " + project.property('branch'))
 }
-
-//version += snapshot
 
 AWSCredentials awsCredentials = DefaultAWSCredentialsProviderChain.getInstance().credentials;
 
@@ -172,7 +183,8 @@ task pluginApi(type: Jar) {
 
 task serviceApi(type: Jar) {
     baseName = 'serviceapi'
-    from sourceSets.main.output.classesDir, sourceSets.swagger.output.classesDir
+    from sourceSets.main.output.classesDir
+    from sourceSets.swagger.output.classesDir
     include 'io/bokun/inventory/service/**', 'grpc/health/v1/**'
 }
 
@@ -228,22 +240,14 @@ if (awsCredentials != null) {
         }
         repositories {
             maven {
-//                if (project.version.endsWith('-SNAPSHOT')) {
-//                    url "s3://pmr.bokun.io/snapshots"
-//                } else {
-                    url "s3://pmr.bokun.io/release"
-//                }
+                url "s3://pmr.bokun.io/release"
                 credentials(AwsCredentials) {
                     accessKey awsCredentials.AWSAccessKeyId
                     secretKey awsCredentials.AWSSecretKey
                 }
             }
             maven {
-//                if (project.version.endsWith('-SNAPSHOT')) {
-//                    url "s3://public-pmr.bokun.io/snapshots"
-//                } else {
-                    url "s3://public-pmr.bokun.io/release"
-//                }
+                url "s3://public-pmr.bokun.io/release"
                 credentials(AwsCredentials) {
                     accessKey awsCredentials.AWSAccessKeyId
                     secretKey awsCredentials.AWSSecretKey
