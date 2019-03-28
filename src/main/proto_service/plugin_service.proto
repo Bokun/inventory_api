@@ -34,6 +34,13 @@ service PluginService {
     rpc DeleteConfiguredPlugin (DeletePluginConfigurationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 }
 
+// Transport protocol each plugin implements
+enum PluginTransport {
+    UNASSIGNED_PLUGIN_TRANSPORT = 0;
+    GRPC = 1;
+    REST = 2;
+}
+
 message PluginUrl {
     // URL of plugin which is listening on a socket. Mandatory.
     string url = 1;
@@ -46,6 +53,9 @@ message PluginUrl {
 
     // In case if there is a secret shared between server and client (regardless of TLS usage). Optional
     string sharedSecret = 4;
+
+    // Type of transport protocol this plugin requires. Optional, defaults to GRPC if unset.
+    PluginTransport transport = 5;
 }
 
 message MovePluginRequest {
@@ -63,6 +73,9 @@ message MovePluginRequest {
 
     // In case if there is a secret shared between server and client (regardless of TLS usage). Optional
     string sharedSecret = 5;
+
+    // Type of transport protocol this plugin requires. Optional, defaults to GRPC if unset.
+    PluginTransport transport = 6;
 }
 
 message GetDefinitionRequest {
@@ -95,6 +108,9 @@ message PluginDefinition {
 
     // In case if there is a secret shared between server and client (regardless of TLS usage). Optional
     string sharedSecret = 9;
+
+    // Type of transport protocol this plugin requires.
+    PluginTransport transport = 10;
 }
 
 message PluginUnregistrationRequest {
