@@ -5,6 +5,7 @@ package io.bokun.inventory.service.plugin.grpc;
 option java_multiple_files = true;
 option java_package = "io.bokun.inventory.service.plugin.grpc";
 
+import "google/protobuf/wrappers.proto";
 import "common.proto";
 import "inventory_service_common.proto";
 
@@ -58,10 +59,10 @@ message PluginUrl {
     PluginTransport transport = 5;
 
     // Username for basic authentication to use for every request. Applicable for transport=REST only. Optional.
-    string basicAuthUsername = 6;
+    google.protobuf.StringValue basicAuthUsername = 6;
 
     // Password for basic authentication to use for every request. Applicable for transport=REST only. Optional.
-    string basicAuthPassword = 7;
+    google.protobuf.StringValue basicAuthPassword = 7;
 }
 
 message MovePluginRequest {
@@ -107,10 +108,10 @@ message PluginDefinition {
     PluginTransport transport = 10;
 
     // Username for basic authentication to use for every request. Applicable for transport=REST only.
-    string basicAuthUsername = 11;
+    google.protobuf.StringValue basicAuthUsername = 11;
 
     // Password for basic authentication to use for every request. Applicable for transport=REST only.
-    string basicAuthPassword = 12;
+    google.protobuf.StringValue basicAuthPassword = 12;
 }
 
 message PluginUnregistrationRequest {
