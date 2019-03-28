@@ -185,7 +185,7 @@ task serviceApi(type: Jar) {
     baseName = 'serviceapi'
     from sourceSets.main.output.classesDir
     from sourceSets.swagger.output.classesDir
-    include 'io/bokun/inventory/service/**', 'grpc/health/v1/**'
+    include 'io/bokun/inventory/service/**', 'grpc/health/v1/**', 'io/bokun/inventory/plugin/api/rest/**'
 }
 
 if (awsCredentials != null) {
