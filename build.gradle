@@ -59,12 +59,6 @@ protobuf {
     generatedFilesBaseDir = "$projectDir/src/generated"
 }
 
-dependencies {
-    compile 'io.grpc:grpc-all:1.2.0'
-    compile sourceSets.swagger.output
-    compile 'io.swagger:swagger-annotations:1.5.19'
-}
-
 swagger {
     inputSpec = 'src/main/swagger/inventory_api.json'
     outputDir = file('src/generated/main/java')
@@ -100,6 +94,12 @@ sourceSets {
             srcDir file("/src/generated/main/java")
         }
     }
+}
+
+dependencies {
+    compile 'io.grpc:grpc-all:1.2.0'
+    compile sourceSets.swagger.output
+    compile 'io.swagger:swagger-annotations:1.5.19'
 }
 
 classes.dependsOn('swagger')
