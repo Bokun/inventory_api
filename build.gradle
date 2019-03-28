@@ -61,6 +61,7 @@ protobuf {
 
 dependencies {
     compile 'io.grpc:grpc-all:1.2.0'
+    compile sourceSets.swagger.output
     compile 'io.swagger:swagger-annotations:1.5.19'
 }
 
