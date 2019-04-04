@@ -22,7 +22,7 @@ buildscript {
 }
 
 group 'io.bokun.inventory'
-version '0.4.0.4'
+version '0.4.0.5'
 
 apply plugin: "com.google.protobuf"
 apply plugin: "java"
@@ -171,7 +171,7 @@ startScripts.enabled = false
 task commonApi(type: Jar) {
     baseName = 'commonapi'
     from sourceSets.main.output.classesDir
-    include 'io/bokun/inventory/common/**'
+    include 'io/bokun/inventory/common/**', 'io/bokun/inventory/plugin/api/rest/**'
 }
 
 task pluginApi(type: Jar) {
@@ -185,7 +185,7 @@ task serviceApi(type: Jar) {
     baseName = 'serviceapi'
     from sourceSets.main.output.classesDir
     from sourceSets.swagger.output.classesDir
-    include 'io/bokun/inventory/service/**', 'grpc/health/v1/**', 'io/bokun/inventory/plugin/api/rest/**'
+    include 'io/bokun/inventory/service/**', 'grpc/health/v1/**'
 }
 
 if (awsCredentials != null) {
