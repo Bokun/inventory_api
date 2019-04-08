@@ -1013,7 +1013,10 @@
           "$ref": "#/definitions/ContactField"
         },
         "extras": {
-          "$ref": "#/definitions/Extra"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Extra"
+          }
         }
       }
     },
