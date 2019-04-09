@@ -164,7 +164,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/ProductAvailabilityWithRatesResponse"
+                "$ref": "#/definitions/ProductsAvailabilityResponse"
               }
             }
           }
