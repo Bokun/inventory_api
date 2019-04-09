@@ -1734,7 +1734,10 @@
       ],
       "properties": {
         "ticketPerPricingCategory": {
-          "$ref": "#/definitions/TicketPerPricingCategory"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TicketPerPricingCategory"
+          }
         }
       }
     },
