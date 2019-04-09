@@ -1027,7 +1027,7 @@
       }
     },
 
-    "Date": {
+    "DateYMD": {
       "type": "object",
       "required": [
         "year",
@@ -1058,10 +1058,10 @@
       ],
       "properties": {
         "from": {
-          "$ref": "#/definitions/Date"
+          "$ref": "#/definitions/DateYMD"
         },
         "to": {
-          "$ref": "#/definitions/Date"
+          "$ref": "#/definitions/DateYMD"
         }
       }
     },
@@ -1227,7 +1227,7 @@
           "format": "int32"
         },
         "date": {
-          "$ref": "#/definitions/Date"
+          "$ref": "#/definitions/DateYMD"
         },
         "time": {
           "$ref": "#/definitions/Time"
@@ -1304,7 +1304,7 @@
           "type": "string"
         },
         "passportExpiry": {
-          "$ref": "#/definitions/Date"
+          "$ref": "#/definitions/DateYMD"
         }
       }
     },
@@ -1516,7 +1516,7 @@
           "type": "string"
         },
         "date": {
-          "$ref": "#/definitions/Date"
+          "$ref": "#/definitions/DateYMD"
         },
         "time": {
           "$ref": "#/definitions/Time"
