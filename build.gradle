@@ -22,7 +22,7 @@ buildscript {
 }
 
 group 'io.bokun.inventory'
-version '0.4.0.12'
+version '0.4.0.13'
 
 apply plugin: "com.google.protobuf"
 apply plugin: "java"
@@ -171,7 +171,7 @@ startScripts.enabled = false
 task commonApi(type: Jar) {
     baseName = 'commonapi'
     from sourceSets.main.output.classesDir
-    include 'io/bokun/inventory/common/**', 'io/bokun/inventory/plugin/api/rest/**'
+    include 'io/bokun/inventory/common/**', 'io/bokun/inventory/plugin/api/rest/**', 'io/bokun/inventory/util/**'
 }
 
 task pluginApi(type: Jar) {
