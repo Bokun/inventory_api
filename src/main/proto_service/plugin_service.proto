@@ -76,6 +76,10 @@ message MovePluginRequest {
 message GetDefinitionRequest {
     // id of plugin to get definition for. Mandatory.
     string pluginDefinitionId = 1;
+
+    // Whether to use cached data from Inventory Service only and do not reach out to the external plugin to fetch the definition anew.
+    // Defaults to false, meaning extra call to the plugin is made.
+    bool useCachedDataOnly = 2;
 }
 
 // As this is Bokun-internal API, we add a few more fields to the plugin definition which is publicly traded
