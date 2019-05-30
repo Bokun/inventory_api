@@ -444,6 +444,9 @@ public final class GrpcRestMapper {
         if (in.getSuccessfulReservation() != null) {
             out.setSuccessfulReservation(io.bokun.inventory.common.api.grpc.SuccessfulReservation.newBuilder()
                                                  .setReservationConfirmationCode(in.getSuccessfulReservation().getReservationConfirmationCode()));
+        } else if (in.getFailedReservation() != null && in.getFailedReservation().getReservationError() != null) {
+            out.setFailedReservation(io.bokun.inventory.common.api.grpc.FailedReservation.newBuilder()
+                    .setReservationError(in.getFailedReservation().getReservationError()).build());
         } else {
             out.setFailedReservation(io.bokun.inventory.common.api.grpc.FailedReservation.getDefaultInstance());
         }
