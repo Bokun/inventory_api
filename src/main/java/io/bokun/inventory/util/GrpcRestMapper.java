@@ -81,8 +81,12 @@ public final class GrpcRestMapper {
                     .map(GrpcRestMapper::restToGrpc)
                     .forEach(result::addPricingCategories);
         }
-        in.getCities().forEach(result::addCities);
-        in.getCountries().forEach(result::addCountries);
+        if (in.getCities() != null) {
+            in.getCities().forEach(result::addCities);
+        }
+        if (in.getCountries() != null) {
+            in.getCountries().forEach(result::addCountries);
+        }
         return result.build();
     }
 
