@@ -522,8 +522,7 @@ public final class GrpcRestMapper {
                 .setBookingConfirmationCode(in.getBookingConfirmationCode());
         if (in.getTicketsPerPassenger() != null) {
             out.setTicketsPerPassenger(restToGrpc(in.getTicketsPerPassenger()));
-        } else {
-            assert in.getBookingTicket() != null;
+        } else if (in.getBookingTicket() != null) {
             out.setBookingTicket(restToGrpc(in.getBookingTicket()));
         }
         return out.build();
