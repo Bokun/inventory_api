@@ -134,7 +134,7 @@
       }
     },
 
-    "/products/getAvailable": {
+    "/product/getAvailable": {
       "post": {
         "tags": [
           "product",
