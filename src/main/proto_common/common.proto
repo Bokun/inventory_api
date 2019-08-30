@@ -664,6 +664,9 @@ message Passenger {
 
     // Should only be set if priced per passenger. If priced per booking then this should be left unassigned.
     Price pricePerPassenger = 3;
+
+    // What extras (if any) had been booked by this particular pricing category?
+    repeated ExtraBooking extraBookings = 4;
 }
 
 
@@ -704,6 +707,9 @@ message ExtraBooking {
 
     // Extra per person or extra per booking?. Mandatory
     ExtraPricingType pricingType = 3;
+
+    // Amount and currency. Mandatory.
+    Price price = 4;
 }
 
 // Data types for BookingChannel segment parameter
