@@ -1358,6 +1358,9 @@
         },
         "pricingType": {
           "$ref": "#/definitions/ExtraPricingType"
+        },
+        "price": {
+          "$ref": "#/definitions/Price"
         }
       }
     },
