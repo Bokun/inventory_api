@@ -648,7 +648,7 @@ message Reservation {
     // If this was priced per person, this field should be left unassigned.
     Price pricePerBooking = 3;
 
-    //Extras associated with this reservation. Optional.
+    // Deprecated. Do not use. Refer to Passengers section which has extraBookings instead.
     repeated ExtraBooking extraBooking = 4;
 
 }
@@ -666,6 +666,7 @@ message Passenger {
     Price pricePerPassenger = 3;
 
     // What extras (if any) had been booked by this particular pricing category?
+    // This field will contain both per-person (if applicable for current passenger) and per-booking (copied for all passengers) extras
     repeated ExtraBooking extraBookings = 4;
 }
 
