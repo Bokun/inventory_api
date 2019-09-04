@@ -666,10 +666,36 @@ message Passenger {
     Price pricePerPassenger = 3;
 
     // What extras (if any) had been booked by this particular pricing category?
-    // This field will contain both per-person (if applicable for current passenger) and per-booking (copied for all passengers) extras
+    //
+    // a) If extra is booked per person, one of the passengers will refer to all extra bookings for this pricing category.
+    // For example: let's say somebody booked 2 Adults + 2 Children + 3 Adult extras (for two Adults) + 2 extras for children (1 extra for each child).
+    // The resulting structure will be as follows:
+    //   - Adult#1 booking
+    //     - Adult extra#1
+    //     - Adult extra#2
+    //     - Adult extra#3
+    //   - Adult#2 booking
+    //     - [no extras]
+    //   - Child#1 booking
+    //     - Child extra #1
+    //     - Child extra #2
+    //   - Child#2 booking
+    //     - [no extras]
+    // This is because it is not possible to determine which extra (and how many) goes to which pricing category
+    //
+    // b) If extra is booked per booking: all extraBookings will be attached to one of pricing categories (without guarantees which in particular).
+    // For example: let's say somebody booked 1 Adult + 2 Children + 3 extras.
+    // The resulting structure will be as follows:
+    //   - Adult booking
+    //     - per booking extra#1
+    //     - per booking extra#1
+    //     - per booking extra#1
+    //   - Child#1 booking
+    //     - [no extras]
+    //   - Child#2 booking
+    //     - [no extras]
     repeated ExtraBooking extraBookings = 4;
 }
-
 
 // Extra available for certain product
 message Extra {
