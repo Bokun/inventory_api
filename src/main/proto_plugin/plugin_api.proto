@@ -164,8 +164,9 @@ message ReservationData {
     // Notes captured by a person who entered this booking (may also be customer itself if booked online). Optional.
     string notes = 4;
 
-    // Day of the event should take place. Mandatory.
-    // Must match available date, as provided provided with ProductAvailabilityWithRatesResponse::date
+    // For Date and Date&Time products: day of the event should take place. Must match available date, as provided provided with ProductAvailabilityWithRatesResponse::date
+    // For Pass products: pass expiry date (otherwise current date if pass has no expiration). The pass should be operational since the moment of purchase.
+    // Mandatory.
     io.bokun.inventory.common.api.grpc.Date date = 5;
 
     // Desired start time. Mandatory if ProductDescription::bookingType is DATE_AND_TIME, otherwise null.
