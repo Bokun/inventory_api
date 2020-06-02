@@ -541,7 +541,8 @@
       "type": "object",
       "required": [
         "id",
-        "name"
+        "name",
+        "pricingCategories"
       ],
       "properties": {
         "id": {
