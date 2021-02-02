@@ -341,7 +341,9 @@ public final class GrpcRestMapper {
         in.getTicketSupport().stream()
                 .map(GrpcRestMapper::restToGrpc)
                 .forEach(out::addTicketSupport);
-        in.getCountries().forEach(out::addCountries);
+        if (in.getCountries() != null) {
+            in.getCountries().forEach(out::addCountries);
+        }
         in.getCities().forEach(out::addCities);
         if (in.getBookingType() == BookingType.DATE_AND_TIME) {
             in.getStartTimes().stream()

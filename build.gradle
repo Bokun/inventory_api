@@ -22,7 +22,7 @@ buildscript {
 }
 
 group 'io.bokun.inventory'
-version '0.4.0.21'
+version '0.4.0.22'
 
 apply plugin: "com.google.protobuf"
 apply plugin: "java"
