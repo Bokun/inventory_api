@@ -344,7 +344,9 @@ public final class GrpcRestMapper {
         if (in.getCountries() != null) {
             in.getCountries().forEach(out::addCountries);
         }
-        in.getCities().forEach(out::addCities);
+        if (in.getCities() != null) {
+            in.getCities().forEach(out::addCities);
+        }
         if (in.getBookingType() == BookingType.DATE_AND_TIME) {
             in.getStartTimes().stream()
                     .map(GrpcRestMapper::restToGrpc)
