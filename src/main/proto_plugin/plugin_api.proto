@@ -38,6 +38,14 @@ service PluginApi {
     // CreateAndConfirmBooking method is used instead of both.
     rpc CreateReservation (ReservationRequest) returns (io.bokun.inventory.common.api.grpc.ReservationResponse) {}
 
+    // This call allows the reseller to indicate that previously made reservation should be cancelled.
+    // It is not strictly required to implement this method; in which case the receiving end should automatically proceed with cancellations after
+    // certain time period elapses. The length of such period may change from reseller to reseller but we recommend using 30 minutes for now.
+    // Implementing this method allows more efficient resource management as reserved seats can be unblocked somewhat earlier.
+    // Both PluginCapability::SUPPORTS_RESERVATIONS and PluginCapability::SUPPORTS_RESERVATION_CANCELLATION must be present in your plugin definition
+    // in order to enable calls to this method.
+    rpc CancelReservation(CancelReservationRequest) returns (io.bokun.inventory.common.api.grpc.CancelReservationResponse) {}
+
     // Once reserved, proceed with booking.
     //
     // The two step process (CreateReservation + this method) is only called if PluginDefinition::capabilities contains SUPPORTS_RESERVATIONS,
@@ -52,6 +60,14 @@ service PluginApi {
 
     // Once booked, a booking may be cancelled using booking ref number.
     rpc CancelBooking (CancelBookingRequest) returns (io.bokun.inventory.common.api.grpc.CancelBookingResponse) {}
+
+    // Allows to amend existing confirmed (non-cancelled) booking.
+    // Implementing this method is optional.
+    // Not implementing this method results:
+    // - your system not receiving amendments from those sales channels which support it (e.g. Viator).
+    // - Bokun responding positively to such amendments from incoming sources without relaying this information further.
+    // Amendment result may or may not be successful, e.g. if the new date is sold out then it is perfectly legal to fail such amendment.
+    rpc AmendBooking (AmendBookingRequest) returns (io.bokun.inventory.common.api.grpc.AmendBookingResponse) {}
 }
 
 message ConfirmBookingRequest {
@@ -69,12 +85,37 @@ message ConfirmBookingRequest {
     ConfirmationData confirmationData = 4;
 }
 
+message AmendBookingRequest {
+    // plugin config parameters. Mandatory.
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
+
+    // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.
+    string bookingConfirmationCode = 2;
+
+    // Reservation information; contains all the necessary data for rebooking. Mandatory.
+    ReservationData reservationData =  3;
+
+    // Elements pertaining to confirmation. Mandatory.
+    ConfirmationData confirmationData = 4;
+}
+
 message CancelBookingRequest {
     // plugin config parameters. Mandatory.
     repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
 
     // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.
     string bookingConfirmationCode = 2;
+
+    // agent code if passed. Optional.
+    string agentCode = 3;
+}
+
+message CancelReservationRequest {
+    // plugin config parameters. Mandatory.
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
+
+    // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulReservation::reservationConfirmationCode. Mandatory.
+    string reservationConfirmationCode = 2;
 
     // agent code if passed. Optional.
     string agentCode = 3;

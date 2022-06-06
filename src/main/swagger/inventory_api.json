@@ -244,6 +244,40 @@
       }
     },
 
+    "/booking/cancelReserve": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "summary": "This call allows the reseller to indicate that previously made reservation should be cancelled. It is not strictly required to implement this method; in which case the receiving end should automatically proceed with cancellations after certain time period elapses. The length of such period may change from reseller to reseller but we recommend using 30 minutes for now. Implementing this method allows more efficient resource management as reserved seats can be unblocked somewhat earlier. Both PluginCapability::SUPPORTS_RESERVATIONS and PluginCapability::SUPPORTS_RESERVATION_CANCELLATION must be present in your plugin definition in order to enable calls to this method.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Contains reservation data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CancelReservationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CancelReservationResponse"
+            }
+          }
+        }
+      }
+    },
+
     "/booking/confirm": {
       "post": {
         "tags": [
@@ -317,7 +351,7 @@
         "tags": [
           "booking"
         ],
-        "summary": " Once booked, a booking may be cancelled using booking ref number.",
+        "summary": "Once booked, a booking may be cancelled using booking ref number.",
         "consumes": [
           "application/json"
         ],
@@ -344,6 +378,40 @@
           }
         }
       }
+    },
+
+    "/booking/amend": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "summary": "Allows to amend existing confirmed (non-cancelled) booking. Implementing this method is optional. Not implementing this method results your system not receiving amendments from those sales channels which support it (e.g. Viator). Bokun will respond positively to such amendments from incoming sources without relaying this information further if method is absent. Amendment result may or may not be successful, e.g. if the new date is sold out then it is perfectly legal to fail such amendment.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Contains amendment data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AmendBookingRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AmendBookingResponse"
+            }
+          }
+        }
+      }
     }
   },
 
@@ -363,7 +431,9 @@
       "enum": [
         "SUPPORTS_PRICING",
         "SUPPORTS_RESERVATIONS",
-        "SUPPORTS_AVAILABILITY"
+        "SUPPORTS_AVAILABILITY",
+        "SUPPORTS_RESERVATION_CANCELLATION",
+        "SUPPORTS_AMENDMENT"
       ]
     },
 
@@ -1817,6 +1887,28 @@
       }
     },
 
+    "CancelReservationRequest": {
+      "type": "object",
+      "required": [
+        "parameters",
+        "reservationConfirmationCode"
+      ],
+      "properties": {
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        },
+        "reservationConfirmationCode": {
+          "type": "string"
+        },
+        "agentCode": {
+          "type": "string"
+        }
+      }
+    },
+
     "CancelBookingRequest": {
       "type": "object",
       "required": [
@@ -1865,6 +1957,93 @@
         },
         "failedCancellation": {
           "$ref": "#/definitions/FailedCancellation"
+        }
+      }
+    },
+
+    "CancelReservationResponse": {
+      "type": "object",
+      "properties": {
+        "successfulReservationCancellation": {
+          "$ref": "#/definitions/SuccessfulReservationCancellation"
+        },
+        "failedReservationCancellation": {
+          "$ref": "#/definitions/FailedReservationCancellation"
+        }
+      }
+    },
+
+    "SuccessfulReservationCancellation": {
+      "type": "object",
+      "properties": {
+      }
+    },
+
+    "FailedReservationCancellation": {
+      "type": "object",
+      "properties": {
+        "reservationCancellationError": {
+          "type": "string"
+        }
+      }
+    },
+
+    "AmendBookingRequest": {
+      "type": "object",
+      "required": [
+        "parameters",
+        "bookingConfirmationCode",
+        "reservationData",
+        "confirmationData"
+      ],
+      "properties": {
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        },
+        "bookingConfirmationCode": {
+          "type": "string"
+        },
+        "reservationData": {
+          "$ref": "#/definitions/ReservationData"
+        },
+        "confirmationData": {
+          "$ref": "#/definitions/ConfirmationData"
+        }
+      }
+    },
+
+    "AmendBookingResponse": {
+      "type": "object",
+      "properties": {
+        "successfulAmendment": {
+          "$ref": "#/definitions/SuccessfulAmendment"
+        },
+        "failedAmendment": {
+          "$ref": "#/definitions/FailedAmendment"
+        }
+      }
+    },
+
+    "SuccessfulAmendment": {
+      "type": "object",
+      "properties": {
+        "ticketsPerPassenger": {
+          "$ref": "#/definitions/TicketsPerPricingCategory"
+        },
+        "bookingTicket": {
+          "$ref": "#/definitions/Ticket"
+        }
+      }
+    },
+
+    "FailedAmendment": {
+      "type": "object",
+      "properties": {
+        "amendmentError": {
+          "type": "string"
         }
       }
     }

@@ -63,6 +63,14 @@ enum PluginCapability {
     // Otherwise it is assumed that availability is managed in Bokun silo and no availability query is sent towards plugin. However if a booking is
     // made, the call is still made towards plugin.
     SUPPORTS_AVAILABILITY = 3;
+
+    // If enabled, it means that a plugin is able (and required) to respond to cancelReservation requests coming from Bokun.
+    // This option can only be enabled if SUPPORTS_RESERVATIONS is enabled (requests to cancelReservation will only be sent if both flags are present).
+    // It is otherwise assumed that the external system is expiring reservations automatically after certain time period.
+    SUPPORTS_RESERVATION_CANCELLATION = 4;
+
+    // If enabled, it means that a plugin is able (and required) to respond to amendBooking requests coming from Bokun.
+    SUPPORTS_AMENDMENT = 5;
 }
 
 // Supported product categories
@@ -407,10 +415,18 @@ message Place {
 }
 
 message ReservationResponse {
-    // should return either success or failure data structure. Mandatory (response must indicate either succees or failure).
+    // should return either success or failure data structure. Mandatory (response must indicate either success or failure).
     oneof reservationResult {
         SuccessfulReservation successfulReservation = 1;
         FailedReservation failedReservation = 2;
+    }
+}
+
+message CancelReservationResponse {
+    // should return either success or failure data structure. Mandatory (response must indicate either success or failure).
+    oneof cancelReservationResult {
+        SuccessfulReservationCancellation successfulReservationCancellation = 1;
+        FailedReservationCancellation failedReservationCancellation = 2;
     }
 }
 
@@ -424,11 +440,40 @@ message FailedReservation {
     string reservationError = 1;
 }
 
+message SuccessfulReservationCancellation {
+}
+
+message FailedReservationCancellation {
+    // Error message telling why this request has failed. Optional - remote end is not required to explicitly tell the reason of failure
+    string reservationCancellationError = 1;
+}
+
 message ConfirmBookingResponse {
-    // should return either success or failure data structure. Mandatory (response must indicate either succees or failure).
+    // should return either success or failure data structure. Mandatory (response must indicate either success or failure).
     oneof bookingResult {
         SuccessfulBooking successfulBooking = 1;
         FailedBooking failedBooking = 2;
+    }
+}
+
+message AmendBookingResponse {
+    // should return either success or failure data structure. Mandatory (response must indicate either success or failure).
+    oneof amendResult {
+        SuccessfulAmendment successfulAmendment = 1;
+        FailedAmendment failedAmendment = 2;
+    }
+}
+
+message SuccessfulAmendment {
+    // confirmation code is not changed for this booking
+
+    // Unset if plugin does not support tickets.
+    oneof tickets {
+        // Set if tickets were requested per passenger (yet delivered per pricing category).
+        TicketsPerPricingCategory ticketsPerPassenger = 2;
+
+        // Set if a single ticket-per-booking was requested.
+        Ticket bookingTicket = 3;
     }
 }
 
@@ -464,8 +509,13 @@ message FailedBooking {
     string bookingError = 1;
 }
 
+message FailedAmendment {
+    // Error message telling why this request has failed. Optional - remote end is not required to explicitly tell the reason of failure
+    string amendmentError = 1;
+}
+
 message CancelBookingResponse {
-    // should return either success or failure data structure. Mandatory (response must indicate either succees or failure).
+    // should return either success or failure data structure. Mandatory (response must indicate either success or failure).
     oneof cancellationResult {
         SuccessfulCancellation successfulCancellation = 1;
         FailedCancellation failedCancellation = 2;
