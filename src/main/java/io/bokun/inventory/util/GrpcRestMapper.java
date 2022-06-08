@@ -615,4 +615,38 @@ public final class GrpcRestMapper {
                     .build();
         }
     }
+
+    @Nonnull
+    public static io.bokun.inventory.common.api.grpc.SuccessfulAmendment restToGrpc(@Nonnull io.bokun.inventory.plugin.api.rest.SuccessfulAmendment in) {
+        io.bokun.inventory.common.api.grpc.SuccessfulAmendment.Builder out = io.bokun.inventory.common.api.grpc.SuccessfulAmendment.newBuilder();
+        if (in.getTicketsPerPassenger() != null) {
+            out.setTicketsPerPassenger(restToGrpc(in.getTicketsPerPassenger()));
+        } else if (in.getBookingTicket() != null) {
+            out.setBookingTicket(restToGrpc(in.getBookingTicket()));
+        }
+        return out.build();
+    }
+
+    @Nonnull
+    public static io.bokun.inventory.common.api.grpc.FailedAmendment restToGrpc(@Nonnull io.bokun.inventory.plugin.api.rest.FailedAmendment in) {
+        io.bokun.inventory.common.api.grpc.FailedAmendment.Builder out = io.bokun.inventory.common.api.grpc.FailedAmendment.newBuilder();
+        if (in.getAmendmentError() != null) {
+            out.setAmendmentError(in.getAmendmentError());
+        }
+        return out.build();
+    }
+
+    @Nonnull
+    public static io.bokun.inventory.common.api.grpc.AmendBookingResponse restToGrpc(@Nonnull io.bokun.inventory.plugin.api.rest.AmendBookingResponse in) {
+        if (in.getSuccessfulAmendment() != null) {
+            return io.bokun.inventory.common.api.grpc.AmendBookingResponse.newBuilder()
+                    .setSuccessfulAmendment(restToGrpc(in.getSuccessfulAmendment()))
+                    .build();
+        } else {
+            assert in.getFailedAmendment() != null;
+            return io.bokun.inventory.common.api.grpc.AmendBookingResponse.newBuilder()
+                    .setFailedAmendment(restToGrpc(in.getFailedAmendment()))
+                    .build();
+        }
+    }
 }
