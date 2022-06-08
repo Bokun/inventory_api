@@ -4,6 +4,7 @@ import java.util.*;
 
 import javax.annotation.*;
 
+import com.google.common.base.*;
 import com.google.protobuf.*;
 import io.bokun.inventory.plugin.api.rest.*;
 
@@ -13,6 +14,7 @@ import io.bokun.inventory.plugin.api.rest.*;
  *
  * @author Mindaugas Žakšauskas
  */
+@SuppressWarnings({"unused", "WeakerAccess"})     // used by outside libs
 public final class GrpcRestMapper {
 
     private static final Base64.Decoder BASE64_DECODER = Base64.getDecoder();
@@ -579,6 +581,37 @@ public final class GrpcRestMapper {
             assert in.getFailedCancellation() != null;
             return io.bokun.inventory.common.api.grpc.CancelBookingResponse.newBuilder()
                     .setFailedCancellation(restToGrpc(in.getFailedCancellation()))
+                    .build();
+        }
+    }
+
+    @Nonnull
+    public static io.bokun.inventory.common.api.grpc.SuccessfulReservationCancellation restToGrpc(@Nonnull io.bokun.inventory.plugin.api.rest.SuccessfulReservationCancellation in) {
+        return io.bokun.inventory.common.api.grpc.SuccessfulReservationCancellation.getDefaultInstance();
+    }
+
+    @Nonnull
+    public static io.bokun.inventory.common.api.grpc.FailedReservationCancellation restToGrpc(@Nonnull io.bokun.inventory.plugin.api.rest.FailedReservationCancellation in) {
+        String error = in.getReservationCancellationError();
+        if (Strings.isNullOrEmpty(error)) {
+            return io.bokun.inventory.common.api.grpc.FailedReservationCancellation.getDefaultInstance();
+        } else {
+            return io.bokun.inventory.common.api.grpc.FailedReservationCancellation.newBuilder()
+                    .setReservationCancellationError(error)
+                    .build();
+        }
+    }
+
+    @Nonnull
+    public static io.bokun.inventory.common.api.grpc.CancelReservationResponse restToGrpc(@Nonnull io.bokun.inventory.plugin.api.rest.CancelReservationResponse in) {
+        if (in.getSuccessfulReservationCancellation() != null) {
+            return io.bokun.inventory.common.api.grpc.CancelReservationResponse.newBuilder()
+                    .setSuccessfulReservationCancellation(restToGrpc(in.getSuccessfulReservationCancellation()))
+                    .build();
+        } else {
+            assert in.getFailedReservationCancellation() != null;
+            return io.bokun.inventory.common.api.grpc.CancelReservationResponse.newBuilder()
+                    .setFailedReservationCancellation(restToGrpc(in.getFailedReservationCancellation()))
                     .build();
         }
     }
