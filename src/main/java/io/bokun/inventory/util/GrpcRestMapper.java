@@ -635,18 +635,4 @@ public final class GrpcRestMapper {
         }
         return out.build();
     }
-
-    @Nonnull
-    public static io.bokun.inventory.common.api.grpc.AmendBookingResponse restToGrpc(@Nonnull io.bokun.inventory.plugin.api.rest.AmendBookingResponse in) {
-        if (in.getSuccessfulAmendment() != null) {
-            return io.bokun.inventory.common.api.grpc.AmendBookingResponse.newBuilder()
-                    .setSuccessfulAmendment(restToGrpc(in.getSuccessfulAmendment()))
-                    .build();
-        } else {
-            assert in.getFailedAmendment() != null;
-            return io.bokun.inventory.common.api.grpc.AmendBookingResponse.newBuilder()
-                    .setFailedAmendment(restToGrpc(in.getFailedAmendment()))
-                    .build();
-        }
-    }
 }
