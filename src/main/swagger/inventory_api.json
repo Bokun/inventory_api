@@ -1992,7 +1992,7 @@
       "type": "object",
       "required": [
         "parameters",
-        "bookingConfirmationCode",
+        "platformId",
         "reservationData",
         "confirmationData"
       ],
@@ -2004,6 +2004,9 @@
           }
         },
         "bookingConfirmationCode": {
+          "type": "string"
+        },
+        "platformId": {
           "type": "string"
         },
         "reservationData": {
@@ -2030,6 +2033,9 @@
     "SuccessfulAmendment": {
       "type": "object",
       "properties": {
+        "amendmentConfirmationCode": {
+          "type": "string"
+        },
         "ticketsPerPassenger": {
           "$ref": "#/definitions/TicketsPerPricingCategory"
         },
