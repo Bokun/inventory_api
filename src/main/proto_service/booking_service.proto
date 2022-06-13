@@ -150,16 +150,20 @@ message CancelBookingRequest {
 }
 
 message AmendBookingRequest {
-    // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.
+    // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory if booking was successfully
+    // confirmed. In exceptional case (e.g. booking was imported) this might be omitted.
     string bookingConfirmationCode = 1;
 
+    // Exactly as supplied with ConfirmBookingRequest::reservationData::platformId. Mandatory.
+    string platformId = 2;
+
     // product, *exactly* as used with CreateReservation request. Mandatory.
-    io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 2;
+    io.bokun.inventory.service.common.grpc.BokunProduct bokunProduct = 3;
 
     // What kind of tickets do you want the remote end to generate? This must be supported by a booked product, see ProductDescription::ticketSupport
     // Mandatory.
-    io.bokun.inventory.common.api.grpc.TicketSupport ticketingType = 3;
+    io.bokun.inventory.common.api.grpc.TicketSupport ticketingType = 4;
 
     // Reservation information; contains all the necessary data for rebooking. Mandatory.
-    ReservationData reservationData =  4;
+    ReservationData reservationData = 5;
 }

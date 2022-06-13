@@ -89,14 +89,18 @@ message AmendBookingRequest {
     // plugin config parameters. Mandatory.
     repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
 
-    // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory.
+    // Exactly as returned by io.bokun.inventory.common.api.grpc.SuccessfulBooking::bookingConfirmationCode. Mandatory if booking was successfully
+    // confirmed. In exceptional cases (e.g. booking was imported directly) this might be omitted.
     string bookingConfirmationCode = 2;
 
-    // Reservation information; contains all the necessary data for rebooking. Mandatory.
-    ReservationData reservationData =  3;
+    // Exactly as supplied with ConfirmBookingRequest::reservationData::platformId. Mandatory.
+    string platformId = 3;
 
-    // Elements pertaining to confirmation. Mandatory.
-    ConfirmationData confirmationData = 4;
+    // Reservation information; contains all the necessary data for rebooking. Mandatory.
+    ReservationData reservationData =  4;
+
+    // Elements pertaining to confirmation (mirrors the same structure as reserve/confirm for convenience). Mandatory.
+    ConfirmationData confirmationData = 5;
 }
 
 message CancelBookingRequest {

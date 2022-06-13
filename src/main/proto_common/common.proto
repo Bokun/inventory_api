@@ -465,7 +465,10 @@ message AmendBookingResponse {
 }
 
 message SuccessfulAmendment {
-    // confirmation code is not changed for this booking
+    // Confirmation code of amendment operation, if different from confirmation step. Optional.
+    // If set, Bokun will replace the reference by archiving the old reference sent with confirmation response and inserting this one instead.
+    // If unset, old reference number will be kept.
+    string amendmentConfirmationCode = 1;
 
     // Unset if plugin does not support tickets.
     oneof tickets {
