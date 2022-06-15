@@ -33,6 +33,8 @@ service PluginService {
 
     // Delete configured plugin for a vendor
     rpc DeleteConfiguredPlugin (DeletePluginConfigurationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
+
+    rpc LinkVendorToPlugins (LinkVendorToPluginsRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 }
 
 // Transport protocol each plugin implements
@@ -140,4 +142,9 @@ message ListDefinitionsRequest {
 
 message ListConfiguredPluginsRequest {
     int64 vendorId = 1;     // mandatory
+}
+
+message LinkVendorToPluginsRequest {
+    int64 vendorId = 1;     // mandatory
+    repeated string pluginIds = 2;      // plugin definition IDs. Can be empty to wipe out all links.
 }
