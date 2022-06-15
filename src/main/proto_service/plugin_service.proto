@@ -145,6 +145,6 @@ message ListConfiguredPluginsRequest {
 }
 
 message LinkVendorToPluginsRequest {
-    int64 vendorId = 1;     // mandatory
-    repeated string pluginIds = 2;      // plugin definition IDs. Can be empty to wipe out all links.
+    string pluginId = 1;     // mandatory
+    repeated int64 vendorIds = 2;      // vendor IDs. Can be empty to wipe out all links for said plugin.
 }
