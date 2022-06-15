@@ -34,8 +34,10 @@ service PluginService {
     // Delete configured plugin for a vendor
     rpc DeleteConfiguredPlugin (DeletePluginConfigurationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 
-    rpc LinkVendorToPlugins (LinkVendorToPluginsRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
-}
+    rpc LinkPluginToVendors (LinkPluginToVendorsRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
+
+    rpc GetPluginVendors (GetPluginVendorsRequest) returns (GetPluginVendorsResponse) {}
+ }
 
 // Transport protocol each plugin implements
 enum PluginTransport {
@@ -144,7 +146,19 @@ message ListConfiguredPluginsRequest {
     int64 vendorId = 1;     // mandatory
 }
 
-message LinkVendorToPluginsRequest {
+message LinkPluginToVendorsRequest {
     string pluginId = 1;     // mandatory
     repeated int64 vendorIds = 2;      // vendor IDs. Can be empty to wipe out all links for said plugin.
+}
+
+message GetPluginVendorsRequest {
+}
+
+message GetPluginVendorsResponse {
+    repeated PluginToVendors pluginLinks = 1;
+}
+
+message PluginToVendors {
+    string pluginId = 1;
+    repeated int64 vendorIds = 2;
 }
