@@ -22,10 +22,14 @@ service Health {
   rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
 
   // List definitions which are not only registered but also available. This works hand-in-hand with PluginService::listDefinitions
-  rpc ListAvailableDefinitions (io.bokun.inventory.common.api.grpc.Empty) returns (stream PluginDefinitionId) {}
+  rpc ListHealthyPlugins (ListHealthyPluginsRequest) returns (stream PluginDefinitionId) {}
 }
 
 // Wraps PluginDefinition#id
 message PluginDefinitionId {
     string id = 1;
+}
+
+message ListHealthyPluginsRequest {
+  int64 vendorId = 1;
 }
