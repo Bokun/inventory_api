@@ -19,8 +19,8 @@ service PluginService {
     // Unregisters existing plugin from the system by given url which was previously registered with RegisterPlugin
     rpc UnregisterPlugin (PluginUnregistrationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 
-    // List definitions which are available. This consists of all registered plugins.
-    rpc ListDefinitions (io.bokun.inventory.common.api.grpc.Empty) returns (stream PluginDefinition) {}
+    // List definitions.
+    rpc ListDefinitions (ListDefinitionsRequest) returns (stream PluginDefinition) {}
 
     // Returns plugin definition by given id.
     rpc GetDefinition (GetDefinitionRequest) returns (PluginDefinition) {}
@@ -29,7 +29,7 @@ service PluginService {
     rpc ConfigurePlugin (PluginConfiguration) returns (io.bokun.inventory.common.api.grpc.Empty) {}
 
     // List all configured plugins for given vendor
-    rpc ListConfiguredPlugins (io.bokun.inventory.service.common.grpc.VendorId) returns (stream PluginConfiguration) {}
+    rpc ListConfiguredPlugins (ListConfiguredPluginsRequest) returns (stream PluginConfiguration) {}
 
     // Delete configured plugin for a vendor
     rpc DeleteConfiguredPlugin (DeletePluginConfigurationRequest) returns (io.bokun.inventory.common.api.grpc.Empty) {}
@@ -132,4 +132,12 @@ message PluginConfiguration {
 message DeletePluginConfigurationRequest {
     int64 vendorId = 1;
     string pluginId = 2;
+}
+
+message ListDefinitionsRequest {
+    int64 vendorId = 1;     // optional, lists plugins for specified vendor if set. Otherwise all definitions.
+}
+
+message ListConfiguredPluginsRequest {
+    int64 vendorId = 1;     // mandatory
 }
