@@ -156,10 +156,5 @@ message GetPluginVendorsRequest {
 }
 
 message GetPluginVendorsResponse {
-    repeated PluginToVendors pluginLinks = 1;
-}
-
-message PluginToVendors {
-    string pluginId = 1;
-    repeated int64 vendorIds = 2;
+    repeated int64 vendorIds = 1;
 }
