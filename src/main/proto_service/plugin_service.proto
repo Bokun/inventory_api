@@ -152,6 +152,7 @@ message LinkPluginToVendorsRequest {
 }
 
 message GetPluginVendorsRequest {
+    string pluginId = 1;
 }
 
 message GetPluginVendorsResponse {
