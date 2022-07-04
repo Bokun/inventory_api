@@ -67,6 +67,15 @@ service PluginApi {
     // - your system not receiving amendments from those sales channels which support it (e.g. Viator).
     // - Bokun responding positively to such amendments from incoming sources without relaying this information further.
     // Amendment result may or may not be successful, e.g. if the new date is sold out then it is perfectly legal to fail such amendment.
+    //
+    // NOTE: booking amendment might be invoked without prior availability check. It is responsibility of the plugin to ensure that all conditions
+    // are met (sufficient availability, pickup if applicable, etc.).
+    //
+    // When exactly is this method called? Bókun considers this method for cases when booking elements such as travel date, extra, PAX, pickup etc. is
+    // changed for existing confirmed booking. This applies to everything except change of rate or product, in which case a new booking is created and
+    // original booking gets cancelled. These are the only supported amendment use cases:
+    // * Viator SAPI
+    // * Bókun's /booking.json/edit REST endpoint
     rpc AmendBooking (AmendBookingRequest) returns (io.bokun.inventory.common.api.grpc.AmendBookingResponse) {}
 }
 
