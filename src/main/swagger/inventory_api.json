@@ -1636,6 +1636,10 @@
         },
         "agentCode": {
           "type": "string"
+        },
+        "platformBookingId": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
