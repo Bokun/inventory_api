@@ -37,14 +37,18 @@ workflows:
   build-develop:
     jobs:
       - build:
-          context: nvirginia-test
+          context:
+            - aws-global
+            - nvirginia-test
           filters:
             branches:
               only: develop
   build-prod:
     jobs:
       - build:
-          context: dublin-prod
+          context:
+            - aws-global
+            - dublin-prod
           filters:
             branches:
               only:
