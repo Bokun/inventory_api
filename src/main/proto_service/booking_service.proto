@@ -122,7 +122,7 @@ message ReservationData {
     string agentCode = 15;
 
     // This refers to a booking ID in Bokun platform. Sent at earliest possibility; guaranteed to be sent at confirmation stage.
-    int64 platformBookingId = 16;
+    string platformBookingId = 16;
 }
 
 message ConfirmBookingRequest {
