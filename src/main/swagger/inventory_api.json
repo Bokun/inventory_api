@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Inventory Service REST API. You can find out more about Inventory service [here](https://docs.google.com/document/d/1Uq3wPhTdxONWwTQBRCUyRiY5ljJpJBdyt7rNsk1yLSc/edit?usp=sharing).",
+    "description": "Channel Manager REST API. You can find out more about Channel Manager [here](https://www.bokun.io/sell/channel-manager).",
     "version": "1.0.0",
-    "title": "Inventory Service REST API",
+    "title": "Channel Manager REST API",
     "contact": {
       "email": "support@bokun.io"
     },
