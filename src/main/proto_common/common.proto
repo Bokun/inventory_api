@@ -572,6 +572,9 @@ message Contact {
 
     // When does a passport expire?
     Date passportExpiry = 14;
+
+    // Date of birth
+    Date dateOfBirth = 15;
 }
 
 enum ContactField {
