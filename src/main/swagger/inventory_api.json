@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Channel Manager REST API. You can find out more about Channel Manager [here](https://www.bokun.io/sell/channel-manager).",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "title": "Channel Manager REST API",
     "contact": {
       "email": "support@bokun.io"
