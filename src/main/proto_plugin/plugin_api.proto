@@ -18,17 +18,8 @@ service PluginApi {
     // Returns detailed product information by given id (ids refer to ProductDescription::id)
     rpc GetProductById(GetProductByIdRequest) returns (io.bokun.inventory.common.api.grpc.ProductDescription) {}
 
-    // A set of product ids provided, return their availability over given date range.
-    // This will return a subset of product IDs passed on via ProductAvailabilityRequest.
-    // Note: even though request contains capacity and date range, for a matching product it is enough to have availabilities for *some* dates over
-    // requested period. Subsequent GetProductAvailability request will clarify precise dates and capacities.
-    // Note (2): implementing APIs might not support checking of multi-products across vast periods. For this, it might be enough to check opening
-    // hours or general availability as GetProductAvailability will clarify that at a later stage anyway (even though resulting poorer UX).
-    rpc GetAvailableProducts(ProductsAvailabilityRequest) returns (stream ProductsAvailabilityResponse) {}
-
     // Get availability of a particular product over a date range.
-    // This request shoud follow GetAvailableProducts and provide more details on precise dates/times for each product as well as capacity for each date.
-    // This call, however, is for a single product only (as opposed to GetAvailableProducts) which checks many products but only does a basic shallow check.
+    // This request should provide details on precise dates/times for each product as well as capacity for each date.
     rpc GetProductAvailability(ProductAvailabilityRequest) returns (stream io.bokun.inventory.common.api.grpc.ProductAvailabilityWithRatesResponse) {}
 
     // This call secures necessary resource(s), such as activity time slot which can later become a booking.
@@ -177,18 +168,6 @@ message ProductsAvailabilityRequest {
     repeated string externalProductIds = 4;
 }
 
-// A response which tells which products are available over given date period.
-message ProductsAvailabilityResponse {
-
-    // External product id. Mandatory.
-    string productId = 1;
-
-    // Whether the actual availability check was done. Some APIs might not support checking for multiple product availability over date range (instead
-    // they typically support checking availability of one product and sometimes - for a very limited range only). As a workaround for this problem,
-    // plugin might return fake availability response and then next step will clarify that. For fake responses, this should be set to false.
-    bool actualCheckDone = 2;
-}
-
 message SearchProductsRequest {
     repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;       // plugin config parameters
     string productName = 2;
@@ -205,6 +184,9 @@ message ProductAvailabilityRequest {
     // Date range (boundaries included) for which we want to know precise capacity, availability and pricing for given product
     // Note that this request does not ask for capacity; instead response should tell us how much seats/spaces/etc are available in total.
     io.bokun.inventory.common.api.grpc.DatePeriod range = 3;
+
+    // The id of the reseller (vendor ID) who is making this availability call in order to make a sale.
+    int64 sellerId = 4;
 }
 
 // Data container for reservation info. Extracted to be reused across different requests
@@ -272,6 +254,9 @@ message ReservationData {
 
     // This refers to a booking ID in Bokun platform. Sent at earliest possibility; guaranteed to be sent at confirmation stage.
     string platformBookingId = 18;
+
+    // The id of the reseller (vendor ID) who is making this sale.
+    int64 sellerId = 19;
 }
 
 // A container for data which is sent when a booking is confirmed. Extracted for convenience reasons.

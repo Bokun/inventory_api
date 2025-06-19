@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Channel Manager REST API. You can find out more about Channel Manager [here](https://www.bokun.io/sell/channel-manager).",
-    "version": "1.0.1",
+    "version": "0.4.4-ENG-3217-1",
     "title": "Channel Manager REST API",
     "contact": {
       "email": "support@bokun.io"
@@ -128,44 +128,6 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/ProductDescription"
-            }
-          }
-        }
-      }
-    },
-
-    "/product/getAvailable": {
-      "post": {
-        "tags": [
-          "product",
-          "availability"
-        ],
-        "summary": "A set of product ids provided, return their availability over given date range.",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Contains product IDs along with date range as well as required capacity",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ProductsAvailabilityRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/ProductsAvailabilityResponse"
-              }
             }
           }
         }
@@ -1184,22 +1146,6 @@
       }
     },
 
-    "ProductsAvailabilityResponse": {
-      "type": "object",
-      "required": [
-        "productId",
-        "actualCheckDone"
-      ],
-      "properties": {
-        "productId": {
-          "type": "string"
-        },
-        "actualCheckDone": {
-          "type": "boolean"
-        }
-      }
-    },
-
     "PricingCategoryWithPrice": {
       "type": "object",
       "required": [
@@ -1266,7 +1212,8 @@
       "required": [
         "parameters",
         "range",
-        "productId"
+        "productId",
+        "sellerId"
       ],
       "properties": {
         "range": {
@@ -1274,6 +1221,9 @@
         },
         "productId": {
           "type": "string"
+        },
+        "sellerId": {
+          "type": "int64"
         },
         "parameters": {
           "type": "array",
@@ -1586,7 +1536,8 @@
         "date",
         "reservations",
         "platformId",
-        "bookingSource"
+        "bookingSource",
+        "sellerId"
       ],
       "properties": {
         "productId": {
@@ -1642,6 +1593,9 @@
         },
         "platformBookingId": {
           "type": "string"
+        },
+        "sellerId": {
+          "type": "int64"
         }
       }
     },
