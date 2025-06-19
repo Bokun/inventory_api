@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Channel Manager REST API. You can find out more about Channel Manager [here](https://www.bokun.io/sell/channel-manager).",
-    "version": "0.4.4-ENG-3217-1",
+    "version": "0.4.4-ENG-3217-2",
     "title": "Channel Manager REST API",
     "contact": {
       "email": "support@bokun.io"
@@ -1223,7 +1223,8 @@
           "type": "string"
         },
         "sellerId": {
-          "type": "int64"
+          "type": "integer",
+          "format": "int64"
         },
         "parameters": {
           "type": "array",
@@ -1595,7 +1596,8 @@
           "type": "string"
         },
         "sellerId": {
-          "type": "int64"
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
