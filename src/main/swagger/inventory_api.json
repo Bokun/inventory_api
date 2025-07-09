@@ -1537,8 +1537,7 @@
         "date",
         "reservations",
         "platformId",
-        "bookingSource",
-        "sellerId"
+        "bookingSource"
       ],
       "properties": {
         "productId": {
@@ -1594,10 +1593,6 @@
         },
         "platformBookingId": {
           "type": "string"
-        },
-        "sellerId": {
-          "type": "integer",
-          "format": "int64"
         }
       }
     },
