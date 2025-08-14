@@ -16,7 +16,7 @@ buildscript {
     dependencies {
         classpath("com.amazonaws:aws-java-sdk-core:${awsVersion}")
         classpath("com.amazonaws:aws-java-sdk-s3:${awsVersion}")
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.9.5'
         classpath 'io.swagger:swagger-codegen:2.2.3'
     }
 }
@@ -35,7 +35,7 @@ def pluginArtifact = 'plugin-api'
 def serviceArtifact = 'service-api'
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2'
+    gradleVersion = '8.13'
 }
 
 protobuf {
