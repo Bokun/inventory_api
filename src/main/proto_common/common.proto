@@ -878,8 +878,5 @@ message BookingSource {
 
     // Identification number of an affiliate if used to create booking
     string affiliateIdNumber = 6;
-
-    // Email address of the affiliate if used to create booking
-    string affiliateEmail = 7;
 }
 

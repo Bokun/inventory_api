@@ -1501,9 +1501,6 @@
         },
         "affiliateIdNumber": {
           "type": "string"
-        },
-        "affiliateEmail": {
-          "type": "string"
         }
       }
     },
