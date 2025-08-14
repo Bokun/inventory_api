@@ -875,5 +875,8 @@ message BookingSource {
 
     // Marketplace reseller who resold booking. Optional. Filled when SalesSegment is MARKETPLACE or OTA
     BookingSourceMarketplaceVendor marketplaceVendor = 5;
+
+    // Identification number of an affiliate if used to create booking
+    string affiliateIdNumber = 6;
 }
 
