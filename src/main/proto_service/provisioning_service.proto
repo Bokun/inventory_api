@@ -8,6 +8,16 @@ option java_package = "io.bokun.inventory.service.provisioning.grpc";
 service ProvisioningService {
     // Returns IS build information
     rpc GetBuildInfo (GetBuildInfoRequest) returns (GetBuildInfoResponse) {}
+
+    // List plugin/breaker type pairs which have breakers open.
+    // Note: this will return relevant entry even if only some servers in the cluster have this open (as opposed to all).
+    rpc GetOpenCircuitBreakers (GetOpenCircuitBreakersRequest) returns (GetOpenCircuitBreakersResponse) {}
+
+    // Forces certain plugin/breaker type to open the breaker.
+    rpc OpenBreaker (OpenCircuitBreakerRequest) returns (OpenCircuitBreakerResponse) {}
+
+    // Forces certain plugin/breaker type to close the breaker.
+    rpc CloseBreaker (CloseCircuitBreakerRequest) returns (CloseCircuitBreakerResponse) {}
 }
 
 message GetBuildInfoRequest {
@@ -16,4 +26,41 @@ message GetBuildInfoRequest {
 message GetBuildInfoResponse {
     // May contain elements such as branch, build number, etc. Does not imply any particular structure. Mandatory.
     string buildInformation = 1;
+}
+
+message GetOpenCircuitBreakersRequest {
+}
+
+message GetOpenCircuitBreakersResponse {
+    // a list of breaker type/plugin id pairs which have the breaker open
+    repeated CircuitBreakerMetadata metadata = 1;
+}
+
+message CircuitBreakerMetadata {
+    enum BreakerType {
+        UNKNOWN = 0;
+        AVAILABILITY = 1;
+    }
+
+    // mandatory
+    BreakerType type = 1;
+
+    // mandatory
+    string pluginId = 2;
+}
+
+message OpenCircuitBreakerRequest {
+    // a list of breaker type/plugin id pairs which are requested to have them open
+    repeated CircuitBreakerMetadata metadata = 1;
+}
+
+message OpenCircuitBreakerResponse {
+}
+
+message CloseCircuitBreakerRequest {
+    // a list of breaker type/plugin id pairs which are requested to have them closed
+    repeated CircuitBreakerMetadata metadata = 1;
+}
+
+message CloseCircuitBreakerResponse {
 }
