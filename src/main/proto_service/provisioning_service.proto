@@ -9,15 +9,16 @@ service ProvisioningService {
     // Returns IS build information
     rpc GetBuildInfo (GetBuildInfoRequest) returns (GetBuildInfoResponse) {}
 
-    // List plugin/breaker type pairs which have breakers open.
-    // Note: this will return relevant entry even if only some servers in the cluster have this open (as opposed to all).
-    rpc GetOpenCircuitBreakers (GetOpenCircuitBreakersRequest) returns (GetOpenCircuitBreakersResponse) {}
+    // List plugin/toggle pairs which have toggles open (e.g. disarm availability).
+    rpc GetMutedPlugins (GetMutedPluginsRequest) returns (GetMutedPluginsResponse) {}
 
-    // Forces certain plugin/breaker type to open the breaker.
-    rpc OpenBreaker (OpenCircuitBreakerRequest) returns (OpenCircuitBreakerResponse) {}
+    // Forces certain plugin/toggle type to disarm.
+    rpc MutePlugin(MutePluginRequest) returns (MutePluginResponse) {}
 
-    // Forces certain plugin/breaker type to close the breaker.
-    rpc CloseBreaker (CloseCircuitBreakerRequest) returns (CloseCircuitBreakerResponse) {}
+    // Forces certain plugin/toggle type to exit disarmed state.
+    rpc UnmutePlugin (UnmutePluginRequest) returns (UnmutePluginResponse) {}
+
+    rpc GetOpenBreakers (GetOpenBreakersRequest) returns (GetOpenBreakersResponse) {}
 }
 
 message GetBuildInfoRequest {
@@ -28,39 +29,64 @@ message GetBuildInfoResponse {
     string buildInformation = 1;
 }
 
-message GetOpenCircuitBreakersRequest {
+message GetMutedPluginsRequest {
+    // for which type of functionality results should be retrieved? Mandatory
+    FunctionType functionType = 1;
 }
 
-message GetOpenCircuitBreakersResponse {
-    // a list of breaker type/plugin id pairs which have the breaker open
-    repeated CircuitBreakerMetadata metadata = 1;
+message GetMutedPluginsResponse {
+    // a list of type/plugin id pairs which have the functionality muted
+    repeated FunctionTypePlugin metadata = 1;
 }
 
-message CircuitBreakerMetadata {
-    enum BreakerType {
-        UNKNOWN = 0;
-        AVAILABILITY = 1;
-    }
+enum FunctionType {
+  UNKNOWN = 0;
+  AVAILABILITY = 1;
+}
 
+// wrapper which contains function type & plugin id
+message FunctionTypePlugin {
     // mandatory
-    BreakerType type = 1;
+    FunctionType type = 1;
 
     // mandatory
     string pluginId = 2;
 }
 
-message OpenCircuitBreakerRequest {
+message MutePluginRequest {
     // a list of breaker type/plugin id pairs which are requested to have them open
-    repeated CircuitBreakerMetadata metadata = 1;
+    repeated FunctionTypePlugin metadata = 1;
 }
 
-message OpenCircuitBreakerResponse {
+message MutePluginResponse {
 }
 
-message CloseCircuitBreakerRequest {
-    // a list of breaker type/plugin id pairs which are requested to have them closed
-    repeated CircuitBreakerMetadata metadata = 1;
+message UnmutePluginRequest {
+    // a list of type/plugin id pairs which are requested to have them closed
+    repeated FunctionTypePlugin metadata = 1;
 }
 
-message CloseCircuitBreakerResponse {
+message UnmutePluginResponse {
+}
+
+message GetOpenBreakersRequest {
+    // for which type of functionality results should be retrieved? Mandatory
+    FunctionType functionType = 1;
+}
+
+// wrapper which contains function type & plugin id & counter
+message FunctionTypePluginCount {
+    // mandatory
+    FunctionType type = 1;
+
+    // mandatory
+    string pluginId = 2;
+
+    // how many nodes have this breaker open? Mandatory
+    int32 count = 3;
+}
+
+message GetOpenBreakersResponse {
+    // a list of breaker type/plugin id pairs which have the breaker open, plus count (how many nodes have this open)
+    repeated FunctionTypePluginCount metadata = 1;
 }
