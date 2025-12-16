@@ -8,6 +8,17 @@ option java_package = "io.bokun.inventory.service.provisioning.grpc";
 service ProvisioningService {
     // Returns IS build information
     rpc GetBuildInfo (GetBuildInfoRequest) returns (GetBuildInfoResponse) {}
+
+    // List plugin/toggle pairs which have toggles open (e.g. disarm availability).
+    rpc GetMutedPlugins (GetMutedPluginsRequest) returns (GetMutedPluginsResponse) {}
+
+    // Forces certain plugin/toggle type to disarm.
+    rpc MutePlugin(MutePluginRequest) returns (MutePluginResponse) {}
+
+    // Forces certain plugin/toggle type to exit disarmed state.
+    rpc UnmutePlugin (UnmutePluginRequest) returns (UnmutePluginResponse) {}
+
+    rpc GetOpenBreakers (GetOpenBreakersRequest) returns (GetOpenBreakersResponse) {}
 }
 
 message GetBuildInfoRequest {
@@ -16,4 +27,66 @@ message GetBuildInfoRequest {
 message GetBuildInfoResponse {
     // May contain elements such as branch, build number, etc. Does not imply any particular structure. Mandatory.
     string buildInformation = 1;
+}
+
+message GetMutedPluginsRequest {
+    // for which type of functionality results should be retrieved? Mandatory
+    FunctionType functionType = 1;
+}
+
+message GetMutedPluginsResponse {
+    // a list of type/plugin id pairs which have the functionality muted
+    repeated FunctionTypePlugin metadata = 1;
+}
+
+enum FunctionType {
+  UNKNOWN = 0;
+  AVAILABILITY = 1;
+}
+
+// wrapper which contains function type & plugin id
+message FunctionTypePlugin {
+    // mandatory
+    FunctionType type = 1;
+
+    // mandatory
+    string pluginId = 2;
+}
+
+message MutePluginRequest {
+    // a list of breaker type/plugin id pairs which are requested to have them open
+    repeated FunctionTypePlugin metadata = 1;
+}
+
+message MutePluginResponse {
+}
+
+message UnmutePluginRequest {
+    // a list of type/plugin id pairs which are requested to have them closed
+    repeated FunctionTypePlugin metadata = 1;
+}
+
+message UnmutePluginResponse {
+}
+
+message GetOpenBreakersRequest {
+    // for which type of functionality results should be retrieved? Mandatory
+    FunctionType functionType = 1;
+}
+
+// wrapper which contains function type & plugin id & counter
+message FunctionTypePluginCount {
+    // mandatory
+    FunctionType type = 1;
+
+    // mandatory
+    string pluginId = 2;
+
+    // how many nodes have this breaker open? Mandatory
+    int32 count = 3;
+}
+
+message GetOpenBreakersResponse {
+    // a list of breaker type/plugin id pairs which have the breaker open, plus count (how many nodes have this open)
+    repeated FunctionTypePluginCount metadata = 1;
 }
