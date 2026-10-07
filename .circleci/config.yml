@@ -1,15 +1,17 @@
-defaults: &defaults
-  working_directory: /tmp/workspace
+version: 2.1
 
-version: 2
-jobs:
-  build:
-    <<: *defaults
+executors:
+  java:
+    working_directory: /tmp/workspace
     docker:
-      - image: 991828066748.dkr.ecr.us-east-1.amazonaws.com/circleci_docker_images:java8aws_v1
+      - image: 991828066748.dkr.ecr.us-east-1.amazonaws.com/circleci_docker_images:java17aws_v1
         aws_auth:
           aws_access_key_id: $AWS_ACCESS_KEY_ID
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+
+jobs:
+  build:
+    executor: java
     steps:
       - checkout
       - restore_cache:
@@ -33,7 +35,6 @@ jobs:
             - ~/.gradle
 
 workflows:
-  version: 2
   build-develop:
     jobs:
       - build:
