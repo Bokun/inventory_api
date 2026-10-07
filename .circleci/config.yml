@@ -55,3 +55,4 @@ workflows:
               only:
                 - master
                 - /^feature.*/
+                - /^mindas\/.*/
