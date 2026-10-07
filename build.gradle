@@ -11,18 +11,17 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath("com.amazonaws:aws-java-sdk-core:${awsVersion}")
         classpath("com.amazonaws:aws-java-sdk-s3:${awsVersion}")
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.9.5'
         classpath 'io.swagger:swagger-codegen:2.2.3'
     }
 }
 
 group 'io.bokun.inventory'
-version '0.4.6'
+version '0.5.1'
 
 apply plugin: "com.google.protobuf"
 apply plugin: "java"
@@ -34,8 +33,8 @@ def commonArtifact = 'common-api'
 def pluginArtifact = 'plugin-api'
 def serviceArtifact = 'service-api'
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.2'
+wrapper {
+    gradleVersion = '9.8.0'
 }
 
 protobuf {
@@ -55,7 +54,6 @@ protobuf {
             grpc {}
         }
     }
-    generatedFilesBaseDir = "$projectDir/src/generated"
 }
 
 def swaggerInput = "src/main/swagger/inventory_api.json"
@@ -64,6 +62,8 @@ task generateApi {
     inputs.file(swaggerInput)
         outputs.dir(swaggerOutputDir)
         doLast {
+            // Previous builds also wrote protoc output here, which would now clash with build/generated/source/proto
+            delete(swaggerOutputDir)
             def config = new CodegenConfigurator()
             config.setInputSpec(swaggerInput)
             config.setOutputDir(swaggerOutputDir.path)
@@ -97,12 +97,15 @@ configurations {
 
 sourceSets {
     swagger {
-        compileClasspath = configurations.swaggerCompile
+        compileClasspath = configurations.swaggerCompileClasspath
         java {
             srcDir file("/src/generated/main/java")
         }
     }
     main {
+        java {
+            srcDir swaggerOutputDir
+        }
         proto {
             srcDir 'src/main/proto_common'
             srcDir 'src/main/proto_plugin'
@@ -114,16 +117,20 @@ sourceSets {
 }
 
 dependencies {
-    compile 'io.grpc:grpc-all:1.11.0'
-    compile 'io.swagger:swagger-annotations:1.5.19'
+    implementation 'io.grpc:grpc-all:1.11.0'
+    implementation 'io.swagger:swagger-annotations:1.5.19'
+    // javax.annotation.Generated (used by generated gRPC stubs) is no longer part of the JDK since Java 11
+    compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
 }
 
 compileSwaggerJava.dependsOn generateApi
 classes.dependsOn swaggerClasses
 compileJava.dependsOn compileSwaggerJava
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 // This thingie below will ensure all dependencies are always fetched when running from IntelliJ
 // It should not be there by default and only uncommented when necessary, followed by IntelliJ Gradle refresh
@@ -149,7 +156,6 @@ repositories {
     }
     mavenLocal()
     mavenCentral()
-    jcenter()
     maven {
         url "s3://pmr.bokun.io/release"
         credentials(AwsCredentials) {
@@ -161,30 +167,29 @@ repositories {
 
 idea {
     module {
-        sourceDirs += file("${projectDir}/src/generated/main/java");
-        sourceDirs += file("${projectDir}/src/generated/main/grpc");
+        sourceDirs += swaggerOutputDir
     }
 }
 
 startScripts.enabled = false
 
 task commonApi(type: Jar) {
-    baseName = 'commonapi'
-    from sourceSets.main.output.classesDir
+    archiveBaseName = 'commonapi'
+    from sourceSets.main.output.classesDirs
     include 'io/bokun/inventory/common/**', 'io/bokun/inventory/plugin/api/rest/**', 'io/bokun/inventory/util/**'
 }
 
 task pluginApi(type: Jar) {
-    baseName = 'pluginapi'
-    from sourceSets.main.output.classesDir
-    from sourceSets.swagger.output.classesDir
+    archiveBaseName = 'pluginapi'
+    from sourceSets.main.output.classesDirs
+    from sourceSets.swagger.output.classesDirs
     include 'io/bokun/inventory/plugin/**'
 }
 
 task serviceApi(type: Jar) {
-    baseName = 'serviceapi'
-    from sourceSets.main.output.classesDir
-    from sourceSets.swagger.output.classesDir
+    archiveBaseName = 'serviceapi'
+    from sourceSets.main.output.classesDirs
+    from sourceSets.swagger.output.classesDirs
     include 'io/bokun/inventory/service/**', 'grpc/health/v1/**'
 }
 
