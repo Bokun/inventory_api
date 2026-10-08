@@ -1056,6 +1056,20 @@
           "items": {
             "$ref": "#/definitions/Extra"
           }
+        },
+        "questionsPerBooking": {
+          "type": "array",
+          "description": "Questions to be answered once per booking (see ReservationData::answers). Optional.",
+          "items": {
+            "$ref": "#/definitions/Question"
+          }
+        },
+        "questionsPerPassenger": {
+          "type": "array",
+          "description": "Questions to be answered for each passenger (see Passenger::answers). Optional.",
+          "items": {
+            "$ref": "#/definitions/Question"
+          }
         }
       }
     },
@@ -1386,6 +1400,18 @@
           "type": "string",
           "description": "Label for this question. Max length: 255 chars. Mandatory.",
           "maxLength": 255
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether this question must be answered for the booking to be accepted. Optional, defaults to false."
+        },
+        "options": {
+          "type": "array",
+          "description": "Allowed answers for an OPTIONS question; every value in Answer::optionsAnswers must match one of these exactly. Mandatory (should have at least one element) for OPTIONS questions, ignored for other types.",
+          "items": {
+            "type": "string",
+            "maxLength": 255
+          }
         }
       }
     },

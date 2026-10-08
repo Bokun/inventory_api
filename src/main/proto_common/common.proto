@@ -286,6 +286,12 @@ message ProductDescription {
 
     // Extras which belong to this product. Optional.
     repeated Extra extras = 25;
+
+    // Questions to be answered once per booking (see ReservationData::answers). Optional.
+    repeated Question questionsPerBooking = 26;
+
+    // Questions to be answered for each passenger (see Passenger::answers). Optional.
+    repeated Question questionsPerPassenger = 27;
 }
 
 // A list of all possible ticketing options for a product.
@@ -745,6 +751,13 @@ message Question {
 
     // Label for this question. Max length: 255 chars. Mandatory.
     string label = 3;
+
+    // Whether this question must be answered for the booking to be accepted. Optional, defaults to false.
+    bool required = 4;
+
+    // Allowed answers for an OPTIONS question; every value in Answer::optionsAnswers must match one of these exactly.
+    // Mandatory (should have at least one element) for OPTIONS questions, ignored for other types. Max length: 255 chars each.
+    repeated string options = 5;
 }
 
 message StringList {

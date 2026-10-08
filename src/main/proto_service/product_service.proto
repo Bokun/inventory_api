@@ -77,6 +77,9 @@ message ProductMapping {
 
     // Mappings between external and internal extras. Optional
     repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping extraMappings = 8;
+
+    // Mappings between external and internal booking questions (see Answer::questionId). Optional
+    repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping questionMappings = 9;
 }
 
 message ProductMappingIdentifier {
