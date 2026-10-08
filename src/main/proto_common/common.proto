@@ -30,6 +30,12 @@ message Time {
 }
 
 // All fields mandatory
+message DateAndTime {
+    Date date = 1;
+    Time time = 2;
+}
+
+// All fields mandatory
 message Price {
     // ISO 4217 currency code (such as USD, EUR, GBP, etc.). Mandatory.
     string currency = 1;
@@ -280,7 +286,6 @@ message ProductDescription {
 
     // Extras which belong to this product. Optional.
     repeated Extra extras = 25;
-
 }
 
 // A list of all possible ticketing options for a product.
@@ -706,7 +711,61 @@ message Reservation {
 
     // Deprecated. Do not use. Refer to Passengers section which has extraBookings instead.
     repeated ExtraBooking extraBooking = 4;
+}
 
+message Question {
+    enum QuestionType {
+        // Answer max chars: 255
+        TEXT = 0;
+
+        // Answer range: -2^31..2^31-1
+        INT = 1;
+
+        // Answer range: 2^-1074..(2-2^-52)*2^1023
+        DOUBLE = 2;
+
+        // Answer: true/false
+        BOOLEAN = 3;
+
+        // Answer: see Date type in this file.
+        DATE = 4;
+
+        // Answer: see DateAndTime type in this file.
+        DATE_AND_TIME = 5;
+
+        // Answer: the system will send a string (or multiple strings), 100% match one of the pre-arranged text options.
+        OPTIONS = 6;
+    }
+
+    // ID of this question. Mandatory. Max length: 32 chars.
+    string id = 1;
+
+    // Type of this question. Mandatory.
+    QuestionType type = 2;
+
+    // Label for this question. Max length: 255 chars. Mandatory.
+    string label = 3;
+}
+
+message StringList {
+    repeated string values = 1;
+}
+
+message Answer {
+    // Refers to Question::id. Max length: 32 chars.
+    // Mandatory: if a question isn't answered, the answer should be omitted as opposed to sent empty.
+    string questionId = 1;
+
+    // answer, depending on the question type
+    oneof answer {
+        string textAnswer = 2;
+        int32 intAnswer = 3;
+        double doubleAnswer = 4;
+        bool booleanAnswer = 5;
+        Date dateAnswer = 6;
+        DateAndTime dateAndTimeAnswer = 7;
+        StringList optionsAnswers = 8;
+    }
 }
 
 // Passenger participating in a tour/activity event.
@@ -751,6 +810,9 @@ message Passenger {
     //   - Child#2 booking
     //     - [no extras]
     repeated ExtraBooking extraBookings = 4;
+
+    // All answers for all per-passenger questions.
+    repeated Answer answers = 5;
 }
 
 // Extra available for certain product

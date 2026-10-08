@@ -1083,6 +1083,22 @@
       }
     },
 
+    "DateAndTime": {
+      "type": "object",
+      "required": [
+        "date",
+        "time"
+      ],
+      "properties": {
+        "date": {
+          "$ref": "#/definitions/DateYMD"
+        },
+        "time": {
+          "$ref": "#/definitions/Time"
+        }
+      }
+    },
+
     "DatePeriod": {
       "type": "object",
       "required": [
@@ -1334,6 +1350,95 @@
       }
     },
 
+    "QuestionType": {
+      "type": "string",
+      "description": "Type of a question, which determines what kind of answer is expected:\n* TEXT - answer max chars: 255\n* INT - answer range: -2^31..2^31-1\n* DOUBLE - answer range: 2^-1074..(2-2^-52)*2^1023\n* BOOLEAN - answer: true/false\n* DATE - answer: see DateYMD type\n* DATE_AND_TIME - answer: see DateAndTime type\n* OPTIONS - answer: the system will send a string (or multiple strings), 100% match one of the pre-arranged text options",
+      "enum": [
+        "TEXT",
+        "INT",
+        "DOUBLE",
+        "BOOLEAN",
+        "DATE",
+        "DATE_AND_TIME",
+        "OPTIONS"
+      ]
+    },
+
+    "Question": {
+      "type": "object",
+      "description": "Question which should be answered when booking",
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID of this question. Mandatory. Max length: 32 chars.",
+          "maxLength": 32
+        },
+        "type": {
+          "$ref": "#/definitions/QuestionType",
+          "description": "Type of this question. Mandatory."
+        },
+        "label": {
+          "type": "string",
+          "description": "Label for this question. Max length: 255 chars. Mandatory.",
+          "maxLength": 255
+        }
+      }
+    },
+
+    "Answer": {
+      "type": "object",
+      "description": "Answer to a question. Exactly one of the *Answer fields is set, depending on the type of the question.",
+      "required": [
+        "questionId"
+      ],
+      "properties": {
+        "questionId": {
+          "type": "string",
+          "description": "Refers to Question::id. Max length: 32 chars. Mandatory: if a question isn't answered, the answer should be omitted as opposed to sent empty.",
+          "maxLength": 32
+        },
+        "textAnswer": {
+          "type": "string",
+          "description": "Answer for a TEXT question.",
+          "maxLength": 255
+        },
+        "intAnswer": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Answer for an INT question."
+        },
+        "doubleAnswer": {
+          "type": "number",
+          "format": "double",
+          "description": "Answer for a DOUBLE question."
+        },
+        "booleanAnswer": {
+          "type": "boolean",
+          "description": "Answer for a BOOLEAN question."
+        },
+        "dateAnswer": {
+          "$ref": "#/definitions/DateYMD",
+          "description": "Answer for a DATE question."
+        },
+        "dateAndTimeAnswer": {
+          "$ref": "#/definitions/DateAndTime",
+          "description": "Answer for a DATE_AND_TIME question."
+        },
+        "optionsAnswers": {
+          "type": "array",
+          "description": "Answer for an OPTIONS question.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+
     "Passenger": {
       "type": "object",
       "required": [
@@ -1353,6 +1458,13 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/ExtraBooking"
+          }
+        },
+        "answers": {
+          "type": "array",
+          "description": "All answers for all per-passenger questions.",
+          "items": {
+            "$ref": "#/definitions/Answer"
           }
         }
       }
@@ -1596,6 +1708,13 @@
         },
         "platformBookingId": {
           "type": "string"
+        },
+        "answers": {
+          "type": "array",
+          "description": "All the answers for all the per-booking questions.",
+          "items": {
+            "$ref": "#/definitions/Answer"
+          }
         }
       }
     },
