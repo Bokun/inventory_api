@@ -24,7 +24,7 @@ buildscript {
 }
 
 group 'io.bokun.inventory'
-version '0.5.2'
+version '0.5.3'
 
 apply plugin: "com.google.protobuf"
 apply plugin: "java"
@@ -61,7 +61,8 @@ protobuf {
 
 def swaggerInput = "src/main/swagger/inventory_api.json"
 // Overrides of swagger-codegen's built-in Java templates (others fall back to the defaults).
-// pojo.mustache is the 2.4.52 template with Boolean getters kept as getX() instead of isX(), for backwards compatibility.
+// pojo.mustache is the 2.4.52 template with Boolean getters kept as getX() instead of isX(), for backwards compatibility, and without the
+// Swagger annotations (@ApiModel, @ApiModelProperty): their descriptions and required flags go into Javadoc instead.
 def swaggerTemplateDir = "src/main/swagger/templates"
 def swaggerOutputDir = file('src/generated/main/java')
 task generateApi {
@@ -92,6 +93,10 @@ task generateApi {
                     'models' : ''
             ])
             new DefaultGenerator().opts(config.toClientOptInput()).generate()
+            // swagger-codegen adds the Swagger annotation imports to every model regardless of the template: drop them
+            fileTree(swaggerOutputDir).matching { include '**/*.java' }.each { source ->
+                source.text = source.text.replaceAll(/(?m)^import io\.swagger\.annotations\.\w+;\R/, '')
+            }
         }
 }
 
@@ -129,7 +134,6 @@ dependencies {
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
     implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
-    implementation 'io.swagger:swagger-annotations:1.6.16'
     // Used by swagger-generated REST models; previously came in transitively via grpc-all
     implementation 'com.google.code.gson:gson:2.14.0'
 }
