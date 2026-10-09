@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Channel Manager REST API. You can find out more about Channel Manager [here](https://www.bokun.io/sell/channel-manager).",
-    "version": "0.5.3",
+    "version": "0.5.4",
     "title": "Channel Manager REST API",
     "contact": {
       "email": "support@bokun.io"
@@ -128,6 +128,41 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/ProductDescription"
+            }
+          }
+        }
+      }
+    },
+
+    "/product/import": {
+      "post": {
+        "tags": [
+          "product"
+        ],
+        "summary": "Creates a product in Bokun platform from the given remote system product. The product is created by the plugin itself (outside of Inventory Service workflow/API); the response must contain the id of newly created platform product. This method is only called if PluginDefinition::capabilities contains SUPPORTS_PRODUCT_IMPORT.",
+        "operationId": "importProduct",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Import product request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ImportProductRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ImportProductResponse"
             }
           }
         }
@@ -395,7 +430,8 @@
         "SUPPORTS_RESERVATIONS",
         "SUPPORTS_AVAILABILITY",
         "SUPPORTS_RESERVATION_CANCELLATION",
-        "SUPPORTS_AMENDMENT"
+        "SUPPORTS_AMENDMENT",
+        "SUPPORTS_PRODUCT_IMPORT"
       ]
     },
 
@@ -2154,6 +2190,64 @@
       "type": "object",
       "properties": {
         "amendmentError": {
+          "type": "string"
+        }
+      }
+    },
+
+    "ImportProductRequest": {
+      "type": "object",
+      "required": [
+        "parameters",
+        "externalId",
+        "vendorId"
+      ],
+      "properties": {
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        },
+        "externalId": {
+          "type": "string"
+        },
+        "vendorId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+
+    "ImportProductResponse": {
+      "type": "object",
+      "properties": {
+        "successfulProductImport": {
+          "$ref": "#/definitions/SuccessfulProductImport"
+        },
+        "failedProductImport": {
+          "$ref": "#/definitions/FailedProductImport"
+        }
+      }
+    },
+
+    "SuccessfulProductImport": {
+      "type": "object",
+      "required": [
+        "platformProductId"
+      ],
+      "properties": {
+        "platformProductId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+
+    "FailedProductImport": {
+      "type": "object",
+      "properties": {
+        "productImportError": {
           "type": "string"
         }
       }

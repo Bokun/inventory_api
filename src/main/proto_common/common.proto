@@ -77,6 +77,11 @@ enum PluginCapability {
 
     // If enabled, it means that a plugin is able (and required) to respond to amendBooking requests coming from Bokun.
     SUPPORTS_AMENDMENT = 5;
+
+    // If enabled, it means that a plugin is able (and required) to respond to importProduct requests coming from Bokun.
+    // On such request the plugin is expected to create the product in Bokun platform itself (outside of Inventory Service workflow/API) and return
+    // the id of newly created platform product.
+    SUPPORTS_PRODUCT_IMPORT = 6;
 }
 
 // Supported product categories
@@ -542,6 +547,24 @@ message SuccessfulCancellation {
 message FailedCancellation {
     // Error message telling why this request has failed. Optional - remote end is not required to explicitly tell the reason of failure
     string cancellationError = 1;
+}
+
+message ImportProductResponse {
+    // should return either success or failure data structure. Mandatory (response must indicate either success or failure).
+    oneof importResult {
+        SuccessfulProductImport successfulProductImport = 1;
+        FailedProductImport failedProductImport = 2;
+    }
+}
+
+message SuccessfulProductImport {
+    // Id of the product which was created in Bokun platform. Mandatory.
+    int64 platformProductId = 1;
+}
+
+message FailedProductImport {
+    // Error message telling why this request has failed. Optional - remote end is not required to explicitly tell the reason of failure
+    string productImportError = 1;
 }
 
 // All fields optional unless enforced in ProductDescription.

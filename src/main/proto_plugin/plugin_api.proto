@@ -68,6 +68,11 @@ service PluginApi {
     // * Viator SAPI
     // * Bókun's /booking.json/edit REST endpoint
     rpc AmendBooking (AmendBookingRequest) returns (io.bokun.inventory.common.api.grpc.AmendBookingResponse) {}
+
+    // Creates a product in Bokun platform from the given remote system product. The product is created by the plugin itself (outside of Inventory
+    // Service workflow/API); the response must contain the id of newly created platform product.
+    // This method is only called if PluginDefinition::capabilities contains SUPPORTS_PRODUCT_IMPORT.
+    rpc ImportProduct (ImportProductRequest) returns (io.bokun.inventory.common.api.grpc.ImportProductResponse) {}
 }
 
 message ConfirmBookingRequest {
@@ -131,6 +136,17 @@ message GetProductByIdRequest {
 
     // reference to product id on the remote end. Mandatory
     string externalId = 2;
+}
+
+message ImportProductRequest {
+    // plugin config parameters. Mandatory.
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
+
+    // reference to product id on the remote end (see BasicProductInfo::id). Mandatory.
+    string externalId = 2;
+
+    // The id of the vendor in Bokun platform the product should be created for. Mandatory.
+    int64 vendorId = 3;
 }
 
 // Parameters used to configure supported plugin(s)

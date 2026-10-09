@@ -25,6 +25,11 @@ service ProductService {
 
     // Deletes product mapping.
     rpc DeleteProductMapping (ProductMappingIdentifier) returns (io.bokun.inventory.common.api.grpc.Empty) {}
+
+    // Asks the plugin to create a product in Bokun platform from the given remote system product. Plugin creates the product by itself, outside of
+    // Inventory Service workflow/API, and returns the id of newly created platform product.
+    // Only applicable for plugins having PluginCapability::SUPPORTS_PRODUCT_IMPORT.
+    rpc ImportProduct (ImportProductRequest) returns (io.bokun.inventory.common.api.grpc.ImportProductResponse) {}
 }
 
 message GetProductByIdRequest {
@@ -33,6 +38,17 @@ message GetProductByIdRequest {
     int64 vendorId = 2;
 
     // reference to product id on the remote end. Mandatory
+    string externalId = 3;
+}
+
+message ImportProductRequest {
+    // Mandatory.
+    string pluginId = 1;
+
+    // Mandatory.
+    int64 vendorId = 2;
+
+    // reference to product id on the remote end. Mandatory.
     string externalId = 3;
 }
 
