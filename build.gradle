@@ -1,22 +1,25 @@
-import com.amazonaws.auth.AWSCredentials
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider
 import io.swagger.codegen.config.CodegenConfigurator
 import io.swagger.codegen.DefaultGenerator
 
 
 buildscript {
     ext {
-        awsVersion = '1.11.283'
+        awsVersion = '2.55.13'
+        // Pinned protoc version; protobuf-java runtime below must stay in sync with it
+        protobufVersion = '3.25.9'
+        // gRPC 1.84.x depends on protobuf-java 3.25.x, matching protobufVersion
+        grpcVersion = '1.84.2'
     }
     repositories {
         mavenLocal()
         mavenCentral()
     }
     dependencies {
-        classpath("com.amazonaws:aws-java-sdk-core:${awsVersion}")
-        classpath("com.amazonaws:aws-java-sdk-s3:${awsVersion}")
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.9.5'
-        classpath 'io.swagger:swagger-codegen:2.2.3'
+        // Only used to resolve AWS credentials for the S3 maven repositories; Gradle handles S3 access itself
+        classpath("software.amazon.awssdk:auth:${awsVersion}")
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.10.0'
+        classpath 'io.swagger:swagger-codegen:2.4.52'
     }
 }
 
@@ -34,7 +37,7 @@ def pluginArtifact = 'plugin-api'
 def serviceArtifact = 'service-api'
 
 wrapper {
-    gradleVersion = '9.8.0'
+    gradleVersion = '9.8.1'
 }
 
 protobuf {
@@ -42,11 +45,11 @@ protobuf {
         // The version of protoc must match protobuf-java. If you don't depend on
         // protobuf-java directly, you will be transitively depending on the
         // protobuf-java version that grpc depends on.
-        artifact = "com.google.protobuf:protoc:3.5.1"
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.11.0'
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
         }
     }
     generateProtoTasks {
@@ -57,9 +60,13 @@ protobuf {
 }
 
 def swaggerInput = "src/main/swagger/inventory_api.json"
+// Overrides of swagger-codegen's built-in Java templates (others fall back to the defaults).
+// pojo.mustache is the 2.4.52 template with Boolean getters kept as getX() instead of isX(), for backwards compatibility.
+def swaggerTemplateDir = "src/main/swagger/templates"
 def swaggerOutputDir = file('src/generated/main/java')
 task generateApi {
     inputs.file(swaggerInput)
+        inputs.dir(swaggerTemplateDir)
         outputs.dir(swaggerOutputDir)
         doLast {
             // Previous builds also wrote protoc output here, which would now clash with build/generated/source/proto
@@ -68,6 +75,7 @@ task generateApi {
             config.setInputSpec(swaggerInput)
             config.setOutputDir(swaggerOutputDir.path)
             config.setLang('java')
+            config.setTemplateDir(file(swaggerTemplateDir).absolutePath)
             config.setAdditionalProperties([
                     'invokerPackage'   : 'io.bokun.inventory.plugin.api.rest',
                     'modelPackage'     : 'io.bokun.inventory.plugin.api.rest',
@@ -117,10 +125,13 @@ sourceSets {
 }
 
 dependencies {
-    implementation 'io.grpc:grpc-all:1.11.0'
-    implementation 'io.swagger:swagger-annotations:1.5.19'
-    // javax.annotation.Generated (used by generated gRPC stubs) is no longer part of the JDK since Java 11
-    compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
+    // Only the modules generated code needs; grpc-all would pull in grpc-xds, which forces protobuf-java 4.x
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
+    implementation 'io.swagger:swagger-annotations:1.6.16'
+    // Used by swagger-generated REST models; previously came in transitively via grpc-all
+    implementation 'com.google.code.gson:gson:2.14.0'
 }
 
 compileSwaggerJava.dependsOn generateApi
@@ -144,14 +155,14 @@ if (project.hasProperty('branch')) {
     println("branch: " + project.property('branch'))
 }
 
-AWSCredentials awsCredentials = DefaultAWSCredentialsProviderChain.getInstance().credentials;
+def awsCredentials = DefaultCredentialsProvider.builder().build().resolveCredentials()
 
 repositories {
     maven {
         url "s3://pmr.bokun.io/snapshots"
         credentials(AwsCredentials) {
-            accessKey awsCredentials.AWSAccessKeyId
-            secretKey awsCredentials.AWSSecretKey
+            accessKey awsCredentials.accessKeyId()
+            secretKey awsCredentials.secretAccessKey()
         }
     }
     mavenLocal()
@@ -159,8 +170,8 @@ repositories {
     maven {
         url "s3://pmr.bokun.io/release"
         credentials(AwsCredentials) {
-            accessKey awsCredentials.AWSAccessKeyId
-            secretKey awsCredentials.AWSSecretKey
+            accessKey awsCredentials.accessKeyId()
+            secretKey awsCredentials.secretAccessKey()
         }
     }
 }
@@ -194,7 +205,7 @@ task serviceApi(type: Jar) {
 }
 
 if (awsCredentials != null) {
-    println("publish : " + awsCredentials.AWSAccessKeyId)
+    println("publish : " + awsCredentials.accessKeyId())
     publishing {
         println "Will publish to Private S3 repository"
         publications {
@@ -247,15 +258,15 @@ if (awsCredentials != null) {
             maven {
                 url "s3://pmr.bokun.io/release"
                 credentials(AwsCredentials) {
-                    accessKey awsCredentials.AWSAccessKeyId
-                    secretKey awsCredentials.AWSSecretKey
+                    accessKey awsCredentials.accessKeyId()
+                    secretKey awsCredentials.secretAccessKey()
                 }
             }
             maven {
                 url "s3://public-pmr.bokun.io/release"
                 credentials(AwsCredentials) {
-                    accessKey awsCredentials.AWSAccessKeyId
-                    secretKey awsCredentials.AWSSecretKey
+                    accessKey awsCredentials.accessKeyId()
+                    secretKey awsCredentials.secretAccessKey()
                 }
             }
         }
