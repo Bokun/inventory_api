@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Channel Manager REST API. You can find out more about Channel Manager [here](https://www.bokun.io/sell/channel-manager).",
-    "version": "0.4.6",
+    "version": "0.5.5",
     "title": "Channel Manager REST API",
     "contact": {
       "email": "support@bokun.io"
@@ -128,6 +128,41 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/ProductDescription"
+            }
+          }
+        }
+      }
+    },
+
+    "/product/import": {
+      "post": {
+        "tags": [
+          "product"
+        ],
+        "summary": "Creates a product in Bokun platform from the given remote system product. The product is created by the plugin itself (outside of Inventory Service workflow/API); the response must contain the id of newly created platform product. This method is only called if PluginDefinition::capabilities contains SUPPORTS_PRODUCT_IMPORT.",
+        "operationId": "importProduct",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Import product request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ImportProductRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ImportProductResponse"
             }
           }
         }
@@ -395,7 +430,8 @@
         "SUPPORTS_RESERVATIONS",
         "SUPPORTS_AVAILABILITY",
         "SUPPORTS_RESERVATION_CANCELLATION",
-        "SUPPORTS_AMENDMENT"
+        "SUPPORTS_AMENDMENT",
+        "SUPPORTS_PRODUCT_IMPORT"
       ]
     },
 
@@ -1056,6 +1092,20 @@
           "items": {
             "$ref": "#/definitions/Extra"
           }
+        },
+        "questionsPerBooking": {
+          "type": "array",
+          "description": "Questions to be answered once per booking (see ReservationData::answers). Optional.",
+          "items": {
+            "$ref": "#/definitions/Question"
+          }
+        },
+        "questionsPerPassenger": {
+          "type": "array",
+          "description": "Questions to be answered for each passenger (see Passenger::answers). Optional.",
+          "items": {
+            "$ref": "#/definitions/Question"
+          }
         }
       }
     },
@@ -1079,6 +1129,22 @@
         "day": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+
+    "DateAndTime": {
+      "type": "object",
+      "required": [
+        "date",
+        "time"
+      ],
+      "properties": {
+        "date": {
+          "$ref": "#/definitions/DateYMD"
+        },
+        "time": {
+          "$ref": "#/definitions/Time"
         }
       }
     },
@@ -1334,6 +1400,107 @@
       }
     },
 
+    "QuestionType": {
+      "type": "string",
+      "description": "Type of a question, which determines what kind of answer is expected:\n* TEXT - answer max chars: 255\n* INT - answer range: -2^31..2^31-1\n* DOUBLE - answer range: 2^-1074..(2-2^-52)*2^1023\n* BOOLEAN - answer: true/false\n* DATE - answer: see DateYMD type\n* DATE_AND_TIME - answer: see DateAndTime type\n* OPTIONS - answer: the system will send a string (or multiple strings), 100% match one of the pre-arranged text options",
+      "enum": [
+        "TEXT",
+        "INT",
+        "DOUBLE",
+        "BOOLEAN",
+        "DATE",
+        "DATE_AND_TIME",
+        "OPTIONS"
+      ]
+    },
+
+    "Question": {
+      "type": "object",
+      "description": "Question which should be answered when booking",
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID of this question. Mandatory. Max length: 32 chars.",
+          "maxLength": 32
+        },
+        "type": {
+          "$ref": "#/definitions/QuestionType",
+          "description": "Type of this question. Mandatory."
+        },
+        "label": {
+          "type": "string",
+          "description": "Label for this question. Max length: 255 chars. Mandatory.",
+          "maxLength": 255
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether this question must be answered for the booking to be accepted. Optional, defaults to false."
+        },
+        "options": {
+          "type": "array",
+          "description": "Allowed answers for an OPTIONS question; every value in Answer::optionsAnswers must match one of these exactly. Mandatory (should have at least one element) for OPTIONS questions, ignored for other types.",
+          "items": {
+            "type": "string",
+            "maxLength": 255
+          }
+        }
+      }
+    },
+
+    "Answer": {
+      "type": "object",
+      "description": "Answer to a question. Exactly one of the *Answer fields is set, depending on the type of the question.",
+      "required": [
+        "questionId"
+      ],
+      "properties": {
+        "questionId": {
+          "type": "string",
+          "description": "Refers to Question::id. Max length: 32 chars. Mandatory: if a question isn't answered, the answer should be omitted as opposed to sent empty.",
+          "maxLength": 32
+        },
+        "textAnswer": {
+          "type": "string",
+          "description": "Answer for a TEXT question.",
+          "maxLength": 255
+        },
+        "intAnswer": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Answer for an INT question."
+        },
+        "doubleAnswer": {
+          "type": "number",
+          "format": "double",
+          "description": "Answer for a DOUBLE question."
+        },
+        "booleanAnswer": {
+          "type": "boolean",
+          "description": "Answer for a BOOLEAN question."
+        },
+        "dateAnswer": {
+          "$ref": "#/definitions/DateYMD",
+          "description": "Answer for a DATE question."
+        },
+        "dateAndTimeAnswer": {
+          "$ref": "#/definitions/DateAndTime",
+          "description": "Answer for a DATE_AND_TIME question."
+        },
+        "optionsAnswers": {
+          "type": "array",
+          "description": "Answer for an OPTIONS question.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+
     "Passenger": {
       "type": "object",
       "required": [
@@ -1353,6 +1520,13 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/ExtraBooking"
+          }
+        },
+        "answers": {
+          "type": "array",
+          "description": "All answers for all per-passenger questions.",
+          "items": {
+            "$ref": "#/definitions/Answer"
           }
         }
       }
@@ -1596,6 +1770,13 @@
         },
         "platformBookingId": {
           "type": "string"
+        },
+        "answers": {
+          "type": "array",
+          "description": "All the answers for all the per-booking questions.",
+          "items": {
+            "$ref": "#/definitions/Answer"
+          }
         }
       }
     },
@@ -2009,6 +2190,69 @@
       "type": "object",
       "properties": {
         "amendmentError": {
+          "type": "string"
+        }
+      }
+    },
+
+    "ImportProductRequest": {
+      "type": "object",
+      "required": [
+        "parameters",
+        "externalId",
+        "vendorId",
+        "pluginId"
+      ],
+      "properties": {
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PluginConfigurationParameterValue"
+          }
+        },
+        "externalId": {
+          "type": "string"
+        },
+        "vendorId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "pluginId": {
+          "type": "string",
+          "description": "The id of this plugin in Bokun platform, as experience inventory settings reference it. Lets the plugin map the product it creates to itself."
+        }
+      }
+    },
+
+    "ImportProductResponse": {
+      "type": "object",
+      "properties": {
+        "successfulProductImport": {
+          "$ref": "#/definitions/SuccessfulProductImport"
+        },
+        "failedProductImport": {
+          "$ref": "#/definitions/FailedProductImport"
+        }
+      }
+    },
+
+    "SuccessfulProductImport": {
+      "type": "object",
+      "required": [
+        "platformProductId"
+      ],
+      "properties": {
+        "platformProductId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+
+    "FailedProductImport": {
+      "type": "object",
+      "properties": {
+        "productImportError": {
           "type": "string"
         }
       }
