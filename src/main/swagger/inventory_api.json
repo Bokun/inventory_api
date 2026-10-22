@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Channel Manager REST API. You can find out more about Channel Manager [here](https://www.bokun.io/sell/channel-manager).",
-    "version": "0.5.4",
+    "version": "0.5.5",
     "title": "Channel Manager REST API",
     "contact": {
       "email": "support@bokun.io"
@@ -2200,7 +2200,8 @@
       "required": [
         "parameters",
         "externalId",
-        "vendorId"
+        "vendorId",
+        "pluginId"
       ],
       "properties": {
         "parameters": {
@@ -2215,6 +2216,10 @@
         "vendorId": {
           "type": "integer",
           "format": "int64"
+        },
+        "pluginId": {
+          "type": "string",
+          "description": "The id of this plugin in Bokun platform, as experience inventory settings reference it. Lets the plugin map the product it creates to itself."
         }
       }
     },

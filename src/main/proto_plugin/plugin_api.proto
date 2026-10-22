@@ -147,6 +147,10 @@ message ImportProductRequest {
 
     // The id of the vendor in Bokun platform the product should be created for. Mandatory.
     int64 vendorId = 3;
+
+    // The id of this plugin in Bokun platform, as experience inventory settings reference it. Lets the plugin map the product it
+    // creates to itself. Mandatory.
+    string pluginId = 4;
 }
 
 // Parameters used to configure supported plugin(s)
