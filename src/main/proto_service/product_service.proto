@@ -25,6 +25,11 @@ service ProductService {
 
     // Deletes product mapping.
     rpc DeleteProductMapping (ProductMappingIdentifier) returns (io.bokun.inventory.common.api.grpc.Empty) {}
+
+    // Asks the plugin to create a product in Bokun platform from the given remote system product. Plugin creates the product by itself, outside of
+    // Inventory Service workflow/API, and returns the id of newly created platform product.
+    // Only applicable for plugins having PluginCapability::SUPPORTS_PRODUCT_IMPORT.
+    rpc ImportProduct (ImportProductRequest) returns (io.bokun.inventory.common.api.grpc.ImportProductResponse) {}
 }
 
 message GetProductByIdRequest {
@@ -33,6 +38,17 @@ message GetProductByIdRequest {
     int64 vendorId = 2;
 
     // reference to product id on the remote end. Mandatory
+    string externalId = 3;
+}
+
+message ImportProductRequest {
+    // Mandatory.
+    string pluginId = 1;
+
+    // Mandatory.
+    int64 vendorId = 2;
+
+    // reference to product id on the remote end. Mandatory.
     string externalId = 3;
 }
 
@@ -51,6 +67,14 @@ message SearchProductsRequest {
 
     // City to get products for. Optional.
     string city = 5;
+
+    // Zero-based page number. Always passed on to the plugin, which doesn't have to honour pageNo and pageSize: it may
+    // ignore both and return every product, and the result is then the entire list. A page with fewer than pageSize
+    // products is the last one.
+    int32 pageNo = 6;
+
+    // Products per page; 0 (unset) means 20.
+    int32 pageSize = 7;
 }
 
 message ProductMapping {
@@ -77,6 +101,9 @@ message ProductMapping {
 
     // Mappings between external and internal extras. Optional
     repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping extraMappings = 8;
+
+    // Mappings between external and internal booking questions (see Answer::questionId). Optional
+    repeated io.bokun.inventory.service.common.grpc.BokunToExternalMapping questionMappings = 9;
 }
 
 message ProductMappingIdentifier {

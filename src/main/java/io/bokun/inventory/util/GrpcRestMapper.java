@@ -635,4 +635,34 @@ public final class GrpcRestMapper {
         }
         return out.build();
     }
+
+    @Nonnull
+    public static io.bokun.inventory.common.api.grpc.SuccessfulProductImport restToGrpc(@Nonnull io.bokun.inventory.plugin.api.rest.SuccessfulProductImport in) {
+        return io.bokun.inventory.common.api.grpc.SuccessfulProductImport.newBuilder()
+                .setPlatformProductId(in.getPlatformProductId())
+                .build();
+    }
+
+    @Nonnull
+    public static io.bokun.inventory.common.api.grpc.FailedProductImport restToGrpc(@Nonnull io.bokun.inventory.plugin.api.rest.FailedProductImport in) {
+        io.bokun.inventory.common.api.grpc.FailedProductImport.Builder out = io.bokun.inventory.common.api.grpc.FailedProductImport.newBuilder();
+        if (in.getProductImportError() != null) {
+            out.setProductImportError(in.getProductImportError());
+        }
+        return out.build();
+    }
+
+    @Nonnull
+    public static io.bokun.inventory.common.api.grpc.ImportProductResponse restToGrpc(@Nonnull io.bokun.inventory.plugin.api.rest.ImportProductResponse in) {
+        if (in.getSuccessfulProductImport() != null) {
+            return io.bokun.inventory.common.api.grpc.ImportProductResponse.newBuilder()
+                    .setSuccessfulProductImport(restToGrpc(in.getSuccessfulProductImport()))
+                    .build();
+        } else {
+            assert in.getFailedProductImport() != null;
+            return io.bokun.inventory.common.api.grpc.ImportProductResponse.newBuilder()
+                    .setFailedProductImport(restToGrpc(in.getFailedProductImport()))
+                    .build();
+        }
+    }
 }

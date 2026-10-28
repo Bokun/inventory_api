@@ -68,6 +68,11 @@ service PluginApi {
     // * Viator SAPI
     // * Bókun's /booking.json/edit REST endpoint
     rpc AmendBooking (AmendBookingRequest) returns (io.bokun.inventory.common.api.grpc.AmendBookingResponse) {}
+
+    // Creates a product in Bokun platform from the given remote system product. The product is created by the plugin itself (outside of Inventory
+    // Service workflow/API); the response must contain the id of newly created platform product.
+    // This method is only called if PluginDefinition::capabilities contains SUPPORTS_PRODUCT_IMPORT.
+    rpc ImportProduct (ImportProductRequest) returns (io.bokun.inventory.common.api.grpc.ImportProductResponse) {}
 }
 
 message ConfirmBookingRequest {
@@ -133,6 +138,21 @@ message GetProductByIdRequest {
     string externalId = 2;
 }
 
+message ImportProductRequest {
+    // plugin config parameters. Mandatory.
+    repeated io.bokun.inventory.common.api.grpc.PluginConfigurationParameterValue parameters = 1;
+
+    // reference to product id on the remote end (see BasicProductInfo::id). Mandatory.
+    string externalId = 2;
+
+    // The id of the vendor in Bokun platform the product should be created for. Mandatory.
+    int64 vendorId = 3;
+
+    // The id of this plugin in Bokun platform, as experience inventory settings reference it. Lets the plugin map the product it
+    // creates to itself. Mandatory.
+    string pluginId = 4;
+}
+
 // Parameters used to configure supported plugin(s)
 message PluginDefinition {
     // Name of the definition. Mandatory.
@@ -173,6 +193,12 @@ message SearchProductsRequest {
     string productName = 2;
     string country = 3;             // ISO ALPHA-2 code
     string city = 4;                // city this product is served at. Optional
+
+    // Pagination. Bokun always sends pageNo and pageSize, but the plugin doesn't have to honour them: it may ignore
+    // both and return every product, and Bokun then shows the entire list. A plugin that pages returns at most
+    // pageSize products, and a page with fewer than pageSize products is the last one.
+    int32 pageNo = 5;               // zero-based page number
+    int32 pageSize = 6;             // products per page, 20 by default
 }
 
 message ProductAvailabilityRequest {
@@ -254,6 +280,9 @@ message ReservationData {
 
     // This refers to a booking ID in Bokun platform. Sent at earliest possibility; guaranteed to be sent at confirmation stage.
     string platformBookingId = 18;
+
+    // All the answers for all the per-booking questions.
+    repeated io.bokun.inventory.common.api.grpc.Answer answers = 19;
 }
 
 // A container for data which is sent when a booking is confirmed. Extracted for convenience reasons.
