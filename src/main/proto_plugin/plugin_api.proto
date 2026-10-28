@@ -193,6 +193,12 @@ message SearchProductsRequest {
     string productName = 2;
     string country = 3;             // ISO ALPHA-2 code
     string city = 4;                // city this product is served at. Optional
+
+    // Pagination. Bokun always sends pageNo and pageSize, but the plugin doesn't have to honour them: it may ignore
+    // both and return every product, and Bokun then shows the entire list. A plugin that pages returns at most
+    // pageSize products, and a page with fewer than pageSize products is the last one.
+    int32 pageNo = 5;               // zero-based page number
+    int32 pageSize = 6;             // products per page, 20 by default
 }
 
 message ProductAvailabilityRequest {

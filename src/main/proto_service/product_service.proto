@@ -67,6 +67,14 @@ message SearchProductsRequest {
 
     // City to get products for. Optional.
     string city = 5;
+
+    // Zero-based page number. Always passed on to the plugin, which doesn't have to honour pageNo and pageSize: it may
+    // ignore both and return every product, and the result is then the entire list. A page with fewer than pageSize
+    // products is the last one.
+    int32 pageNo = 6;
+
+    // Products per page; 0 (unset) means 20.
+    int32 pageSize = 7;
 }
 
 message ProductMapping {

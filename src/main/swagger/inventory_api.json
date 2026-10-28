@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Channel Manager REST API. You can find out more about Channel Manager [here](https://www.bokun.io/sell/channel-manager).",
-    "version": "0.5.5",
+    "version": "0.5.6",
     "title": "Channel Manager REST API",
     "contact": {
       "email": "support@bokun.io"
@@ -67,7 +67,7 @@
           "product"
         ],
         "summary": "Return information about products of the remote system this plugin is connecting to (as opposed to Bokun products). This call is required in order to link Bokun- and remote system-configured products together.",
-        "description": "",
+        "description": "Bokun always sends pageNo and pageSize, but the plugin doesn't have to honour them: it may ignore both and return every product, and Bokun then shows the entire list. A plugin that pages returns at most pageSize products, and a page with fewer than pageSize products is the last one.",
         "operationId": "searchProduct",
         "consumes": [
           "application/json"
@@ -576,6 +576,20 @@
         },
         "city": {
           "type": "string"
+        },
+        "pageNo": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0,
+          "default": 0,
+          "description": "Zero-based page number. Always sent by Bokun; the plugin may ignore it and return every product, and Bokun then shows the entire list."
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "default": 20,
+          "description": "Products per page. Always sent by Bokun; the plugin may ignore it and return every product, and Bokun then shows the entire list."
         },
         "parameters": {
           "type": "array",
